@@ -2,9 +2,9 @@ import './App.css';
 
 function App() {
     return (
-        <div className="text-white bg-black">
-            <h1>こんにちは</h1>
-        </div>
+        <p className="text-white bg-black">
+          こんにちは
+        </p>
     );
 }
 
