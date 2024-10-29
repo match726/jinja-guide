@@ -1,3 +1,5 @@
+import { Button } from '@/components/ui/button';
+
 import './styles/global.css';
 
 function App() {
@@ -6,6 +8,7 @@ function App() {
         <h1>
           こんにちは
         </h1>
+        <Button>Click me</Button>
       </div>
     );
 };
