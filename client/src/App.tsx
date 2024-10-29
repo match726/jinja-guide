@@ -1,11 +1,13 @@
-import './App.css';
+import './styles/global.css';
 
 function App() {
     return (
-        <p className="text-white bg-black">
+      <div className="text-red-500 font-bold underline">
+        <h1>
           こんにちは
-        </p>
+        </h1>
+      </div>
     );
-}
+};
 
 export default App;
