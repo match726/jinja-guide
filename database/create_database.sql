@@ -1,0 +1,13 @@
+CREATE TABLE IF NOT EXISTS m_stdareacode (
+  std_area_code     char(5)     NOT NULL,
+  pref_area_code    char(5),
+  subpref_area_code char(5),
+  munic1_area_code  char(5),
+  munic2_area_code  char(5),
+  pref_name         varchar(4)  NOT NULL,
+  subpref_name      varchar(12),
+  munic_name1       varchar(10),
+  munic_name2       varchar(10),
+  created_at        timestamp,
+  updated_at        timestamp
+)
