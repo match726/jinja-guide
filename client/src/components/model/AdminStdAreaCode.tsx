@@ -77,7 +77,7 @@ const AdminStdAreaCode = () => {
         標準地域コード管理
       </h1>
       <div className="max-w-7xl mx-auto my-8 bg-white rounded-lg shadow-lg overflow-hidden">
-        <header className="bg-red-900 text-white p-4 text-center">
+        <header className="bg-gray-900 text-white p-4 text-center">
           <h1 className="text-2xl font-bold">標準地域コード</h1>
         </header>
         <div className="overflow-x-auto">
