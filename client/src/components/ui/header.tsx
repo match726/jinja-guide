@@ -9,7 +9,7 @@ import {
 
 const Header: React.FC = () => {
   return (
-    <header className="bg-red-800 text-white">
+    <header className="bg-red-900 text-white">
       <div className="container mx-auto px-4 py-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
@@ -27,7 +27,7 @@ const Header: React.FC = () => {
                 d="M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"
               />
             </svg>
-            <h1 className="text-2xl font-semibold">神社ガイド</h1>
+            <a href="/" className="text-2xl font-semibold">神社ガイド</a>
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -46,7 +46,7 @@ const Header: React.FC = () => {
                 <a href="#events">イベント</a>
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <a href="#access">アクセス</a>
+                <a href="admin">管理者画面</a>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -56,4 +56,4 @@ const Header: React.FC = () => {
   )
 };
 
-export default Header;
+export {Header};

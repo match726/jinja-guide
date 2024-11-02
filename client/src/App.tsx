@@ -1,13 +1,21 @@
-import Header from '@/components/ui/header';
-import { Button } from '@/components/ui/button';
+import { Routes, Route } from 'react-router-dom';
 
-import './styles/global.css';
+import Home from '@/components/model/Home';
+import Admin from '@/components/model/Admin';
+import AdminRegisterShrine from '@/components/model/AdminRegisterShrine';
+import AdminStdAreaCode from '@/components/model/AdminStdAreaCode';
+
+import '@/styles/global.css';
 
 function App() {
     return (
       <div>
-        <Header />
-        <Button>Click me</Button>
+      <Routes>
+        <Route path="/" element={ <Home /> } />
+        <Route path="/admin" element={ <Admin /> } />
+        <Route path="/admin/regist" element={ <AdminRegisterShrine /> } />
+        <Route path="/admin/stdareacode" element={ <AdminStdAreaCode /> } />
+      </Routes>
       </div>
     );
 };
