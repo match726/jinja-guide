@@ -6,6 +6,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/match726/jinja-guide/tree/main/server/api"
+	"github.com/match726/jinja-guide/tree/main/server/models"
 )
 
 var endpoint = "https://jinja-guide-server.vercel.app/"
@@ -13,7 +14,7 @@ var origin = "https://jinja-guide.vercel.app/"
 
 func main() {
 
-	//fmt.Println(models.Db)
+	models.Run().Exit()
 
 	r := mux.NewRouter()
 
