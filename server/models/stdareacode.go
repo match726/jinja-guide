@@ -1,9 +1,10 @@
 package models
 
 import (
+	"os"
 	"time"
 
-	"honnef.co/go/tools/config
+	"github.com/match726/jinja-guide/tree/main/server/api"
 )
 
 // ★北海道の郡のコード付番をstd_area_codeのINSERT時に行う
@@ -201,7 +202,7 @@ ORDER BY ?areacode`
 
 	query := prefix + query1 + query2 + query3 + query4 + query5 + query6 + query7 + query8 + query9 + query10
 
-	resp := api.QuerySparql(config.Config.Endpoint, query)
+	resp := api.QuerySparql(os.Getenv("ESTAT_ENDPOINT"), query)
 
 	for _, m := range resp.Results.Bindings {
 		sacs = append(sacs, StdAreaCode{m["AREACODE"].Value, m["PSAC"].Value, m["SPSAC"].Value, m["M1SAC"].Value, m["M2SAC"].Value, m["PREF"].Value, m["SUBPREF"].Value, m["MUNIC1"].Value, m["MUNIC2"].Value, current, current})
