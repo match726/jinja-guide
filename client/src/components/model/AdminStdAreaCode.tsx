@@ -77,13 +77,13 @@ const AdminStdAreaCode = () => {
         標準地域コード管理
       </h1>
       <div className="max-w-7xl mx-auto my-8 bg-white rounded-lg shadow-lg overflow-hidden">
-        <header className="bg-gray-900 text-white p-4 text-center">
+        <header className="bg-gray-700 text-white p-4 text-center">
           <h1 className="text-2xl font-bold">標準地域コード</h1>
         </header>
         <div className="overflow-x-auto">
           <table className="w-full" aria-label="標準地域コード">
             <thead>
-              <tr className="bg-red-900 text-white">
+              <tr className="bg-gray-700 text-white">
                 <th className="p-3 text-left">標準地域コード</th>
                 <th className="p-3 text-left">都道府県</th>
                 <th className="p-3 text-left">振興局・支庁</th>
@@ -116,7 +116,7 @@ const AdminStdAreaCode = () => {
             </tbody>
           </table>
         </div>
-        <footer className="bg-gray-900 text-white p-2 text-center text-sm">
+        <footer className="bg-gray-700 text-white p-2 text-center text-sm">
           <p>&copy; 2023 神社情報テーブル. All rights reserved.</p>
         </footer>
       </div>
