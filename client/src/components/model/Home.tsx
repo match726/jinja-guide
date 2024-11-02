@@ -7,6 +7,7 @@ const Home: React.FC = () => {
   return (
     <div>
       <Header />
+      <h2>{import.meta.env.ENV_KEY}</h2>
       <Button>Click me</Button>
     </div>
   );
