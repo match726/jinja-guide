@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 	"github.com/match726/jinja-guide/tree/main/server/api"
@@ -15,6 +16,8 @@ func main() {
 
 	//fmt.Println(models.Db)
 
+	db := os.Getenv("POSTGRES_DATABASE")
+	fmt.Println(db)
 	r := mux.NewRouter()
 
 	//r.HandleFunc("/api/admin/regist", regist).Methods("POST")
