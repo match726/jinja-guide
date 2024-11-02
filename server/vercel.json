@@ -3,5 +3,19 @@
     "env": {
       "GO_BUILD_FLAGS": "-ldflags '-s -w'"
     }
-  }
+  },
+  "rewrites": [
+    { "source": "/api", "destination": "/api" }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "https://jinja-guide.vercel.app/" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, OPTIONS" },
+        { "key": "Content-Type", "value": "application/json" },
+        { "key": "Access-Control-Allow-Headers", "value": "Content-Type, ShrGuide-User-Authorization, ShrGuide-Shrines-Authorization" }
+      ]
+    }
+  ]
 }
