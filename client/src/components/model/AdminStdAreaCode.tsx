@@ -116,7 +116,7 @@ const AdminStdAreaCode = () => {
             </tbody>
           </table>
         </div>
-        <footer className="bg-red-900 text-white p-2 text-center text-sm">
+        <footer className="bg-gray-900 text-white p-2 text-center text-sm">
           <p>&copy; 2023 神社情報テーブル. All rights reserved.</p>
         </footer>
       </div>
