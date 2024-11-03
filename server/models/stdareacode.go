@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"os"
 	"time"
 )
@@ -190,7 +191,9 @@ ORDER BY ?areacode`
 
 	query := prefix + query1 + query2 + query3 + query4 + query5 + query6 + query7 + query8 + query9 + query10
 
+	fmt.Println("SPARQL発行前")
 	resp := QuerySparql(os.Getenv("ESTAT_ENDPOINT"), query)
+	fmt.Println("SPARQL発行後")
 
 	for _, m := range resp.Results.Bindings {
 		sacs = append(sacs, StdAreaCode{m["AREACODE"].Value, m["PSAC"].Value, m["SPSAC"].Value, m["M1SAC"].Value, m["M2SAC"].Value, m["PREF"].Value, m["SUBPREF"].Value, m["MUNIC1"].Value, m["MUNIC2"].Value, current, current})
