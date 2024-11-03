@@ -1,8 +1,10 @@
 package api
 
 import (
-	"fmt"
+	"encoding/json"
 	"net/http"
+
+	"github.com/match726/jinja-guide/tree/main/server/models"
 )
 
 func StdAreaCodeHandler(w http.ResponseWriter, r *http.Request) {
@@ -15,5 +17,10 @@ func StdAreaCodeHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func FetchStdAreaCodes(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("標準地域コード取得")
+
+	sacs := models.GetAllStdAreaCodesFromEstat
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(sacs)
+
 }

@@ -5,51 +5,36 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/goark/gocli/exitcode"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/rs/xid"
 )
 
 var dbPool *pgxpool.Pool
-var err error
 
-func Run() exitcode.ExitCode {
+func NewPool() (*pgxpool.Pool, error) {
 
 	dbname := os.Getenv("POSTGRES_DATABASE")
 	dsn := os.Getenv("POSTGRES_URL")
 
-	dbPool, err := GetPool(context.Background(), dsn)
+	ctx := context.Background()
 
+	cfg, err := pgxpool.ParseConfig(dsn)
 	if err != nil {
-		fmt.Println(err)
-		return exitcode.Abnormal
+		return nil, err
+	}
+
+	dbPool, err = pgxpool.NewWithConfig(ctx, cfg)
+	if err != nil {
+		return nil, err
+	}
+
+	if err = dbPool.Ping(ctx); err != nil {
+		return nil, err
 	} else {
 		fmt.Printf("Message: データベース[%s]へ接続", dbname)
 	}
 
-	defer dbPool.Close()
-
-	return exitcode.Normal
-
-}
-
-func GetPool(ctx context.Context, dsn string) (*pgxpool.Pool, error) {
-
-	conn, err := pgxpool.ParseConfig(dsn)
-	if err != nil {
-		return nil, err
-	}
-
-	pool, err := pgxpool.NewWithConfig(ctx, conn)
-	if err != nil {
-		return nil, err
-	}
-
-	if err := pool.Ping(ctx); err != nil {
-		return nil, err
-	}
-
-	return pool, nil
+	return dbPool, err
 
 }
 
