@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
+import axios from 'axios';
 
 import { Header } from '@/components/ui/header';
 
 const BACKEND_ENDPOINT=import.meta.env.VITE_BACKEND_ENDPOINT
 
-// テーブルの行のデータ型を定義
+// 標準地域コードのデータ型を定義
 type stdAreaCode = {
   stdAreaCode: string;
   prefAreaCode: string;
@@ -53,20 +54,13 @@ const AdminStdAreaCode = () => {
 
   useEffect(() => {
 
-    const reqOptions = {
-      method: "GET",
+    axios.get(`${BACKEND_ENDPOINT}/api/admin/sac`, {
       headers: {
         "Content-Type": "application/json",
+        "ShrGuide-Shrines-Authorization": "Test"
       }
-    };
-
-    fetch(`${BACKEND_ENDPOINT}/api/admin/sac`, reqOptions
-    ).then((resp) => resp.json()
-    ).then((respJson) => {
-      console.log(respJson);
-    }).catch(() => {
-      console.log("error");
-    });
+    }).then(resp => console.log("GETリクエスト成功", resp.data))
+    .catch(err => console.error("GETリクエスト失敗", err));
 
   }, []);
 
@@ -78,10 +72,10 @@ const AdminStdAreaCode = () => {
       </h1>
       <div className="max-w-7xl mx-auto my-8 bg-white rounded-lg shadow-lg overflow-hidden">
         <header className="bg-zinc-800 text-white p-4 text-center">
-          <h1 className="text-2xl font-bold">標準地域コード</h1>
+          <h1 className="text-2xl font-bold">標準地域コード一覧</h1>
         </header>
         <div className="overflow-x-auto">
-          <table className="w-full" aria-label="標準地域コード">
+          <table className="w-full" aria-label="標準地域コード一覧">
             <thead>
               <tr className="bg-zinc-800 text-white">
                 <th className="p-3 text-left">標準地域コード</th>
@@ -117,7 +111,7 @@ const AdminStdAreaCode = () => {
           </table>
         </div>
         <footer className="bg-zinc-800 text-white p-2 text-center text-sm">
-          <p>&copy; 2023 神社情報テーブル. All rights reserved.</p>
+          <p>&copy; 2024 標準地域コード一覧. All rights reserved.</p>
         </footer>
       </div>
     </div>
