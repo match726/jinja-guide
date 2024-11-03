@@ -19,7 +19,7 @@ func main() {
 	r := mux.NewRouter()
 
 	//r.HandleFunc("/api/admin/regist", regist).Methods("POST")
-	r.HandleFunc("/api/admin/sac", api.Stdareacode).Methods("POST")
+	r.HandleFunc("/api/admin/sac", api.Stdareacode).Methods("GET")
 
 	http.ListenAndServe(fmt.Sprintf("%s", endpoint), setHeaders(r))
 

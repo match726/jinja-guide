@@ -15,7 +15,7 @@
         { "key": "Access-Control-Allow-Origin", "value": "https://jinja-guide.vercel.app/, https://jinja-guide-dev.vercel.app/" },
         { "key": "Access-Control-Allow-Methods", "value": "GET, POST, OPTIONS" },
         { "key": "Content-Type", "value": "application/json" },
-        { "key": "Access-Control-Allow-Headers", "value": "Content-Type, ShrGuide-User-Authorization, ShrGuide-Shrines-Authorization" }
+        { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Authorization, ShrGuide-Shrines-Authorization" }
       ]
     }
   ]
