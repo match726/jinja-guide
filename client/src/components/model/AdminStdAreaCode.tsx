@@ -9,11 +9,11 @@ const BACKEND_ENDPOINT=import.meta.env.VITE_BACKEND_ENDPOINT
 type stdAreaCode = {
   StdAreaCode: string;
   PrefAreaCode: string;
-  SubprefAreaCode: string;
+  SubPrefAreaCode: string;
   MunicAreaCode1: string;
   MunicAreaCode2: string;
   PrefName: string;
-  SubprefName: string;
+  SubPrefName: string;
   MunicName1: string;
   MunicName2: string;
   CreatedAt: string;
@@ -76,11 +76,11 @@ const AdminStdAreaCode = () => {
                 <tr key={item.StdAreaCode} className={index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}>
                   <td className="p-3 border-b">{item.StdAreaCode}</td>
                   <td className="p-3 border-b">{item.PrefAreaCode}</td>
-                  <td className="p-3 border-b">{item.SubprefAreaCode}</td>
+                  <td className="p-3 border-b">{item.SubPrefAreaCode}</td>
                   <td className="p-3 border-b">{item.MunicAreaCode1}</td>
                   <td className="p-3 border-b">{item.MunicAreaCode2}</td>
                   <td className="p-3 border-b">{item.PrefName}</td>
-                  <td className="p-3 border-b">{item.SubprefName}</td>
+                  <td className="p-3 border-b">{item.SubPrefName}</td>
                   <td className="p-3 border-b">{item.MunicName1}</td>
                   <td className="p-3 border-b">{item.MunicName2}</td>
                   <td className="p-3 border-b">{item.CreatedAt}</td>
