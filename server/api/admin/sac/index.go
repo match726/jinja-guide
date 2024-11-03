@@ -9,10 +9,14 @@ import (
 
 func StdAreaCodeHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
+	case http.MethodOptions:
+		w.WriteHeader(http.StatusOK)
+		return
 	case http.MethodGet:
 		FetchStdAreaCodes(w, r)
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
 	}
 }
 
