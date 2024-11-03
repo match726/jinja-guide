@@ -14,6 +14,8 @@ func StdAreaCodeHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		return
 	case http.MethodGet:
+		UpdateStdAreaCodes(w, r)
+	case http.MethodPost:
 		FetchStdAreaCodes(w, r)
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
@@ -23,12 +25,26 @@ func StdAreaCodeHandler(w http.ResponseWriter, r *http.Request) {
 
 func FetchStdAreaCodes(w http.ResponseWriter, r *http.Request) {
 
-	fmt.Println("FetchStdAreaCodes呼び出し前")
 	var sacs models.StdAreaCodes
-	sacs = models.GetAllStdAreaCodesFromEstat()
-	fmt.Println("FetchStdAreaCodes呼び出し後")
+
+	pg, err := models.NewPool()
+	if err != nil {
+		fmt.Println("Message: データベース接続不可")
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+	defer pg.Close()
+
+	sacs, err = models.GetStdAreaCodes(pg)
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(sacs)
+
+}
+
+func UpdateStdAreaCodes(w http.ResponseWriter, r *http.Request) {
+
+	var sacs models.StdAreaCodes
+	sacs = models.GetAllStdAreaCodesFromEstat()
+	fmt.Println(sacs)
 
 }

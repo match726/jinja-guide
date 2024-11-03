@@ -12,12 +12,14 @@ func QuerySparql(endpoint string, query string) *sparql.Results {
 	if err != nil {
 		fmt.Println(err)
 	} else {
-		fmt.Println("SPARQL発行=>NewRepo成功")
+		fmt.Println("SPARQL：NewRepo成功")
 	}
 
 	resp, err := repo.Query(query)
 	if err != nil {
 		fmt.Println(err)
+	} else {
+		fmt.Println("SPARQL：Query成功")
 	}
 
 	return resp

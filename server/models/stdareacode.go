@@ -1,8 +1,13 @@
 package models
 
 import (
+	"context"
+	"fmt"
 	"os"
 	"time"
+
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 // ★北海道の郡のコード付番をstd_area_codeのINSERT時に行う
@@ -197,5 +202,20 @@ ORDER BY ?areacode`
 	}
 
 	return sacs
+
+}
+
+func GetStdAreaCodes(pg *pgxpool.Pool) (StdAreaCodes, error) {
+
+	query := `SELECT std_area_code, pref_area_code, subpref_area_code, munic_area_code1, munic_area_code2, pref_name, subpref_name, munic_name1, munic_name2, created_at, updated_at
+					FROM m_stdareacode`
+
+	rows, err := pg.Query(context.Background(), query)
+	if err != nil {
+		return nil, fmt.Errorf("Unable to query: %w", err)
+	}
+	defer rows.Close()
+
+	return pgx.CollectRows(rows, pgx.RowToStructByName[StdAreaCode])
 
 }
