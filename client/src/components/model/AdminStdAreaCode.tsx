@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 import { Header } from '@/components/ui/header';
@@ -7,60 +7,40 @@ const BACKEND_ENDPOINT=import.meta.env.VITE_BACKEND_ENDPOINT
 
 // 標準地域コードのデータ型を定義
 type stdAreaCode = {
-  stdAreaCode: string;
-  prefAreaCode: string;
-  subprefAreaCode: string;
-  municAreaCode1: string;
-  municAreaCode2: string;
-  prefName: string;
-  subprefName: string;
-  municName1: string;
-  municName2: string;
-  createdAt: string;
-  updatedAt: string;
+  StdAreaCode: string;
+  PrefAreaCode: string;
+  SubprefAreaCode: string;
+  MunicAreaCode1: string;
+  MunicAreaCode2: string;
+  PrefName: string;
+  SubprefName: string;
+  MunicName1: string;
+  MunicName2: string;
+  CreatedAt: string;
+  UpdatedAt: string;
 }
-
-// サンプルデータ
-const sampleData: stdAreaCode[] = [
-  {
-    stdAreaCode: '01101',
-    prefAreaCode: '01',
-    subprefAreaCode: '-',
-    municAreaCode1: '-',
-    municAreaCode2: '101',
-    prefName: '北海道',
-    subprefName: '-',
-    municName1: '-',
-    municName2: '札幌市中央区',
-    createdAt: '2023-05-01 10:00:00',
-    updatedAt: '2023-05-01 10:00:00',
-  },
-  {
-    stdAreaCode: '13101',
-    prefAreaCode: '13',
-    subprefAreaCode: '-',
-    municAreaCode1: '-',
-    municAreaCode2: '101',
-    prefName: '東京都',
-    subprefName: '-',
-    municName1: '-',
-    municName2: '千代田区',
-    createdAt: '2023-05-01 10:00:00',
-    updatedAt: '2023-05-01 10:00:00',
-  },
-];
 
 const AdminStdAreaCode = () => {
 
+  const [sacList, setSacList] = useState<stdAreaCode[]>([]);
+
   useEffect(() => {
 
-    axios.get(`${BACKEND_ENDPOINT}/api/admin/sac`, {
-      headers: {
-        "Content-Type": "application/json",
-        "ShrGuide-Shrines-Authorization": "Test"
+    const fetchStdAreaCodeList = async () => {
+      try {
+        const resp = await axios.get(`${BACKEND_ENDPOINT}/api/admin/sac`, {
+          headers: {
+            "Content-Type": "application/json",
+            "ShrGuide-Shrines-Authorization": "Test",
+          },
+        });
+        setSacList(resp.data);
+      } catch (err) {
+        console.error("GETリクエスト失敗", err)
       }
-    }).then(resp => console.log("GETリクエスト成功", resp.data))
-    .catch(err => console.error("GETリクエスト失敗", err));
+    }
+
+    fetchStdAreaCodeList();
 
   }, []);
 
@@ -92,19 +72,19 @@ const AdminStdAreaCode = () => {
               </tr>
             </thead>
             <tbody>
-              {sampleData.map((item, index) => (
-                <tr key={item.stdAreaCode} className={index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}>
-                  <td className="p-3 border-b">{item.stdAreaCode}</td>
-                  <td className="p-3 border-b">{item.prefAreaCode}</td>
-                  <td className="p-3 border-b">{item.subprefAreaCode}</td>
-                  <td className="p-3 border-b">{item.municAreaCode1}</td>
-                  <td className="p-3 border-b">{item.municAreaCode2}</td>
-                  <td className="p-3 border-b">{item.prefName}</td>
-                  <td className="p-3 border-b">{item.subprefName}</td>
-                  <td className="p-3 border-b">{item.municName1}</td>
-                  <td className="p-3 border-b">{item.municName2}</td>
-                  <td className="p-3 border-b">{item.createdAt}</td>
-                  <td className="p-3 border-b">{item.updatedAt}</td>
+              {sacList.map((item, index) => (
+                <tr key={item.StdAreaCode} className={index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}>
+                  <td className="p-3 border-b">{item.StdAreaCode}</td>
+                  <td className="p-3 border-b">{item.PrefAreaCode}</td>
+                  <td className="p-3 border-b">{item.SubprefAreaCode}</td>
+                  <td className="p-3 border-b">{item.MunicAreaCode1}</td>
+                  <td className="p-3 border-b">{item.MunicAreaCode2}</td>
+                  <td className="p-3 border-b">{item.PrefName}</td>
+                  <td className="p-3 border-b">{item.SubprefName}</td>
+                  <td className="p-3 border-b">{item.MunicName1}</td>
+                  <td className="p-3 border-b">{item.MunicName2}</td>
+                  <td className="p-3 border-b">{item.CreatedAt}</td>
+                  <td className="p-3 border-b">{item.UpdatedAt}</td>
                 </tr>
               ))}
             </tbody>
