@@ -34,7 +34,10 @@ const AdminStdAreaCode = () => {
             "ShrGuide-Shrines-Authorization": "Test",
           },
         });
-        console.log(resp.data);
+        const rows = (Object.keys(resp.data) as (keyof typeof resp.data)[]).map((key) => {
+          return { key, value: resp.data[key]}
+        });
+        console.log(rows);
         setSacList(resp.data);
       } catch (err) {
         console.error("GETリクエスト失敗", err)
