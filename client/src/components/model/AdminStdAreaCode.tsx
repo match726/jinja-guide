@@ -34,6 +34,7 @@ const AdminStdAreaCode = () => {
             "ShrGuide-Shrines-Authorization": "Test",
           },
         });
+        console.log(resp.data);
         setSacList(resp.data);
       } catch (err) {
         console.error("GETリクエスト失敗", err)
@@ -52,7 +53,7 @@ const AdminStdAreaCode = () => {
       </h1>
       <div className="max-w-7xl mx-auto my-8 bg-white rounded-lg shadow-lg overflow-hidden">
         <header className="bg-zinc-800 text-white p-4 text-center">
-          <h1 className="text-2xl font-bold">標準地域コード一覧</h1>
+          <h2 className="text-2xl font-bold">標準地域コード一覧</h2>
         </header>
         <div className="overflow-x-auto">
           <table className="w-full" aria-label="標準地域コード一覧">
