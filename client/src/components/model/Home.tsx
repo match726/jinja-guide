@@ -1,5 +1,4 @@
 import { Header } from '@/components/ui/header';
-import { Button } from '@/components/ui/button';
 
 import '@/styles/global.css';
 
@@ -8,7 +7,6 @@ const Home: React.FC = () => {
     <div>
       <Header />
       <h2>環境名：{import.meta.env.VITE_ENV_KEY}</h2>
-      <Button>Click me</Button>
     </div>
   );
 };

@@ -15,7 +15,7 @@ func StdAreaCodeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	case http.MethodGet:
 		FetchStdAreaCodes(w, r)
-	case http.MethodPost:
+	case http.MethodPut:
 		UpdateStdAreaCodes(w, r)
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
