@@ -31,6 +31,8 @@ func NewPool() (*Postgres, error) {
 	if err != nil {
 		fmt.Println(err)
 		return nil, err
+	} else {
+		fmt.Println("NewWithConfig成功")
 	}
 
 	if err = pgInstance.dbPool.Ping(ctx); err != nil {
