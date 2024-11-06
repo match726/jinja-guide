@@ -31,7 +31,7 @@ func FetchStdAreaCodes(w http.ResponseWriter, r *http.Request) {
 
 	pg, err := models.NewPool()
 	if err != nil {
-		fmt.Println("Message: データベース接続不可")
+		fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 	defer pg.ClosePool()
@@ -49,7 +49,7 @@ func UpdateStdAreaCodes(w http.ResponseWriter, r *http.Request) {
 
 	pg, err := models.NewPool()
 	if err != nil {
-		fmt.Println("Message: データベース接続不可")
+		fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 	defer pg.ClosePool()
