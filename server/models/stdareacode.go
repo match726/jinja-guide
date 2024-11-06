@@ -118,9 +118,8 @@ WHERE {
 		FILTER ( ?adclass = sacs:SpecialWardsArea )
 		}`
 
-	/*
-		// 市の抽出
-		query4 := `  UNION
+	// 市の抽出
+	query4 := `  UNION
 			{
 			?s a sacs:StandardAreaCode ;
 				dcterms:identifier ?areacode ;
@@ -133,8 +132,8 @@ WHERE {
 			FILTER ( ?adclass IN( sacs:City, sacs:CoreCity, sacs:DesignatedCity, sacs:SpecialCity ) )
 			}`
 
-		// 郡の抽出
-		query5 := `  UNION
+	// 郡の抽出
+	query5 := `  UNION
 			{
 			?s a sacs:StandardAreaCode ;
 				dcterms:identifier ?areacode ;
@@ -147,8 +146,8 @@ WHERE {
 			FILTER ( ?adclass = sacs:District )
 			}`
 
-		// 振興局・支庁に属する、北海道の町村の抽出 (北海道の振興局)
-		query6 := `  UNION
+	// 振興局・支庁に属する、北海道の町村の抽出 (北海道の振興局)
+	query6 := `  UNION
 			{
 			?s a sacs:StandardAreaCode ;
 				dcterms:identifier ?areacode ;
@@ -171,8 +170,8 @@ WHERE {
 			MINUS { ?spo dcterms:valid ?spo2 }
 			}`
 
-		// 振興局・支庁に属する、東京の町村の抽出 (東京の離島)
-		query7 := `  UNION
+	// 振興局・支庁に属する、東京の町村の抽出 (東京の離島)
+	query7 := `  UNION
 			{
 			?s a sacs:StandardAreaCode ;
 				dcterms:identifier ?areacode ;
@@ -193,6 +192,7 @@ WHERE {
 			MINUS { ?spo dcterms:valid ?spo2 }
 			}`
 
+	/*
 		// 振興局・支庁に属さない、区町村の抽出
 		query8 := `  UNION
 			{
@@ -210,9 +210,10 @@ WHERE {
 			FILTER ( ?adclass1 IN( sacs:Town, sacs:Village, sacs:Ward ) )
 			FILTER ( ?adclass2 != sacs:SubPrefecture )
 			}`
+	*/
 
-		// 東京２３区の抽出
-		query9 := `  UNION
+	// 東京２３区の抽出
+	query9 := `  UNION
 			{
 			?s a sacs:StandardAreaCode ;
 				dcterms:identifier ?areacode ;
@@ -227,13 +228,12 @@ WHERE {
 			FILTER ( lang(?munic2) = "ja" )
 			FILTER ( ?adclass = sacs:SpecialWard )
 			}`
-	*/
 
 	query10 := `  MINUS { ?s dcterms:valid ?o }
 }
 ORDER BY ?areacode`
 
-	query := prefix + query1 + query2 + query3 + query10
+	query := prefix + query1 + query2 + query3 + query4 + query5 + query6 + query7 + query9 + query10
 
 	resp := QuerySparql(os.Getenv("ESTAT_ENDPOINT"), query)
 
