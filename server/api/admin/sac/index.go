@@ -27,11 +27,12 @@ func StdAreaCodeHandler(w http.ResponseWriter, r *http.Request) {
 
 func FetchStdAreaCodes(w http.ResponseWriter, r *http.Request) {
 
+	var pg *models.Postgres
+	var err error
 	var sacs models.StdAreaCodes
 
-	pg, err := models.NewPool()
+	pg, err = models.NewPool()
 	if err != nil {
-		fmt.Fprintf(w, fmt.Sprintf("<p>%s</p>", err))
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 	defer pg.ClosePool()

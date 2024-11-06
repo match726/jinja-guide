@@ -24,16 +24,18 @@ func NewPool() (*Postgres, error) {
 
 	cfg, err := pgxpool.ParseConfig(dsn)
 	if err != nil {
-		return nil, fmt.Errorf("ParseConfig Error: %s", err)
+		return nil, err
+	} else {
+		fmt.Println(cfg)
 	}
 
 	pgInstance.dbPool, err = pgxpool.NewWithConfig(ctx, cfg)
 	if err != nil {
-		return nil, fmt.Errorf("NewWithConfig Error: %s", err)
+		return nil, err
 	}
 
 	if err = pgInstance.dbPool.Ping(ctx); err != nil {
-		return nil, fmt.Errorf("Ping Error: %s", err)
+		return nil, err
 	} else {
 		fmt.Printf("Message: データベース[%s]へ接続", dbname)
 	}
