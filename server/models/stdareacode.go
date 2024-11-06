@@ -22,8 +22,8 @@ type StdAreaCode struct {
 	SubPrefName     string
 	MunicName1      string
 	MunicName2      string
-	CreatedAt       time.Time
-	UpdatedAt       time.Time
+	CreatedAt       string
+	UpdatedAt       string
 }
 
 type StdAreaCodes []StdAreaCode
@@ -70,9 +70,9 @@ func (pg *Postgres) UpdateStdAreaCode() (err error) {
 // e-Statの統計LODから最新の標準地域コードを取得する
 func GetAllStdAreaCodesFromEstat() (sacs StdAreaCodes) {
 
-	var current time.Time
+	var current string
 	jstZone := time.FixedZone("Asia/Tokyo", 9*60*60)
-	current = time.Now().In(jstZone)
+	current = time.Now().In(jstZone).Format("2006-01-02 03:04:05")
 
 	prefix := `PREFIX sacs: <http://data.e-stat.go.jp/lod/terms/sacs#>
 PREFIX dcterms: <http://purl.org/dc/terms/>
