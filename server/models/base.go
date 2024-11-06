@@ -29,9 +29,11 @@ func NewPool() (*Postgres, error) {
 		fmt.Println(cfg)
 	}
 
-	pgInstance.dbPool, err = pgxpool.NewWithConfig(ctx, cfg)
+	pool, err := pgxpool.NewWithConfig(ctx, cfg)
 	if err != nil {
 		return nil, err
+	} else {
+		pgInstance = &Postgres{pool}
 	}
 
 	if err = pgInstance.dbPool.Ping(ctx); err != nil {
