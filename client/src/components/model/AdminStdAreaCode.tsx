@@ -68,7 +68,6 @@ const AdminStdAreaCode: React.FC = () => {
       <div className="max-w-7xl mx-auto my-8 bg-white rounded-lg shadow-lg overflow-hidden">
         <header className="bg-zinc-800 text-white p-4 text-center">
           <h2 className="text-2xl font-bold">標準地域コード一覧</h2>
-          <Button variant="outline" onClick={handleSubmit}>最新化</Button>
         </header>
         <div className="overflow-x-auto">
           <table className="w-full" aria-label="標準地域コード一覧">
