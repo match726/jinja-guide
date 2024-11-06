@@ -22,8 +22,8 @@ type StdAreaCode struct {
 	SubPrefName     string
 	MunicName1      string
 	MunicName2      string
-	CreatedAt       string
-	UpdatedAt       string
+	CreatedAt       time.Time
+	UpdatedAt       time.Time
 }
 
 type StdAreaCodes []StdAreaCode
@@ -70,10 +70,6 @@ func (pg *Postgres) UpdateStdAreaCode() (err error) {
 // e-Statの統計LODから最新の標準地域コードを取得する
 func GetAllStdAreaCodesFromEstat() (sacs StdAreaCodes) {
 
-	var current string
-	jstZone := time.FixedZone("Asia/Tokyo", 9*60*60)
-	current = time.Now().In(jstZone).Format("2006-01-02 03:04:05")
-
 	prefix := `PREFIX sacs: <http://data.e-stat.go.jp/lod/terms/sacs#>
 PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX ic: <http://imi.go.jp/ns/core/rdf#>
@@ -91,35 +87,35 @@ WHERE {
 	FILTER ( ?adclass = sacs:Prefecture )
 	}`
 
+	// 振興局・支庁の抽出
+	query2 := `  UNION
+		{
+		?s a sacs:StandardAreaCode ;
+			dcterms:identifier ?areacode ;
+			dcterms:isPartOf / dcterms:identifier ?psac ;
+			dcterms:identifier ?spsac ;
+			sacs:prefectureLabel ?pref ;
+			ic:表記 ?subpref ;
+			sacs:administrativeClass ?adclass .
+		FILTER ( lang(?subpref) = "ja" )
+		FILTER ( ?adclass = sacs:SubPrefecture )
+		}`
+
+	// 特別区部(東京都)の抽出
+	query3 := `  UNION
+		{
+		?s a sacs:StandardAreaCode ;
+			dcterms:identifier ?areacode ;
+			dcterms:isPartOf / dcterms:identifier ?psac ;
+			dcterms:identifier ?spsac ;
+			sacs:prefectureLabel ?pref ;
+			ic:表記 ?subpref ;
+			sacs:administrativeClass ?adclass .
+		FILTER ( lang(?subpref) = "ja" )
+		FILTER ( ?adclass = sacs:SpecialWardsArea )
+		}`
+
 	/*
-		// 振興局・支庁の抽出
-		query2 := `  UNION
-			{
-			?s a sacs:StandardAreaCode ;
-				dcterms:identifier ?areacode ;
-				dcterms:isPartOf / dcterms:identifier ?psac ;
-				dcterms:identifier ?spsac ;
-				sacs:prefectureLabel ?pref ;
-				ic:表記 ?subpref ;
-				sacs:administrativeClass ?adclass .
-			FILTER ( lang(?subpref) = "ja" )
-			FILTER ( ?adclass = sacs:SubPrefecture )
-			}`
-
-		// 特別区部(東京都)の抽出
-		query3 := `  UNION
-			{
-			?s a sacs:StandardAreaCode ;
-				dcterms:identifier ?areacode ;
-				dcterms:isPartOf / dcterms:identifier ?psac ;
-				dcterms:identifier ?spsac ;
-				sacs:prefectureLabel ?pref ;
-				ic:表記 ?subpref ;
-				sacs:administrativeClass ?adclass .
-			FILTER ( lang(?subpref) = "ja" )
-			FILTER ( ?adclass = sacs:SpecialWardsArea )
-			}`
-
 		// 市の抽出
 		query4 := `  UNION
 			{
@@ -234,12 +230,12 @@ WHERE {
 }
 ORDER BY ?areacode`
 
-	query := prefix + query1 + query10
+	query := prefix + query1 + query2 + query3 + query10
 
 	resp := QuerySparql(os.Getenv("ESTAT_ENDPOINT"), query)
 
 	for _, m := range resp.Results.Bindings {
-		sacs = append(sacs, StdAreaCode{m["AREACODE"].Value, m["PSAC"].Value, m["SPSAC"].Value, m["M1SAC"].Value, m["M2SAC"].Value, m["PREF"].Value, m["SUBPREF"].Value, m["MUNIC1"].Value, m["MUNIC2"].Value, current, current})
+		sacs = append(sacs, StdAreaCode{m["AREACODE"].Value, m["PSAC"].Value, m["SPSAC"].Value, m["M1SAC"].Value, m["M2SAC"].Value, m["PREF"].Value, m["SUBPREF"].Value, m["MUNIC1"].Value, m["MUNIC2"].Value, GetNowTime(), GetNowTime()})
 	}
 
 	return sacs
@@ -248,7 +244,7 @@ ORDER BY ?areacode`
 
 func (pg *Postgres) GetStdAreaCodes() (StdAreaCodes, error) {
 
-	query := `SELECT std_area_code, pref_area_code, subpref_area_code, munic_area_code1, munic_area_code2, pref_name, subpref_name, munic_name1, munic_name2, created_at, updated_at
+	query := `SELECT std_area_code, pref_area_code, subpref_area_code, munic_area_code1, munic_area_code2, pref_name, subpref_name, munic_name1, munic_name2, to_char(created_at,'YYYY/MM/DD HH24:MI:SS'), to_char(created_at,'YYYY/MM/DD HH24:MI:SS')
 					FROM m_stdareacode`
 
 	rows, err := pg.dbPool.Query(context.Background(), query)
