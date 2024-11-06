@@ -29,7 +29,7 @@ func FetchStdAreaCodes(w http.ResponseWriter, r *http.Request) {
 
 	var pg *models.Postgres
 	var err error
-	var sacs models.StdAreaCodes
+	var sacs []models.StdAreaCodeGet
 
 	pg, err = models.NewPool()
 	if err != nil {

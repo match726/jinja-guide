@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"time"
 
 	"github.com/jackc/pgx/v5"
 )
@@ -22,16 +21,19 @@ type StdAreaCode struct {
 	SubPrefName     string
 	MunicName1      string
 	MunicName2      string
-	CreatedAt       time.Time
-	UpdatedAt       time.Time
 }
 
-type StdAreaCodes []StdAreaCode
+// SELECT用の構造体(タイムスタンプをYYYY/MM/DD HH24:MM:SS形式で取得する)
+type StdAreaCodeGet struct {
+	StdAreaCode
+	CreatedAt string
+	UpdatedAt string
+}
 
 // 標準エリアコードの最新化
 func (pg *Postgres) UpdateStdAreaCode() (err error) {
 
-	var sacs StdAreaCodes
+	var sacs []StdAreaCode
 	var rows [][]interface{}
 
 	query := `TRUNCATE TABLE m_stdareacode`
@@ -43,9 +45,10 @@ func (pg *Postgres) UpdateStdAreaCode() (err error) {
 	}
 
 	sacs = GetAllStdAreaCodesFromEstat()
+	current := GetNowTime()
 
 	for _, m := range sacs {
-		rows = append(rows, []interface{}{m.StdAreaCode, m.PrefAreaCode, m.SubPrefAreaCode, m.MunicAreaCode1, m.MunicAreaCode2, m.PrefName, m.SubPrefName, m.MunicName1, m.MunicName2, m.CreatedAt, m.UpdatedAt})
+		rows = append(rows, []interface{}{m.StdAreaCode, m.PrefAreaCode, m.SubPrefAreaCode, m.MunicAreaCode1, m.MunicAreaCode2, m.PrefName, m.SubPrefName, m.MunicName1, m.MunicName2, current, current})
 	}
 
 	cnt, err := pg.dbPool.CopyFrom(
@@ -68,7 +71,7 @@ func (pg *Postgres) UpdateStdAreaCode() (err error) {
 }
 
 // e-Statの統計LODから最新の標準地域コードを取得する
-func GetAllStdAreaCodesFromEstat() (sacs StdAreaCodes) {
+func GetAllStdAreaCodesFromEstat() (sacs []StdAreaCode) {
 
 	prefix := `PREFIX sacs: <http://data.e-stat.go.jp/lod/terms/sacs#>
 PREFIX dcterms: <http://purl.org/dc/terms/>
@@ -235,14 +238,14 @@ ORDER BY ?areacode`
 	resp := QuerySparql(os.Getenv("ESTAT_ENDPOINT"), query)
 
 	for _, m := range resp.Results.Bindings {
-		sacs = append(sacs, StdAreaCode{m["AREACODE"].Value, m["PSAC"].Value, m["SPSAC"].Value, m["M1SAC"].Value, m["M2SAC"].Value, m["PREF"].Value, m["SUBPREF"].Value, m["MUNIC1"].Value, m["MUNIC2"].Value, GetNowTime(), GetNowTime()})
+		sacs = append(sacs, StdAreaCode{m["AREACODE"].Value, m["PSAC"].Value, m["SPSAC"].Value, m["M1SAC"].Value, m["M2SAC"].Value, m["PREF"].Value, m["SUBPREF"].Value, m["MUNIC1"].Value, m["MUNIC2"].Value})
 	}
 
 	return sacs
 
 }
 
-func (pg *Postgres) GetStdAreaCodes() (StdAreaCodes, error) {
+func (pg *Postgres) GetStdAreaCodes() ([]StdAreaCodeGet, error) {
 
 	query := `SELECT std_area_code, pref_area_code, subpref_area_code, munic_area_code1, munic_area_code2, pref_name, subpref_name, munic_name1, munic_name2, to_char(created_at,'YYYY/MM/DD HH24:MI:SS') AS "created_at", to_char(updated_at,'YYYY/MM/DD HH24:MI:SS') AS "updated_at"
 					FROM m_stdareacode`
@@ -253,6 +256,6 @@ func (pg *Postgres) GetStdAreaCodes() (StdAreaCodes, error) {
 	}
 	defer rows.Close()
 
-	return pgx.CollectRows(rows, pgx.RowToStructByName[StdAreaCode])
+	return pgx.CollectRows(rows, pgx.RowToStructByName[StdAreaCodeGet])
 
 }
