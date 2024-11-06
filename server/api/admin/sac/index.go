@@ -31,7 +31,7 @@ func FetchStdAreaCodes(w http.ResponseWriter, r *http.Request) {
 
 	pg, err := models.NewPool()
 	if err != nil {
-		fmt.Fprintln(w, fmt.Sprintf("<p>%s</p>", err))
+		fmt.Fprintf(w, fmt.Sprintf("<p>%s</p>", err))
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 	defer pg.ClosePool()
