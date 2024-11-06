@@ -45,7 +45,7 @@ func NewPool() (*Postgres, error) {
 
 }
 
-func (pg *Postgres) Close() {
+func (pg *Postgres) ClosePool() {
 	pg.dbPool.Close()
 }
 
