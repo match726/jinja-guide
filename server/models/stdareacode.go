@@ -187,48 +187,49 @@ func GetAllStdAreaCodesFromEstat() (sacs []StdAreaCode) {
 PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX ic: <http://imi.go.jp/ns/core/rdf#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>`
+	/*
+		// 県の抽出
+		query1 := `SELECT DISTINCT ?areacode ?psac ?spsac ?m1sac ?m2sac ?pref ?subpref ?munic1 ?munic2
+			WHERE {
+				{
+				?s a sacs:StandardAreaCode ;
+					dcterms:identifier ?areacode ;
+					dcterms:identifier ?psac ;
+					sacs:prefectureLabel ?pref ;
+					sacs:administrativeClass ?adclass .
+				FILTER ( ?adclass = sacs:Prefecture )
+				}`
+	*/
 
-	// 県の抽出
-	query1 := `SELECT DISTINCT ?areacode ?psac ?spsac ?m1sac ?m2sac ?pref ?subpref ?munic1 ?munic2
-		WHERE {
+	// 振興局・支庁の抽出
+	query2 := `  UNION
+		{
+		?s a sacs:StandardAreaCode ;
+			dcterms:identifier ?areacode ;
+			dcterms:isPartOf / dcterms:identifier ?psac ;
+			dcterms:identifier ?spsac ;
+			sacs:prefectureLabel ?pref ;
+			ic:表記 ?subpref ;
+			sacs:administrativeClass ?adclass .
+		FILTER ( lang(?subpref) = "ja" )
+		FILTER ( ?adclass = sacs:SubPrefecture )
+		}`
+
+	// 特別区部(東京都)の抽出
+	query3 := `  UNION
 			{
 			?s a sacs:StandardAreaCode ;
 				dcterms:identifier ?areacode ;
-				dcterms:identifier ?psac ;
+				dcterms:isPartOf / dcterms:identifier ?psac ;
+				dcterms:identifier ?spsac ;
 				sacs:prefectureLabel ?pref ;
+				ic:表記 ?subpref ;
 				sacs:administrativeClass ?adclass .
-			FILTER ( ?adclass = sacs:Prefecture )
+			FILTER ( lang(?subpref) = "ja" )
+			FILTER ( ?adclass = sacs:SpecialWardsArea )
 			}`
 
 	/*
-				// 振興局・支庁の抽出
-				query2 := `  UNION
-					{
-					?s a sacs:StandardAreaCode ;
-						dcterms:identifier ?areacode ;
-						dcterms:isPartOf / dcterms:identifier ?psac ;
-						dcterms:identifier ?spsac ;
-						sacs:prefectureLabel ?pref ;
-						ic:表記 ?subpref ;
-						sacs:administrativeClass ?adclass .
-					FILTER ( lang(?subpref) = "ja" )
-					FILTER ( ?adclass = sacs:SubPrefecture )
-					}`
-
-				// 特別区部(東京都)の抽出
-				query3 := `  UNION
-					{
-					?s a sacs:StandardAreaCode ;
-						dcterms:identifier ?areacode ;
-						dcterms:isPartOf / dcterms:identifier ?psac ;
-						dcterms:identifier ?spsac ;
-						sacs:prefectureLabel ?pref ;
-						ic:表記 ?subpref ;
-						sacs:administrativeClass ?adclass .
-					FILTER ( lang(?subpref) = "ja" )
-					FILTER ( ?adclass = sacs:SpecialWardsArea )
-					}`
-
 		// 市の抽出
 		query4 := `  UNION
 					{
@@ -320,30 +321,29 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>`
 							FILTER ( ?adclass1 IN( sacs:Town, sacs:Village, sacs:Ward ) )
 							FILTER ( ?adclass2 != sacs:SubPrefecture )
 							}`
-
-			// 東京２３区の抽出
-			query9 := `  UNION
-					{
-					?s a sacs:StandardAreaCode ;
-						dcterms:identifier ?areacode ;
-						dcterms:isPartOf / dcterms:isPartOf / dcterms:identifier ?psac ;
-						dcterms:isPartOf / dcterms:identifier ?spsac ;
-						dcterms:identifier ?m2sac ;
-						sacs:prefectureLabel ?pref ;
-						dcterms:isPartOf / ic:表記 ?subpref ;
-						ic:表記 ?munic2 ;
-						sacs:administrativeClass ?adclass .
-					FILTER ( lang(?subpref) = "ja" )
-					FILTER ( lang(?munic2) = "ja" )
-					FILTER ( ?adclass = sacs:SpecialWard )
-					}`
 	*/
+	// 東京２３区の抽出
+	query9 := `  UNION
+		{
+		?s a sacs:StandardAreaCode ;
+			dcterms:identifier ?areacode ;
+			dcterms:isPartOf / dcterms:isPartOf / dcterms:identifier ?psac ;
+			dcterms:isPartOf / dcterms:identifier ?spsac ;
+			dcterms:identifier ?m2sac ;
+			sacs:prefectureLabel ?pref ;
+			dcterms:isPartOf / ic:表記 ?subpref ;
+			ic:表記 ?munic2 ;
+			sacs:administrativeClass ?adclass .
+		FILTER ( lang(?subpref) = "ja" )
+		FILTER ( lang(?munic2) = "ja" )
+		FILTER ( ?adclass = sacs:SpecialWard )
+		}`
 
 	query10 := `  MINUS { ?s dcterms:valid ?o }
 }
 ORDER BY ?areacode`
 
-	query := prefix + query1 + query10
+	query := prefix + query2 + query3 + query9 + query10
 
 	resp := QuerySparql(os.Getenv("ESTAT_ENDPOINT"), query)
 
