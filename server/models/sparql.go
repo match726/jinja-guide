@@ -17,7 +17,7 @@ func QuerySparql(endpoint string, query string) *sparql.Results {
 	if err != nil {
 		fmt.Println(err)
 	} else {
-		fmt.Printf("QuerySparql: Query成功(%d行)", len(resp.Bindings()))
+		fmt.Printf("QuerySparql: Query成功")
 	}
 
 	return resp
