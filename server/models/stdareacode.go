@@ -244,7 +244,7 @@ ORDER BY ?areacode`
 
 func (pg *Postgres) GetStdAreaCodes() (StdAreaCodes, error) {
 
-	query := `SELECT std_area_code, pref_area_code, subpref_area_code, munic_area_code1, munic_area_code2, pref_name, subpref_name, munic_name1, munic_name2, to_char(created_at,'YYYY/MM/DD HH24:MI:SS'), to_char(created_at,'YYYY/MM/DD HH24:MI:SS')
+	query := `SELECT std_area_code, pref_area_code, subpref_area_code, munic_area_code1, munic_area_code2, pref_name, subpref_name, munic_name1, munic_name2, to_char(created_at,'YYYY/MM/DD HH24:MI:SS') AS "created_at", to_char(updated_at,'YYYY/MM/DD HH24:MI:SS') AS "updated_at"
 					FROM m_stdareacode`
 
 	rows, err := pg.dbPool.Query(context.Background(), query)
