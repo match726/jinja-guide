@@ -37,13 +37,13 @@ func (pg *Postgres) UpdateStdAreaCode() (err error) {
 	var sacs []StdAreaCode
 	var rows [][]interface{}
 
-	query := `TRUNCATE TABLE m_stdareacode`
+	// query := `TRUNCATE TABLE m_stdareacode`
 
-	_, err = pg.dbPool.Exec(context.Background(), query)
+	// _, err = pg.dbPool.Exec(context.Background(), query)
 
-	if err != nil {
-		return fmt.Errorf("標準地域コード TRUNCATE失敗： %s", err)
-	}
+	// if err != nil {
+	// 	return fmt.Errorf("標準地域コード TRUNCATE失敗： %s", err)
+	// }
 
 	sacs = GetAllStdAreaCodesFromEstat()
 	current := GetNowTime()
