@@ -60,7 +60,7 @@ func (pg *Postgres) UpdateStdAreaCode() (err error) {
 	}
 
 	if int(cnt) != len(sacs) {
-		return fmt.Errorf("標準地域コード レコード不一致： %s", cnt)
+		return fmt.Errorf("標準地域コード レコード不一致： %d", cnt)
 	}
 
 	return err

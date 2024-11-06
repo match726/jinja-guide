@@ -9,6 +9,7 @@ import (
 )
 
 func StdAreaCodeHandler(w http.ResponseWriter, r *http.Request) {
+
 	switch r.Method {
 	case http.MethodOptions:
 		w.WriteHeader(http.StatusOK)
@@ -21,6 +22,7 @@ func StdAreaCodeHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
+
 }
 
 func FetchStdAreaCodes(w http.ResponseWriter, r *http.Request) {
