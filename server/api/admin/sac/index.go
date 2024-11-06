@@ -25,6 +25,7 @@ func StdAreaCodeHandler(w http.ResponseWriter, r *http.Request) {
 
 func FetchStdAreaCodes(w http.ResponseWriter, r *http.Request) {
 
+	var pg *models.Postgres
 	var sacs models.StdAreaCodes
 
 	pg, err := models.NewPool()
@@ -34,7 +35,7 @@ func FetchStdAreaCodes(w http.ResponseWriter, r *http.Request) {
 	}
 	defer pg.Close()
 
-	sacs, err = models.GetStdAreaCodes(pg)
+	sacs, err = pg.GetStdAreaCodes()
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(sacs)
@@ -43,8 +44,18 @@ func FetchStdAreaCodes(w http.ResponseWriter, r *http.Request) {
 
 func UpdateStdAreaCodes(w http.ResponseWriter, r *http.Request) {
 
-	var sacs models.StdAreaCodes
-	sacs = models.GetAllStdAreaCodesFromEstat()
-	fmt.Println(sacs)
+	var pg *models.Postgres
+
+	pg, err := models.NewPool()
+	if err != nil {
+		fmt.Println("Message: データベース接続不可")
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+	defer pg.Close()
+
+	err = pg.UpdateStdAreaCode()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
 
 }

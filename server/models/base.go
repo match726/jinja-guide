@@ -9,9 +9,13 @@ import (
 	"github.com/rs/xid"
 )
 
-var dbPool *pgxpool.Pool
+type Postgres struct {
+	dbPool *pgxpool.Pool
+}
 
-func NewPool() (*pgxpool.Pool, error) {
+var pgInstance *Postgres
+
+func NewPool() (*Postgres, error) {
 
 	dbname := os.Getenv("POSTGRES_DATABASE")
 	dsn := os.Getenv("POSTGRES_URL")
@@ -23,19 +27,23 @@ func NewPool() (*pgxpool.Pool, error) {
 		return nil, err
 	}
 
-	dbPool, err = pgxpool.NewWithConfig(ctx, cfg)
+	pgInstance.dbPool, err = pgxpool.NewWithConfig(ctx, cfg)
 	if err != nil {
 		return nil, err
 	}
 
-	if err = dbPool.Ping(ctx); err != nil {
+	if err = pgInstance.dbPool.Ping(ctx); err != nil {
 		return nil, err
 	} else {
 		fmt.Printf("Message: データベース[%s]へ接続", dbname)
 	}
 
-	return dbPool, err
+	return pgInstance, err
 
+}
+
+func (pg *Postgres) Close() {
+	pg.dbPool.Close()
 }
 
 // XIDの取得
