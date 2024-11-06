@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 import { Header } from '@/components/ui/header';
-import { Button } from '@/components/ui/button';
 
 const BACKEND_ENDPOINT=import.meta.env.VITE_BACKEND_ENDPOINT
 
@@ -45,19 +44,19 @@ const AdminStdAreaCode: React.FC = () => {
 
   }, []);
 
-  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+  // const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
  
-    // ページ遷移を防ぐ（デフォルトでは、フォーム送信ボタンを押すとページが遷移してしまう）
-    e.preventDefault();
+  //   // ページ遷移を防ぐ（デフォルトでは、フォーム送信ボタンを押すとページが遷移してしまう）
+  //   e.preventDefault();
 
-    axios.put(`${BACKEND_ENDPOINT}/api/admin/sac`, {
-      headers: {
-        "Content-Type": "application/json"
-      },
-    }).then((resp) => console.log('PUTリクエストが成功しました', resp.data))
-    .catch((err) => console.error("PUTリクエスト失敗", err));
+  //   axios.put(`${BACKEND_ENDPOINT}/api/admin/sac`, {
+  //     headers: {
+  //       "Content-Type": "application/json"
+  //     },
+  //   }).then((resp) => console.log('PUTリクエストが成功しました', resp.data))
+  //   .catch((err) => console.error("PUTリクエスト失敗", err));
 
-  };
+  // };
 
   return (
     <div>
