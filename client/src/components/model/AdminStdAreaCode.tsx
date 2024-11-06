@@ -35,6 +35,7 @@ const AdminStdAreaCode: React.FC = () => {
           },
         });
         setSacList(resp.data);
+        console.log('GETリクエストが成功しました', resp.data)
       } catch (err) {
         console.error("GETリクエスト失敗", err)
       }
