@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 import { Header } from '@/components/ui/header';
+import { Button } from '@/components/ui/button';
 
 const BACKEND_ENDPOINT=import.meta.env.VITE_BACKEND_ENDPOINT
 
@@ -44,19 +45,19 @@ const AdminStdAreaCode: React.FC = () => {
 
   }, []);
 
-  // const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
  
-  //   // ページ遷移を防ぐ（デフォルトでは、フォーム送信ボタンを押すとページが遷移してしまう）
-  //   e.preventDefault();
+    // ページ遷移を防ぐ（デフォルトでは、フォーム送信ボタンを押すとページが遷移してしまう）
+    e.preventDefault();
 
-  //   axios.put(`${BACKEND_ENDPOINT}/api/admin/sac`, {
-  //     headers: {
-  //       "Content-Type": "application/json"
-  //     },
-  //   }).then((resp) => console.log('PUTリクエストが成功しました', resp.data))
-  //   .catch((err) => console.error("PUTリクエスト失敗", err));
+    axios.put(`${BACKEND_ENDPOINT}/api/admin/sac`, {
+      headers: {
+        "Content-Type": "application/json"
+      },
+    }).then((resp) => console.log('PUTリクエストが成功しました', resp.data))
+    .catch((err) => console.error("PUTリクエスト失敗", err));
 
-  // };
+  };
 
   return (
     <div>
@@ -67,6 +68,7 @@ const AdminStdAreaCode: React.FC = () => {
       <div className="max-w-7xl mx-auto my-8 bg-white rounded-lg shadow-lg overflow-hidden">
         <header className="bg-zinc-800 text-white p-4 text-center">
           <h2 className="text-2xl font-bold">標準地域コード一覧</h2>
+          <Button variant="outline" onClick={handleSubmit}>最新化</Button>
         </header>
         <div className="overflow-x-auto">
           <table className="w-full" aria-label="標準地域コード一覧">
