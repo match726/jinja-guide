@@ -25,8 +25,6 @@ func NewPool() (*Postgres, error) {
 	cfg, err := pgxpool.ParseConfig(dsn)
 	if err != nil {
 		return nil, err
-	} else {
-		fmt.Println(cfg)
 	}
 
 	pool, err := pgxpool.NewWithConfig(ctx, cfg)

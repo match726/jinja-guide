@@ -47,8 +47,9 @@ func FetchStdAreaCodes(w http.ResponseWriter, r *http.Request) {
 func UpdateStdAreaCodes(w http.ResponseWriter, r *http.Request) {
 
 	var pg *models.Postgres
+	var err error
 
-	pg, err := models.NewPool()
+	pg, err = models.NewPool()
 	if err != nil {
 		fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)

@@ -39,7 +39,7 @@ func (pg *Postgres) UpdateStdAreaCode() (err error) {
 	_, err = pg.dbPool.Exec(context.Background(), query)
 
 	if err != nil {
-		fmt.Println(err)
+		return fmt.Errorf("標準地域コード TRUNCATE失敗： %s", err)
 	}
 
 	sacs = GetAllStdAreaCodesFromEstat()
@@ -71,7 +71,8 @@ func (pg *Postgres) UpdateStdAreaCode() (err error) {
 func GetAllStdAreaCodesFromEstat() (sacs StdAreaCodes) {
 
 	var current time.Time
-	current = time.Now()
+	jstZone := time.FixedZone("Asia/Tokyo", 9*60*60)
+	current = time.Now().In(jstZone)
 
 	prefix := `PREFIX sacs: <http://data.e-stat.go.jp/lod/terms/sacs#>
 PREFIX dcterms: <http://purl.org/dc/terms/>
