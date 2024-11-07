@@ -64,7 +64,7 @@ const AdminStdAreaCode: React.FC = () => {
       <h1 className="text-[min(4vw,30px)] flex py-4 items-center justify-center">
         標準地域コード管理
       </h1>
-      <div className="max-w-7xl mx-auto my-8 bg-white rounded-lg shadow-lg overflow-hidden">
+      <div className="max-w-7xl mx-auto my-8 bg-gradient-to-b from-red-50 to-white rounded-lg shadow-lg overflow-hidden">
         <header className="bg-zinc-800 text-white p-4 text-center">
           <h2 className="text-2xl font-bold">標準地域コード一覧</h2>
         </header>
