@@ -42,7 +42,7 @@ func (pg *Postgres) UpdateStdAreaCode() (err error) {
 	_, err = pg.dbPool.Exec(context.Background(), query)
 
 	if err != nil {
-		return fmt.Errorf("標準地域コード TRUNCATE失敗： %s", err)
+		return fmt.Errorf("標準地域コード TRUNCATE失敗： %s\n", err)
 	}
 
 	sacs = GetAllStdAreaCodesFromEstat()
@@ -271,13 +271,13 @@ func (pg *Postgres) UpdateStdAreaCode() (err error) {
 	)
 
 	if err != nil {
-		return fmt.Errorf("標準地域コード 書き込み失敗： %s", err)
+		return fmt.Errorf("標準地域コード 書き込み失敗： %s\n", err)
 	} else {
 		fmt.Printf("UpdateStdAreaCode: 書き込み成功(%d行)\n", cnt)
 	}
 
 	if int(cnt) != len(sacs) {
-		return fmt.Errorf("標準地域コード レコード不一致： %d", cnt)
+		return fmt.Errorf("標準地域コード レコード不一致： %d\n", cnt)
 	}
 
 	return err
@@ -465,10 +465,27 @@ func (pg *Postgres) GetStdAreaCodes() ([]StdAreaCodeGet, error) {
 
 	rows, err := pg.dbPool.Query(context.Background(), query)
 	if err != nil {
-		return nil, fmt.Errorf("標準地域コード 取得失敗： %w", err)
+		return nil, fmt.Errorf("標準地域コード 取得失敗： %w\n", err)
 	}
 	defer rows.Close()
 
 	return pgx.CollectRows(rows, pgx.RowToStructByName[StdAreaCodeGet])
+
+}
+
+// 特定の都道府県に属する標準地域コードの一覧を取得する (神社の住所からの標準地域コード取得用)
+func (pg *Postgres) GetStdAreaCodeListByPrefName(prefname string) (sacs []StdAreaCode, err error) {
+
+	query := fmt.Sprintf(`SELECT std_area_code, pref_name, subpref_name, munic_name1, munic_name2
+					FROM m_stdareacode
+					WHERE pref_name = '%s'`, prefname)
+
+	rows, err := pg.dbPool.Query(context.Background(), query)
+	if err != nil {
+		return nil, fmt.Errorf("標準地域コード一覧 取得失敗： %w\n", err)
+	}
+	defer rows.Close()
+
+	return pgx.CollectRows(rows, pgx.RowToStructByName[StdAreaCode])
 
 }
