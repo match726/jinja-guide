@@ -48,13 +48,12 @@ func RegisterShrine(w http.ResponseWriter, r *http.Request) {
 	}
 	defer pg.ClosePool()
 
-	fmt.Println(shr)
-
 	// 住所より都道府県の取得
 	prefname := models.ExtractPrefName(shr.Address)
 	// 該当の都道府県の標準地域コード一覧を取得
 	sacs, err = pg.GetStdAreaCodeListByPrefName(prefname)
 	if err != nil {
+		fmt.Printf("[Err] <GetStdAreaCodeListByPrefName> Err:%s\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 
@@ -65,6 +64,7 @@ func RegisterShrine(w http.ResponseWriter, r *http.Request) {
 		} else {
 			keyword := sacs[i].PrefName + sacs[i].MunicName1 + sacs[i].MunicName2
 			if strings.HasPrefix(shr.Address, keyword) {
+				fmt.Printf("合致した標準地域コード: %s", sacs[i].StdAreaCode)
 				shr.StdAreaCode = sacs[i].StdAreaCode
 				break
 			}
@@ -75,15 +75,16 @@ func RegisterShrine(w http.ResponseWriter, r *http.Request) {
 	// ★画像を取得
 	err = models.GetLocnInfoFromPlaceAPI(shr)
 	if err != nil {
+		fmt.Printf("[Err] <GetLocnInfoFromPlaceAPI> Err:%s\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
-
-	fmt.Println(shr)
 
 	err = pg.InsertShrine(shr)
 	if err != nil {
 		fmt.Printf("[Err] <InsertShrine> Err:%s\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
+	} else {
+		w.WriteHeader(http.StatusOK)
 	}
 
 }
