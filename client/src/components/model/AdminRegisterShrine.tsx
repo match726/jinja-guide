@@ -17,17 +17,22 @@ const AdminRegisterShrine = () => {
 
   useEffect(() => {
 
+    const options = {
+      method: "POST",
+      url: BACKEND_ENDPOINT + "/api/admin/regist",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      data: JSON.stringify(payload)
+    };
+
     if (isFirstRender.current) {
       isFirstRender.current = false;
       return
     } else {
-      axios.post(`${BACKEND_ENDPOINT}/api/admin/regist`, {
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload),
-      }).then((resp) => console.log('POSTリクエストが成功しました', resp.data))
-      .catch((err) => console.error("POSTリクエスト失敗", err));
+      axios(options)
+        .then((resp) => console.log('POSTリクエストが成功しました', resp.data))
+        .catch((err) => console.error("POSTリクエスト失敗", err));
     }
   }, [payload]);
 
