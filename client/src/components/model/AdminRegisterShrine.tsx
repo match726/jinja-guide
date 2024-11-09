@@ -12,7 +12,7 @@ const BACKEND_ENDPOINT=import.meta.env.VITE_BACKEND_ENDPOINT
 
 const AdminRegisterShrine = () => {
 
-  const [payload, setPayload] = useState({name: "", address: ""});
+  const [payload, setPayload] = useState({Name: "", Address: ""});
 
   useEffect(() => {
 
@@ -20,6 +20,7 @@ const AdminRegisterShrine = () => {
       headers: {
         "Content-Type": "application/json"
       },
+
       body: JSON.stringify(payload),
     }).then((resp) => console.log('POSTリクエストが成功しました', resp.data))
     .catch((err) => console.error("POSTリクエスト失敗", err));
@@ -36,11 +37,9 @@ const AdminRegisterShrine = () => {
       shrineName: HTMLInputElement,
       shrineAddress: HTMLInputElement
     }
-    setPayload({ name: formElements.shrineName.value, address: e.currentTarget.shrineAddress.value });
+    setPayload({ Name: formElements.shrineName.value, Address: formElements.shrineAddress.value });
 
   };
-
-  console.log(payload)
 
   return (
     <>
