@@ -26,13 +26,17 @@ const AdminStdAreaCode: React.FC = () => {
 
   useEffect(() => {
 
+    const options1 = {
+      method: "GET",
+      url: BACKEND_ENDPOINT + "/api/admin/sac",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    };
+
     const fetchStdAreaCodeList = async () => {
       try {
-        const resp = await axios.get(`${BACKEND_ENDPOINT}/api/admin/sac`, {
-          headers: {
-            "Content-Type": "application/json"
-          },
-        });
+        const resp = await axios(options1);
         setSacList(resp.data);
         console.log('GETリクエストが成功しました', resp.data)
       } catch (err) {
@@ -49,12 +53,17 @@ const AdminStdAreaCode: React.FC = () => {
   //   // ページ遷移を防ぐ（デフォルトでは、フォーム送信ボタンを押すとページが遷移してしまう）
   //   e.preventDefault();
 
-  //   axios.put(`${BACKEND_ENDPOINT}/api/admin/sac`, {
+  //   const options2 = {
+  //     method: "PUT",
+  //     url: BACKEND_ENDPOINT + "/api/admin/sac",
   //     headers: {
   //       "Content-Type": "application/json"
-  //     },
-  //   }).then((resp) => console.log('PUTリクエストが成功しました', resp.data))
-  //   .catch((err) => console.error("PUTリクエスト失敗", err));
+  //     }
+  //   };
+
+  //   axios(options2)
+  //     .then((resp) => console.log('PUTリクエストが成功しました', resp.data))
+  //     .catch((err) => console.error("PUTリクエスト失敗", err));
 
   // };
 
