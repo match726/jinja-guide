@@ -104,8 +104,8 @@ func (pg *Postgres) InsertShrine(shr *Shrine) error {
 		"placeId":     shr.PlaceID,
 		"latitude":    shr.Latitude,
 		"longitude":   shr.Longitude,
-		"createdAt":   shr.CreatedAt,
-		"updatedAt":   shr.UpdatedAt,
+		"createdAt":   GetNowTime(),
+		"updatedAt":   GetNowTime(),
 	}
 
 	_, err := pg.dbPool.Exec(context.Background(), query, args)
