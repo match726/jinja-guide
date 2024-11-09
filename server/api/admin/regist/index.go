@@ -1,7 +1,6 @@
 package api
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -32,19 +31,14 @@ func RegisterShrine(w http.ResponseWriter, r *http.Request) {
 	var sacs []models.StdAreaCode
 
 	// HTTPリクエストからボディを取得
-	bufbody := new(bytes.Buffer)
-	bufbody.ReadFrom(r.Body)
-	body := bufbody.String()
+	body := make([]byte, r.ContentLength)
+	r.Body.Read(body)
 
 	// Shrine構造体へ変換
 	var shr models.Shrine
 	err = json.Unmarshal([]byte(string(body)), &shr)
 	if err != nil {
-		fmt.Printf("[Err] RegisterShrine: パラメータ取得エラー Err: %s\n", err)
-	} else {
-		fmt.Printf("HTTPリクエストボディ：%s\n", body)
-		fmt.Println(shr.Name)
-		fmt.Println(shr.Address)
+		fmt.Printf("[Err] RegisterShrine: パラメータ取得エラー, Err: %s\n", err)
 	}
 
 	pg, err = models.NewPool()
@@ -84,6 +78,7 @@ func RegisterShrine(w http.ResponseWriter, r *http.Request) {
 
 	err = pg.InsertShrine(shr)
 	if err != nil {
+		fmt.Printf("[Err] InsertShrine: t_shrinesへのINSERT失敗, Err:%s\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 
