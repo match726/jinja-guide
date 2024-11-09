@@ -1,6 +1,7 @@
 package api
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -30,12 +31,18 @@ func RegisterShrine(w http.ResponseWriter, r *http.Request) {
 	var err error
 	var sacs []models.StdAreaCode
 
-	// HTTPリクエストからボディを取得し、Shrine構造体へ変換
+	// HTTPリクエストからボディを取得
+	bufbody := new(bytes.Buffer)
+	bufbody.ReadFrom(r.Body)
+	body := bufbody.String()
+
+	// Shrine構造体へ変換
 	var shr models.Shrine
-	err = json.NewDecoder(r.Body).Decode(&shr)
+	err = json.Unmarshal([]byte(string(body)), &shr)
 	if err != nil {
 		fmt.Printf("[Err] RegisterShrine: パラメータ取得エラー Err: %s\n", err)
 	} else {
+		fmt.Printf("HTTPリクエストボディ：%s\n", body)
 		fmt.Println(shr.Name)
 		fmt.Println(shr.Address)
 	}
