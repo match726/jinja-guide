@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from 'axios';
 
 import { Header } from '@/components/ui/header';
@@ -13,18 +13,23 @@ const BACKEND_ENDPOINT=import.meta.env.VITE_BACKEND_ENDPOINT
 const AdminRegisterShrine = () => {
 
   const [payload, setPayload] = useState({Name: "", Address: ""});
+  const isFirstRender = useRef(true);
 
   useEffect(() => {
 
-    axios.post(`${BACKEND_ENDPOINT}/api/admin/regist`, {
-      headers: {
-        "Content-Type": "application/json"
-      },
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return
+    } else {
+      axios.post(`${BACKEND_ENDPOINT}/api/admin/regist`, {
+        headers: {
+          "Content-Type": "application/json"
+        },
 
-      body: JSON.stringify(payload),
-    }).then((resp) => console.log('POSTリクエストが成功しました', resp.data))
-    .catch((err) => console.error("POSTリクエスト失敗", err));
-
+        body: JSON.stringify(payload),
+      }).then((resp) => console.log('POSTリクエストが成功しました', resp.data))
+      .catch((err) => console.error("POSTリクエスト失敗", err));
+    }
   }, [payload]);
 
   const handleFromSubmit = (e: React.FormEvent<HTMLFormElement>) => {
