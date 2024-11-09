@@ -38,7 +38,7 @@ func ExtractPrefName(address string) string {
 }
 
 // PlaceAPI(Google)から情報を取得する
-func GetLocnInfoFromPlaceAPI(shr *Shrine) error {
+func GetLocnInfoFromPlaceAPI(shr Shrine) error {
 
 	apikey := os.Getenv("GOOGLE_PLACE_API_KEY")
 
@@ -70,7 +70,7 @@ func GetLocnInfoFromPlaceAPI(shr *Shrine) error {
 
 // 神社情報の登録
 // ★重複時の制御が必要
-func (pg *Postgres) InsertShrine(shr *Shrine) error {
+func (pg *Postgres) InsertShrine(shr Shrine) error {
 
 	query := `INSERT INTO t_shrines (
 						name,
