@@ -35,7 +35,7 @@ func RegisterShrine(w http.ResponseWriter, r *http.Request) {
 	r.Body.Read(body)
 
 	// Shrine構造体へ変換
-	var shr models.Shrine
+	var shr *models.Shrine
 	err = json.Unmarshal([]byte(string(body)), &shr)
 	if err != nil {
 		fmt.Printf("[Err] RegisterShrine: パラメータ取得エラー, Err: %s\n", err)
@@ -75,6 +75,8 @@ func RegisterShrine(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
+
+	fmt.Println(shr)
 
 	err = pg.InsertShrine(shr)
 	if err != nil {
