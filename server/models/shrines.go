@@ -108,6 +108,7 @@ func (pg *Postgres) InsertShrine(shr *Shrine) error {
 		"@updatedAt":   shr.UpdatedAt,
 	}
 
+	fmt.Println(args)
 	_, err := pg.dbPool.Exec(context.Background(), query, args)
 	if err != nil {
 		return fmt.Errorf("INSERT失敗： %s\n", err)
