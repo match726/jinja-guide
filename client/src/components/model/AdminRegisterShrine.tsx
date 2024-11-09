@@ -40,6 +40,8 @@ const AdminRegisterShrine = () => {
 
   };
 
+  console.log(payload)
+
   return (
     <>
       <Header />
