@@ -96,19 +96,18 @@ func (pg *Postgres) InsertShrine(shr *Shrine) error {
 						)`
 
 	args := pgx.NamedArgs{
-		"@name":        shr.Name,
-		"@address":     shr.Address,
-		"@stdAreaCode": shr.StdAreaCode,
-		"@plusCode":    shr.PlusCode,
-		"@seq":         shr.Seq,
-		"@placeId":     shr.PlaceID,
-		"@latitude":    shr.Latitude,
-		"@longitude":   shr.Longitude,
-		"@createdAt":   shr.CreatedAt,
-		"@updatedAt":   shr.UpdatedAt,
+		"name":        shr.Name,
+		"address":     shr.Address,
+		"stdAreaCode": shr.StdAreaCode,
+		"plusCode":    shr.PlusCode,
+		"seq":         shr.Seq,
+		"placeId":     shr.PlaceID,
+		"latitude":    shr.Latitude,
+		"longitude":   shr.Longitude,
+		"createdAt":   shr.CreatedAt,
+		"updatedAt":   shr.UpdatedAt,
 	}
 
-	fmt.Println(args)
 	_, err := pg.dbPool.Exec(context.Background(), query, args)
 	if err != nil {
 		return fmt.Errorf("INSERT失敗： %s\n", err)
