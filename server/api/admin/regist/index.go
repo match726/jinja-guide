@@ -30,17 +30,12 @@ func RegisterShrine(w http.ResponseWriter, r *http.Request) {
 	var err error
 	var sacs []models.StdAreaCode
 
-	// HTTPリクエストからボディを取得
-	body := make([]byte, r.ContentLength)
-	r.Body.Read(body)
-
-	// Shrine構造体へ変換
+	// HTTPリクエストからボディを取得し、Shrine構造体へ変換
 	var shr models.Shrine
-	err = json.Unmarshal([]byte(string(body)), &shr)
+	err = json.NewDecoder(r.Body).Decode(&shr)
 	if err != nil {
 		fmt.Printf("[Err] RegisterShrine: パラメータ取得エラー Err: %s\n", err)
 	} else {
-		fmt.Printf("HTTPリクエストボディ：%s\n", r.Body)
 		fmt.Println(shr.Name)
 		fmt.Println(shr.Address)
 	}
