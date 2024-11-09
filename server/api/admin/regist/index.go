@@ -40,6 +40,7 @@ func RegisterShrine(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Printf("[Err] RegisterShrine: パラメータ取得エラー Err: %s\n", err)
 	} else {
+		fmt.Printf("HTTPリクエスト：%s\n", r)
 		fmt.Println(shr)
 	}
 
