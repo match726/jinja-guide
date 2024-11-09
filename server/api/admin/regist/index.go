@@ -38,7 +38,7 @@ func RegisterShrine(w http.ResponseWriter, r *http.Request) {
 	var shr *models.Shrine
 	err = json.Unmarshal([]byte(string(body)), &shr)
 	if err != nil {
-		fmt.Printf("[Err] RegisterShrine: パラメータ取得エラー, Err: %s\n", err)
+		fmt.Printf("[Err] <RegisterShrine> Err: パラメータ取得エラー %s\n", err)
 	}
 
 	pg, err = models.NewPool()
@@ -47,6 +47,8 @@ func RegisterShrine(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 	defer pg.ClosePool()
+
+	fmt.Println(shr)
 
 	// 住所より都道府県の取得
 	prefname := models.ExtractPrefName(shr.Address)
@@ -80,7 +82,7 @@ func RegisterShrine(w http.ResponseWriter, r *http.Request) {
 
 	err = pg.InsertShrine(shr)
 	if err != nil {
-		fmt.Printf("[Err] InsertShrine: t_shrinesへのINSERT失敗, Err:%s\n", err)
+		fmt.Printf("[Err] <InsertShrine> Err:%s\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 
