@@ -91,8 +91,20 @@ func RegisterShrine(w http.ResponseWriter, r *http.Request) {
 }
 
 func writejsonResp(w http.ResponseWriter, shr *models.Shrine) {
+
+	type ShrinePostResp struct {
+		Name          string `json:"name"`
+		Address       string `json:"address"`
+		StdAreaCode   string `json:"std_area_code"`
+		PlusCode      string `json:"plus_code"`
+		Seq           string `json:"seq"`
+		PlaceID       string `json:"place_id"`
+		GoogleMapLink string `json:"google_map_link"`
+	}
+
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	b, err := json.Marshal(shr)
+	shrResp := &ShrinePostResp{shr.Name, shr.Address, shr.StdAreaCode, shr.PlusCode, shr.Seq, shr.PlaceID, "https://www.google.com/maps/search/?api=1&query=" + shr.Name + "&query_place_id=" + shr.PlaceID}
+	b, err := json.Marshal(shrResp)
 	if err != nil {
 		fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -106,4 +118,5 @@ func writejsonResp(w http.ResponseWriter, shr *models.Shrine) {
 	if _, err := w.Write(b); err != nil {
 		log.Println(err)
 	}
+
 }

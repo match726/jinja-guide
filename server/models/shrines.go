@@ -13,16 +13,16 @@ import (
 )
 
 type Shrine struct {
-	Name        string    `json:"name"`
-	Address     string    `json:"address"`
-	StdAreaCode string    `json:"std_area_code"`
-	PlusCode    string    `json:"plus_code"`
-	Seq         string    `json:"seq"`
-	PlaceID     string    `json:"place_id"`
-	Latitude    float64   `json:"latitude"`
-	Longitude   float64   `json:"longitude"`
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
+	Name        string
+	Address     string
+	StdAreaCode string
+	PlusCode    string
+	Seq         string
+	PlaceID     string
+	Latitude    float64
+	Longitude   float64
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }
 
 // 住所から都道府県部分を抽出する
