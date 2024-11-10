@@ -32,9 +32,9 @@ const AdminRegisterShrine = () => {
       return
     } else {
       axios(options)
-        .then((resp) => (
-          console.log('POSTリクエストが成功しました', resp.data)
-        ))
+        .then((resp) => {
+          console.log('POSTリクエストが成功しました', JSON.parse(resp.data))
+        })
         .catch((err) => console.error("POSTリクエスト失敗", err));
     }
   }, [payload]);
@@ -51,6 +51,7 @@ const AdminRegisterShrine = () => {
     }
     setPayload({ name: formElements.shrineName.value, address: formElements.shrineAddress.value });
 
+    // フォームをクリア
     formElements.shrineName.value = "";
     formElements.shrineAddress.value = "";
 
