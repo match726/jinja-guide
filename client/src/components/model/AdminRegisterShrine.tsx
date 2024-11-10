@@ -13,6 +13,7 @@ const BACKEND_ENDPOINT=import.meta.env.VITE_BACKEND_ENDPOINT
 const AdminRegisterShrine = () => {
 
   const [payload, setPayload] = useState({name: "", address: ""});
+  // 初回レンダリングのリクエスト送信を無効化
   const isFirstRender = useRef(true);
 
   useEffect(() => {
@@ -31,7 +32,9 @@ const AdminRegisterShrine = () => {
       return
     } else {
       axios(options)
-        .then((resp) => console.log('POSTリクエストが成功しました', resp.data))
+        .then((resp) => (
+          console.log('POSTリクエストが成功しました', resp.data)
+        ))
         .catch((err) => console.error("POSTリクエスト失敗", err));
     }
   }, [payload]);
@@ -47,6 +50,9 @@ const AdminRegisterShrine = () => {
       shrineAddress: HTMLInputElement
     }
     setPayload({ name: formElements.shrineName.value, address: formElements.shrineAddress.value });
+
+    formElements.shrineName.value = "";
+    formElements.shrineAddress.value = "";
 
   };
 
@@ -82,7 +88,7 @@ const AdminRegisterShrine = () => {
               />
             </div>
             <Button className="w-full bg-red-900 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:scale-105 font-serif">
-              登録する
+              登録
             </Button>
           </form>
         </div>
