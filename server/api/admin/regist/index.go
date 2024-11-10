@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 
@@ -50,6 +51,7 @@ func RegisterShrine(w http.ResponseWriter, r *http.Request) {
 
 	// 住所より都道府県の取得
 	prefname := models.ExtractPrefName(shr.Address)
+	fmt.Printf("prefname: %s\n", prefname)
 	// 該当の都道府県の標準地域コード一覧を取得
 	sacs, err = pg.GetStdAreaCodeListByPrefName(prefname)
 	if err != nil {
@@ -64,7 +66,6 @@ func RegisterShrine(w http.ResponseWriter, r *http.Request) {
 		} else {
 			keyword := sacs[i].PrefName + sacs[i].MunicName1 + sacs[i].MunicName2
 			if strings.HasPrefix(shr.Address, keyword) {
-				fmt.Printf("合致した標準地域コード: %s", sacs[i].StdAreaCode)
 				shr.StdAreaCode = sacs[i].StdAreaCode
 				break
 			}
@@ -84,7 +85,25 @@ func RegisterShrine(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("[Err] <InsertShrine> Err:%s\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
 	} else {
-		w.WriteHeader(http.StatusOK)
+		writejsonResp(w, shr)
 	}
 
+}
+
+func writejsonResp(w http.ResponseWriter, shr *models.Shrine) {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	b, err := json.Marshal(shr)
+	if err != nil {
+		fmt.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		s := `{"status":"500 Internal Server Error"}`
+		if _, err := w.Write([]byte(s)); err != nil {
+			fmt.Println(err)
+		}
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	if _, err := w.Write(b); err != nil {
+		log.Println(err)
+	}
 }

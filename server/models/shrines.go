@@ -13,16 +13,16 @@ import (
 )
 
 type Shrine struct {
-	Name        string
-	Address     string
-	StdAreaCode string
-	PlusCode    string
-	Seq         string
-	PlaceID     string
-	Latitude    float64
-	Longitude   float64
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
+	Name        string    `json:"name"`
+	Address     string    `json:"address"`
+	StdAreaCode string    `json:"std_area_code"`
+	PlusCode    string    `json:"plus_code"`
+	Seq         string    `json:"seq"`
+	PlaceID     string    `json:"place_id"`
+	Latitude    float64   `json:"latitude"`
+	Longitude   float64   `json:"longitude"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
 }
 
 // 住所から都道府県部分を抽出する
@@ -43,7 +43,7 @@ func GetLocnInfoFromPlaceAPI(shr *Shrine) error {
 
 	client, err := maps.NewClient(maps.WithAPIKey(apikey))
 	if err != nil {
-		return fmt.Errorf("PlaceAPI接続失敗： %s\n", err)
+		return fmt.Errorf("PlaceAPI接続失敗： %w", err)
 	}
 
 	req := &maps.TextSearchRequest{
@@ -53,7 +53,7 @@ func GetLocnInfoFromPlaceAPI(shr *Shrine) error {
 
 	resp, err := client.TextSearch(context.Background(), req)
 	if err != nil {
-		return fmt.Errorf("PlaceAPI情報取得失敗： %s\n", err)
+		return fmt.Errorf("PlaceAPI情報取得失敗： %w", err)
 	} else {
 		fmt.Printf("%#v\n", resp)
 	}
@@ -110,7 +110,7 @@ func (pg *Postgres) InsertShrine(shr *Shrine) error {
 
 	_, err := pg.dbPool.Exec(context.Background(), query, args)
 	if err != nil {
-		return fmt.Errorf("INSERT失敗： %s\n", err)
+		return fmt.Errorf("INSERT失敗： %w", err)
 	}
 
 	return nil
