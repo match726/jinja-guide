@@ -33,7 +33,7 @@ const AdminRegisterShrine = () => {
     } else {
       axios(options)
         .then((resp) => {
-          console.log('POSTリクエストが成功しました', JSON.parse(resp.data))
+          console.log('POSTリクエストが成功しました', resp)
         })
         .catch((err) => console.error("POSTリクエスト失敗", err));
     }
