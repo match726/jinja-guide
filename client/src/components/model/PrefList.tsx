@@ -17,7 +17,7 @@ type SacRelationship = {
   has_child: boolean
 };
 
-const FRONTEND_URL=import.meta.env.VITE_FRONTEND_URL;
+const FRONTEND_URL=import.meta.env.VITE_FRONTEND_URL + "/shrines";
 const BACKEND_ENDPOINT=import.meta.env.VITE_BACKEND_ENDPOINT;
 
 const Prefs = () => {
@@ -55,7 +55,7 @@ const Prefs = () => {
     return (
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
         <CollapsibleTrigger asChild>
-          <Button asChild variant="ghost" className="w-full justify-start p-2">
+          <Button asChild variant="ghost" className="w-full justify-start p-2 whitespace-nowrap">
             <>
               {sacr.has_child && (
                 isOpen ? <ChevronDown className="mr-2 h-4 w-4" /> : <ChevronRight className="mr-2 h-4 w-4" />
