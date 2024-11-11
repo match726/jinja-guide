@@ -53,7 +53,7 @@ func GetLocnInfoFromPlaceAPI(shr *Shrine) error {
 
 	resp, err := client.TextSearch(context.Background(), req)
 	if err != nil {
-		return fmt.Errorf("PlaceAPI情報取得失敗： %w", err)
+		return fmt.Errorf("PlaceAPI情報取得失敗： %", err)
 	} else {
 		fmt.Printf("%#v\n", resp)
 	}

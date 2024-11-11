@@ -3,7 +3,6 @@ package api
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"strings"
 
@@ -85,12 +84,12 @@ func RegisterShrine(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("[Err] <InsertShrine> Err:%s\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
 	} else {
-		writejsonResp(w, shr)
+		writeJsonResp(w, shr)
 	}
 
 }
 
-func writejsonResp(w http.ResponseWriter, shr *models.Shrine) {
+func writeJsonResp(w http.ResponseWriter, shr *models.Shrine) {
 
 	type ShrinePostResp struct {
 		Name          string `json:"name"`
@@ -116,7 +115,7 @@ func writejsonResp(w http.ResponseWriter, shr *models.Shrine) {
 	}
 	w.WriteHeader(http.StatusOK)
 	if _, err := w.Write(b); err != nil {
-		log.Println(err)
+		fmt.Println(err)
 	}
 
 }

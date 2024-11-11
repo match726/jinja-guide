@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 
 import '@/styles/global.css';
 
-const BACKEND_ENDPOINT=import.meta.env.VITE_BACKEND_ENDPOINT
+const BACKEND_ENDPOINT=import.meta.env.VITE_BACKEND_ENDPOINT;
 
 const AdminRegisterShrine = () => {
 
@@ -37,6 +37,7 @@ const AdminRegisterShrine = () => {
         })
         .catch((err) => console.error("POSTリクエスト失敗", err));
     }
+
   }, [payload]);
 
   const handleFromSubmit = (e: React.FormEvent<HTMLFormElement>) => {

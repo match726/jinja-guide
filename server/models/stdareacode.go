@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"sort"
 	"strconv"
 
 	"github.com/jackc/pgx/v5"
@@ -29,6 +30,15 @@ type StdAreaCodeGet struct {
 	StdAreaCode
 	CreatedAt string
 	UpdatedAt string
+}
+
+// 市区町村の関係性を示すための構造体
+type SacRelationship struct {
+	StdAreaCode    string `json:"std_area_code"`
+	Name           string `json:"name"`
+	SupStdAreaCode string `json:"sup_std_area_code"`
+	Kinds          string `json:"kinds"`
+	HasChild       bool   `json:"has_child"`
 }
 
 // 標準エリアコードの最新化
@@ -457,6 +467,7 @@ ORDER BY ?areacode`
 
 }
 
+// 標準地域コードの一覧を全件取得する
 func (pg *Postgres) GetStdAreaCodes() ([]StdAreaCodeGet, error) {
 
 	query := `SELECT std_area_code, pref_area_code, subpref_area_code, munic_area_code1, munic_area_code2, pref_name, subpref_name, munic_name1, munic_name2, to_char(created_at,'YYYY/MM/DD HH24:MI:SS') AS "created_at", to_char(updated_at,'YYYY/MM/DD HH24:MI:SS') AS "updated_at"
@@ -487,5 +498,95 @@ func (pg *Postgres) GetStdAreaCodeListByPrefName(prefname string) (sacs []StdAre
 	defer rows.Close()
 
 	return pgx.CollectRows(rows, pgx.RowToStructByName[StdAreaCode])
+
+}
+
+func (pg *Postgres) GetSacRelationship() (sacr []SacRelationship, err error) {
+
+	var sac StdAreaCode
+	msh := make(map[string]SacRelationship)
+
+	query := `SELECT shr.std_area_code, sac.pref_area_code, sac.subpref_area_code, sac.munic_area_code1, sac.munic_area_code2, sac.pref_name, sac.subpref_name, sac.munic_name1, sac.munic_name2
+					FROM t_shrines shr
+					INNER JOIN m_stdareacode sac
+						ON shr.std_area_code = sac.std_area_code
+					GROUP BY shr.std_area_code, sac.pref_area_code, sac.subpref_area_code, sac.munic_area_code1, sac.munic_area_code2, sac.pref_name, sac.subpref_name, sac.munic_name1, sac.munic_name2
+					ORDER BY shr.std_area_code`
+
+	rows, err := pg.dbPool.Query(context.Background(), query)
+	if err != nil {
+		return nil, fmt.Errorf("標準地域コード一覧 取得失敗： %w", err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+
+		err = rows.Scan(&sac.StdAreaCode, &sac.PrefAreaCode, &sac.SubPrefAreaCode, &sac.MunicAreaCode1, &sac.MunicAreaCode2, &sac.PrefName, &sac.SubPrefName, &sac.MunicName1, &sac.MunicName2)
+		if err != nil {
+			return nil, fmt.Errorf("Scan失敗： %w", err)
+		}
+
+		prefCode, _ := strconv.Atoi(sac.StdAreaCode[0:2])
+		municCode, _ := strconv.Atoi(sac.StdAreaCode[2:5])
+
+		switch {
+		case prefCode == 13 && municCode >= 100 && municCode <= 199:
+			// 東京都の特別区部に属する区の場合
+			msh[sac.PrefAreaCode] = SacRelationship{sac.PrefAreaCode, sac.PrefName, "", "Pref", true}
+			msh[sac.SubPrefAreaCode] = SacRelationship{sac.SubPrefAreaCode, sac.SubPrefName, sac.PrefAreaCode, "SubPref", true}
+			msh[sac.StdAreaCode] = SacRelationship{sac.StdAreaCode, sac.MunicName2, sac.SubPrefAreaCode, "Ward", false}
+		case municCode >= 100 && municCode <= 199:
+			// 政令指定都市に属する区の場合
+			msh[sac.PrefAreaCode] = SacRelationship{sac.PrefAreaCode, sac.PrefName, "", "Pref", true}
+			msh[sac.MunicAreaCode1] = SacRelationship{sac.MunicAreaCode1, sac.MunicName1, sac.PrefAreaCode, "City", true}
+			msh[sac.StdAreaCode] = SacRelationship{sac.StdAreaCode, sac.MunicName2, sac.MunicAreaCode1, "Ward", false}
+		case municCode >= 201 && municCode <= 299:
+			// 政令指定都市以外の市の場合
+			msh[sac.PrefAreaCode] = SacRelationship{sac.PrefAreaCode, sac.PrefName, "", "Pref", true}
+			msh[sac.StdAreaCode] = SacRelationship{sac.StdAreaCode, sac.MunicName1, sac.PrefAreaCode, "City", false}
+		case prefCode == 01 && municCode >= 300:
+			// 北海道の振興局に属する町村の場合
+			msh[sac.PrefAreaCode] = SacRelationship{sac.PrefAreaCode, sac.PrefName, "", "Pref", true}
+			msh[sac.SubPrefAreaCode] = SacRelationship{sac.SubPrefAreaCode, sac.SubPrefName, sac.PrefAreaCode, "SubPref", true}
+			msh[sac.MunicAreaCode1] = SacRelationship{sac.MunicAreaCode1, sac.MunicName1, sac.SubPrefAreaCode, "District", true}
+			msh[sac.StdAreaCode] = SacRelationship{sac.StdAreaCode, sac.MunicName2, sac.MunicAreaCode1, "Town/Village", false}
+		case prefCode == 13 && municCode >= 360:
+			// 東京都の支庁(離島)に属する町村の場合
+			msh[sac.PrefAreaCode] = SacRelationship{sac.PrefAreaCode, sac.PrefName, "", "Pref", true}
+			msh[sac.SubPrefAreaCode] = SacRelationship{sac.SubPrefAreaCode, sac.SubPrefName, sac.PrefAreaCode, "SubPref", true}
+			msh[sac.StdAreaCode] = SacRelationship{sac.StdAreaCode, sac.MunicName2, sac.SubPrefAreaCode, "Town/Village", false}
+		case municCode >= 300:
+			// 北海道以外の郡に属する町村の場合
+			msh[sac.PrefAreaCode] = SacRelationship{sac.PrefAreaCode, sac.PrefName, "", "Pref", true}
+			msh[sac.MunicAreaCode1] = SacRelationship{sac.MunicAreaCode1, sac.MunicName1, sac.PrefAreaCode, "District", true}
+			msh[sac.StdAreaCode] = SacRelationship{sac.StdAreaCode, sac.MunicName2, sac.MunicAreaCode1, "Town/Village", false}
+		default:
+			// 上記に該当しない場合(エラーとする)
+			fmt.Printf("[エラー] PrefName: %s, SubPrefName: %s, MunicName1: %s, MunicName2: %s, StdAreaCode: %s\n", sac.PrefName, sac.SubPrefName, sac.MunicName1, sac.MunicName2, sac.StdAreaCode)
+		}
+
+	}
+
+	// mapのキー(標準地域コード)を元にソートする
+	keys := []string{}
+	keys = getKeys(msh)
+	sort.Strings(keys)
+	for _, k := range keys {
+		sacr = append(sacr, msh[k])
+	}
+
+	return sacr, err
+
+}
+
+func getKeys(m map[string]SacRelationship) []string {
+
+	keys := []string{}
+
+	for k := range m {
+		keys = append(keys, k)
+	}
+
+	return keys
 
 }
