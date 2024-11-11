@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { ChevronRight, ChevronDown } from 'lucide-react';
 
@@ -17,7 +16,7 @@ type SacRelationship = {
   has_child: boolean
 };
 
-const FRONTEND_URL=import.meta.env.VITE_FRONTEND_URL + "/shrines";
+//const LINK_URL=import.meta.env.VITE_FRONTEND_URL + "/shrines";
 const BACKEND_ENDPOINT=import.meta.env.VITE_BACKEND_ENDPOINT;
 
 const Prefs = () => {
@@ -55,13 +54,11 @@ const Prefs = () => {
     return (
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
         <CollapsibleTrigger asChild>
-          <Button asChild variant="ghost" className="w-full justify-start p-2 whitespace-nowrap">
-            <>
+          <Button variant="ghost" className="w-full justify-start p-2">
               {sacr.has_child && (
                 isOpen ? <ChevronDown className="mr-2 h-4 w-4" /> : <ChevronRight className="mr-2 h-4 w-4" />
               )}
-              <Link to={FRONTEND_URL + "?kinds=" + sacr.kinds + "&code=" + sacr.std_area_code}>{sacr.name}</Link>
-            </>
+              {sacr.name}
           </Button>
         </CollapsibleTrigger>
         {sacr.has_child && (
