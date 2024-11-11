@@ -77,7 +77,10 @@ const ShrineList = () => {
                 >
                   <TableCell className="font-medium">{shrine.name}</TableCell>
                   <TableCell>
-                    <a href={"https://www.google.com/maps/search/?api=1&query=" + shrine.name + "&query_place_id=" + shrine.place_id} target="_blank">
+                    <a href={"https://www.google.com/maps/search/?api=1&query=" + shrine.name + "&query_place_id=" + shrine.place_id}
+                      className="text-blue-600 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 rounded px-1"
+                      target="_blank"
+                    >
                       {shrine.address}
                     </a>
                   </TableCell>
