@@ -55,7 +55,7 @@ const ShrineList = () => {
   return (
     <>
       <Header />
-      <div className="container mx-auto p-4 max-w-4xl">
+      <div className="bg-gradient-to-b from-red-50 to-white container mx-auto p-4 max-w-4xl">
         <div className="bg-red-900 text-white p-4 rounded-t-lg shadow-lg">
           <h2 className="text-2xl font-bold text-center">神社一覧</h2>
         </div>
