@@ -117,7 +117,7 @@ func (pg *Postgres) InsertShrine(shr *Shrine) error {
 
 }
 
-func (pg *Postgres) GetShrinesByStdAreaCode(sacr *SacRelationship) (shrs []*Shrine, err error) {
+func (pg *Postgres) GetShrinesByStdAreaCode(sacr SacRelationship) (shrs []*Shrine, err error) {
 
 	var query string
 
