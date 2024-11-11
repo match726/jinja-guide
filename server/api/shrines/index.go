@@ -30,15 +30,15 @@ func FetchShrineList(w http.ResponseWriter, r *http.Request) {
 
 	// HTTPリクエストからカスタムヘッダーを取得
 	strCustom := r.Header.Get("ShrGuide-Shrines-Authorization")
-	fmt.Println(strCustom)
+
 	// SacRelationship構造体へ変換
-	var sacr models.SacRelationship
+	var sacr *models.SacRelationship
 	err = json.Unmarshal([]byte(strCustom), &sacr)
 	if err != nil {
 		fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
-	fmt.Println(sacr)
+
 	pg, err = models.NewPool()
 	if err != nil {
 		fmt.Println(err)

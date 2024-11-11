@@ -523,7 +523,7 @@ func (pg *Postgres) GetSacRelationship() (sacr []SacRelationship, err error) {
 
 		err = rows.Scan(&sac.StdAreaCode, &sac.PrefAreaCode, &sac.SubPrefAreaCode, &sac.MunicAreaCode1, &sac.MunicAreaCode2, &sac.PrefName, &sac.SubPrefName, &sac.MunicName1, &sac.MunicName2)
 		if err != nil {
-			return nil, fmt.Errorf("Scan失敗： %w", err)
+			return nil, fmt.Errorf("スキャン失敗： %w", err)
 		}
 
 		prefCode, _ := strconv.Atoi(sac.StdAreaCode[0:2])
