@@ -14,13 +14,14 @@ const BACKEND_ENDPOINT=import.meta.env.VITE_BACKEND_ENDPOINT;
 type Shrine = {
   name: string
   address: string
+  place_id: string
   object_of_worship: string[]
   hasGoshuin: boolean
 };
 
 const ShrineList = () => {
 
-  const [shrines, setShrines] = useState([]);
+  const [shrines, setShrines] = useState<Shrine[]>([]);
   const search = useLocation().search;
   const query = new URLSearchParams(search);
   const payload = {kinds: query.get('kinds'), std_area_code: query.get('code')};
@@ -49,6 +50,8 @@ const ShrineList = () => {
 
   }, []);
 
+  console.log(shrines);
+
   return (
     <>
       <Header />
@@ -73,7 +76,11 @@ const ShrineList = () => {
                   className={`${index % 2 === 0 ? 'bg-red-50' : 'bg-white'} hover:bg-red-100 transition-colors`}
                 >
                   <TableCell className="font-medium">{shrine.name}</TableCell>
-                  <TableCell>{shrine.address}</TableCell>
+                  <TableCell>
+                    <a href={"https://www.google.com/maps/search/?api=1&query=" + shrine.name + "&query_place_id=" + shrine.place_id} target="_blank">
+                      {shrine.address}
+                    </a>
+                  </TableCell>
                   <TableCell>{shrine.object_of_worship}</TableCell>
                   <TableCell className="text-center">
                     {shrine.hasGoshuin && (
