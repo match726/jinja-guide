@@ -116,3 +116,61 @@ func (pg *Postgres) InsertShrine(shr *Shrine) error {
 	return nil
 
 }
+
+func (pg *Postgres) GetShrinesByStdAreaCode(sacr *SacRelationship) (shrs []Shrine, err error) {
+
+	var query string
+
+	switch sacr.Kinds {
+	case "Pref":
+		query = fmt.Sprintf(`SELECT shr.name, shr.address, shr.place_id
+					FROM t_shrines shr
+					INNER JOIN m_stdareacode sac
+						ON sac.pref_area_code = '%s'
+						AND shr.std_area_code = sac.std_area_code
+					ORDER BY shr.std_area_code, shr.address, shr.name`, sacr.StdAreaCode)
+	case "SubPref":
+		query = fmt.Sprintf(`SELECT shr.name, shr.address, shr.place_id
+					FROM t_shrines shr
+					INNER JOIN m_stdareacode sac
+						ON sac.subpref_area_code = '%s'
+						AND shr.std_area_code = sac.std_area_code
+					ORDER BY shr.std_area_code, shr.address, shr.name`, sacr.StdAreaCode)
+	case "City", "District":
+		query = fmt.Sprintf(`SELECT shr.name, shr.address, shr.place_id
+					FROM t_shrines shr
+					INNER JOIN m_stdareacode sac
+						ON sac.munic1_area_code = '%s'
+						AND shr.std_area_code = sac.std_area_code
+					ORDER BY shr.std_area_code, shr.address, shr.name`, sacr.StdAreaCode)
+	case "Town/Village", "Ward":
+		query = fmt.Sprintf(`SELECT shr.name, shr.address, shr.place_id
+					FROM t_shrines shr
+					INNER JOIN m_stdareacode sac
+						ON sac.munic2_area_code = '%s'
+						AND shr.std_area_code = sac.std_area_code
+					ORDER BY shr.std_area_code, shr.address, shr.name`, sacr.StdAreaCode)
+	}
+
+	rows, err := pg.dbPool.Query(context.Background(), query)
+	if err != nil {
+		return nil, fmt.Errorf("神社一覧 取得失敗： %w", err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+
+		var shr Shrine
+
+		err = rows.Scan(&shr.Name, &shr.Address, &shr.PlaceID)
+		if err != nil {
+			return nil, fmt.Errorf("Scan失敗： %w", err)
+		}
+
+		shrs = append(shrs, shr)
+
+	}
+
+	return shrs, err
+
+}

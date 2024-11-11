@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { ChevronRight, ChevronDown } from 'lucide-react';
+import axios from 'axios';
 
 import { Header } from '@/components/ui/header';
 import { Button } from '@/components/ui/button';
@@ -26,7 +26,7 @@ const Prefs = () => {
   // 標準地域コードの関係性リストを取得
   useEffect(() => {
 
-    const options = {
+    const reqOptions = {
       method: "GET",
       url: BACKEND_ENDPOINT + "/api/prefs",
       headers: {
@@ -36,7 +36,7 @@ const Prefs = () => {
 
     const fetchSacRelationshipInfo = async () => {
       try {
-        const resp = await axios(options);
+        const resp = await axios(reqOptions);
         setSacrs(resp.data);
       } catch (error) {
         console.error("GETリクエスト失敗", error);
@@ -79,7 +79,7 @@ const Prefs = () => {
     <>
       <Header />
       <h1 className="text-[min(4vw,30px)] flex py-4 items-center justify-center">
-        エリアから検索
+        都道府県／市区町村検索
       </h1>
       <div className="w-full max-w-md mx-auto p-4 space-y-2 border rounded-lg shadow-sm">
         {sacrs.filter((row: SacRelationship) => row.kinds === "Pref").map((elem: SacRelationship) => (

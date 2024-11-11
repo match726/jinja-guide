@@ -8,14 +8,14 @@ import (
 	"github.com/match726/jinja-guide/tree/main/server/models"
 )
 
-func PrefsHandler(w http.ResponseWriter, r *http.Request) {
+func ShrinesHandler(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case http.MethodOptions:
 		w.WriteHeader(http.StatusOK)
 		return
 	case http.MethodGet:
-		FetchSacRelationship(w, r)
+		FetchShrineList(w, r)
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
@@ -23,10 +23,21 @@ func PrefsHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func FetchSacRelationship(w http.ResponseWriter, r *http.Request) {
+func FetchShrineList(w http.ResponseWriter, r *http.Request) {
 
 	var pg *models.Postgres
 	var err error
+
+	// HTTPリクエストからカスタムヘッダーを取得
+	strCustom := r.Header.Get("ShrGuide-Shrines-Authorization")
+
+	// SacRelationship構造体へ変換
+	var sacr *models.SacRelationship
+	err = json.Unmarshal([]byte(strCustom), &sacr)
+	if err != nil {
+		fmt.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
+	}
 
 	pg, err = models.NewPool()
 	if err != nil {
@@ -35,20 +46,20 @@ func FetchSacRelationship(w http.ResponseWriter, r *http.Request) {
 	}
 	defer pg.ClosePool()
 
-	sacr, err := pg.GetSacRelationship()
+	shrs, err := pg.GetShrinesByStdAreaCode(sacr)
 	if err != nil {
-		fmt.Printf("[Err] <GetSacRelationship> Err:%s\n", err)
+		fmt.Printf("[Err] <GetShrinesByStdAreaCode> Err:%s\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
 	} else {
-		writejsonResp(w, sacr)
+		writejsonResp(w, shrs)
 	}
 
 }
 
-func writejsonResp(w http.ResponseWriter, sacr []models.SacRelationship) {
+func writejsonResp(w http.ResponseWriter, shrs []models.Shrine) {
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	b, err := json.Marshal(sacr)
+	b, err := json.Marshal(shrs)
 	if err != nil {
 		fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)

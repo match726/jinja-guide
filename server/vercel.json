@@ -7,6 +7,7 @@
   "rewrites": [
     { "source": "/api", "destination": "/api" },
     { "source": "/api/prefs", "destination": "/api/admin/prefs" },
+    { "source": "/api/shrines", "destination": "/api/admin/shrines" },
     { "source": "/api/admin/regist", "destination": "/api/admin/regist" },
     { "source": "/api/admin/sac", "destination": "/api/admin/sac" }
   ],
