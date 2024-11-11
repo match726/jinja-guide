@@ -53,7 +53,7 @@ func GetLocnInfoFromPlaceAPI(shr *Shrine) error {
 
 	resp, err := client.TextSearch(context.Background(), req)
 	if err != nil {
-		return fmt.Errorf("PlaceAPI情報取得失敗： %", err)
+		return fmt.Errorf("PlaceAPI情報取得失敗： %w", err)
 	} else {
 		fmt.Printf("%#v\n", resp)
 	}
@@ -117,7 +117,7 @@ func (pg *Postgres) InsertShrine(shr *Shrine) error {
 
 }
 
-func (pg *Postgres) GetShrinesByStdAreaCode(sacr *SacRelationship) (shrs []Shrine, err error) {
+func (pg *Postgres) GetShrinesByStdAreaCode(sacr *SacRelationship) (shrs []*Shrine, err error) {
 
 	var query string
 
@@ -164,10 +164,10 @@ func (pg *Postgres) GetShrinesByStdAreaCode(sacr *SacRelationship) (shrs []Shrin
 
 		err = rows.Scan(&shr.Name, &shr.Address, &shr.PlaceID)
 		if err != nil {
-			return nil, fmt.Errorf("Scan失敗： %w", err)
+			return nil, fmt.Errorf("スキャン失敗： %w", err)
 		}
 
-		shrs = append(shrs, shr)
+		shrs = append(shrs, &shr)
 
 	}
 

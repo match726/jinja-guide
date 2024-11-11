@@ -16,7 +16,7 @@ type Shrine = {
   address: string
   place_id: string
   object_of_worship: string[]
-  hasGoshuin: boolean
+  has_goshuin: boolean
 };
 
 const ShrineList = () => {
@@ -83,7 +83,7 @@ const ShrineList = () => {
                   </TableCell>
                   <TableCell>{shrine.object_of_worship}</TableCell>
                   <TableCell className="text-center">
-                    {shrine.hasGoshuin && (
+                    {shrine.has_goshuin && (
                       <Stamp className="inline-block text-red-800" size={24} />
                     )}
                   </TableCell>

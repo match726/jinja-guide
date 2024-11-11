@@ -46,7 +46,8 @@ func FetchShrineList(w http.ResponseWriter, r *http.Request) {
 	}
 	defer pg.ClosePool()
 
-	shrs, err := pg.GetShrinesByStdAreaCode(sacr)
+	var shrs []*models.Shrine
+	shrs, err = pg.GetShrinesByStdAreaCode(sacr)
 	if err != nil {
 		fmt.Printf("[Err] <GetShrinesByStdAreaCode> Err:%s\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -56,10 +57,29 @@ func FetchShrineList(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func writejsonResp(w http.ResponseWriter, shrs []models.Shrine) {
+func writejsonResp(w http.ResponseWriter, shrs []*models.Shrine) {
+
+	type ShrinesListResp struct {
+		Name            string   `json:"name"`
+		Address         string   `json:"address"`
+		PlaceID         string   `json:"place_id"`
+		ObjectOfWorship []string `json:"object_of_worship"`
+		HasGoshuin      bool     `json:"has_goshuin"`
+	}
+
+	var shrListResp []ShrinesListResp
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	b, err := json.Marshal(shrs)
+	for _, shr := range shrs {
+		shrListResp = append(shrListResp, ShrinesListResp{
+			Name:            shr.Name,
+			Address:         shr.Address,
+			PlaceID:         shr.PlaceID,
+			ObjectOfWorship: nil,
+			HasGoshuin:      false,
+		})
+	}
+	b, err := json.Marshal(shrListResp)
 	if err != nil {
 		fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
