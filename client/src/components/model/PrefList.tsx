@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { ChevronRight, ChevronDown } from 'lucide-react';
 
@@ -58,7 +59,7 @@ const Prefs = () => {
             {sacr.has_child && (
               isOpen ? <ChevronDown className="mr-2 h-4 w-4" /> : <ChevronRight className="mr-2 h-4 w-4" />
             )}
-            <a href={FRONTEND_URL + "?kinds=" + sacr.kinds + "&sac=" + sacr.std_area_code}>{sacr.name}</a>
+            <Link to={FRONTEND_URL + "?kinds=" + sacr.kinds + "&sac=" + sacr.std_area_code}>{sacr.name}</Link>
           </Button>
         </CollapsibleTrigger>
         {sacr.has_child && (
