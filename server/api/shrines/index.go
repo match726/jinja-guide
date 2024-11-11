@@ -52,6 +52,7 @@ func FetchShrineList(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("[Err] <GetShrinesByStdAreaCode> Err:%s\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
 	} else {
+		fmt.Println(shrs)
 		writejsonResp(w, shrs)
 	}
 
