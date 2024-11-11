@@ -5,11 +5,20 @@ import { Header } from '@/components/ui/header';
 
 import '@/styles/global.css';
 
+type SacRelationship = {
+  name: string
+  std_area_code: string
+  sup_std_area_code: string
+  kinds: string
+  has_child: boolean
+};
+
+//const FRONTEND_URL=import.meta.env.VITE_FRONTEND_URL;
 const BACKEND_ENDPOINT=import.meta.env.VITE_BACKEND_ENDPOINT;
 
 const Prefs = () => {
 
-  const [hrchy, setHrchy] = useState([]);
+  const [sacr, setSacr] = useState<SacRelationship[]>([]);
 
   useEffect(() => {
 
@@ -21,20 +30,20 @@ const Prefs = () => {
       }
     };
 
-    const fetchHrchyInfo = async () => {
+    const fetchSacRelationshipInfo = async () => {
       try {
         const resp = await axios(options);
-        setHrchy(resp.data);
+        setSacr(resp.data);
       } catch (error) {
         console.error("GETリクエスト失敗", error);
       }
     };
 
-    fetchHrchyInfo();
+    fetchSacRelationshipInfo();
 
   }, []);
 
-  console.log(hrchy);
+  console.log(sacr);
 
   return (
     <>
