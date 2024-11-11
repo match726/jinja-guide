@@ -140,14 +140,14 @@ func (pg *Postgres) GetShrinesByStdAreaCode(sacr *SacRelationship) (shrs []*Shri
 		query = fmt.Sprintf(`SELECT shr.name, shr.address, shr.place_id
 					FROM t_shrines shr
 					INNER JOIN m_stdareacode sac
-						ON sac.munic1_area_code = '%s'
+						ON sac.munic_area_code1 = '%s'
 						AND shr.std_area_code = sac.std_area_code
 					ORDER BY shr.std_area_code, shr.address, shr.name`, sacr.StdAreaCode)
 	case "Town/Village", "Ward":
 		query = fmt.Sprintf(`SELECT shr.name, shr.address, shr.place_id
 					FROM t_shrines shr
 					INNER JOIN m_stdareacode sac
-						ON sac.munic2_area_code = '%s'
+						ON sac.munic_area_code2 = '%s'
 						AND shr.std_area_code = sac.std_area_code
 					ORDER BY shr.std_area_code, shr.address, shr.name`, sacr.StdAreaCode)
 	}
