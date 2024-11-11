@@ -77,11 +77,10 @@ const Prefs = () => {
     <>
       <Header />
       <div className="w-full max-w-md mx-auto p-4 space-y-2 border rounded-lg shadow-sm">
-      {sacrs.filter((row: SacRelationship) => row.kinds === "Pref").map((elem: SacRelationship) => (
-        <RenderPrefNode key={elem.std_area_code} sacr={elem} />
-      ))}
-    </div>
- 
+        {sacrs.filter((row: SacRelationship) => row.kinds === "Pref").map((elem: SacRelationship) => (
+          <RenderPrefNode key={elem.std_area_code} sacr={elem} />
+        ))}
+      </div>
     </>
   );
 
