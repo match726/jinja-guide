@@ -33,7 +33,7 @@ const ShrineList = () => {
       url: BACKEND_ENDPOINT + "/api/shrines",
       headers: {
         "Content-Type": "application/json",
-        "ShrGuide-Shrines-Authorization": JSON.stringify(payload)
+        "ShrGuide-Shrines-Authorization": JSON.stringify(payload),
       }
     };
 
