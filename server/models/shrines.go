@@ -25,6 +25,22 @@ type Shrine struct {
 	UpdatedAt   time.Time
 }
 
+type ShrineDetails struct {
+	Name            string   `json:"name"`
+	Furigana        string   `json:"furigana"`
+	AltName         string   `json:"alt_name"`
+	Address         string   `json:"address"`
+	Image           string   `json:"image"`
+	Description     string   `json:"description"`
+	Tags            []string `json:"tags"`
+	FoundedYear     string   `json:"founded_year"`
+	ObjectOfWorship []string `json:"object_of_worship"`
+	ShrineRank      []string `json:"shrine_rank"`
+	HasGoshuin      bool     `json:"has_goshuin"`
+	WebsiteURL      string   `json:"website_url"`
+	WikipediaURL    string   `json:"wikipedia_url"`
+}
+
 // 住所から都道府県部分を抽出する
 func ExtractPrefName(address string) string {
 
@@ -123,28 +139,28 @@ func (pg *Postgres) GetShrinesByStdAreaCode(sacr *SacRelationship) (shrs []*Shri
 
 	switch sacr.Kinds {
 	case "Pref":
-		query = fmt.Sprintf(`SELECT shr.name, shr.address, shr.place_id
+		query = fmt.Sprintf(`SELECT shr.name, shr.address, shr.plus_code, shr.place_id
 					FROM t_shrines shr
 					INNER JOIN m_stdareacode sac
 						ON sac.pref_area_code = '%s'
 						AND shr.std_area_code = sac.std_area_code
 					ORDER BY shr.std_area_code, shr.address, shr.name`, sacr.StdAreaCode)
 	case "SubPref":
-		query = fmt.Sprintf(`SELECT shr.name, shr.address, shr.place_id
+		query = fmt.Sprintf(`SELECT shr.name, shr.address, shr.plus_code, shr.place_id
 					FROM t_shrines shr
 					INNER JOIN m_stdareacode sac
 						ON sac.subpref_area_code = '%s'
 						AND shr.std_area_code = sac.std_area_code
 					ORDER BY shr.std_area_code, shr.address, shr.name`, sacr.StdAreaCode)
 	case "City", "District":
-		query = fmt.Sprintf(`SELECT shr.name, shr.address, shr.place_id
+		query = fmt.Sprintf(`SELECT shr.name, shr.address, shr.plus_code, shr.place_id
 					FROM t_shrines shr
 					INNER JOIN m_stdareacode sac
 						ON sac.munic_area_code1 = '%s'
 						AND shr.std_area_code = sac.std_area_code
 					ORDER BY shr.std_area_code, shr.address, shr.name`, sacr.StdAreaCode)
 	case "Town/Village", "Ward":
-		query = fmt.Sprintf(`SELECT shr.name, shr.address, shr.place_id
+		query = fmt.Sprintf(`SELECT shr.name, shr.address, shr.plus_code, shr.place_id
 					FROM t_shrines shr
 					INNER JOIN m_stdareacode sac
 						ON sac.munic_area_code2 = '%s'
@@ -172,5 +188,21 @@ func (pg *Postgres) GetShrinesByStdAreaCode(sacr *SacRelationship) (shrs []*Shri
 	}
 
 	return shrs, err
+
+}
+
+func (pg *Postgres) GetShrineDetails(plus_code string) (shrd *ShrineDetails, err error) {
+
+	query := `SELECT shr.name, shr.address
+						FROM t_shrines shr
+						WHERE shr.plus_code = $1`
+
+	row := pg.dbPool.QueryRow(context.Background(), query, plus_code)
+	err = row.Scan(&shrd.Name, &shrd.Address)
+	if err != nil {
+		return nil, fmt.Errorf("スキャン失敗： %w", err)
+	}
+
+	return shrd, err
 
 }

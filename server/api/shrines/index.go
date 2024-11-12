@@ -63,6 +63,7 @@ func writejsonResp(w http.ResponseWriter, shrs []*models.Shrine) {
 	type ShrinesListResp struct {
 		Name            string   `json:"name"`
 		Address         string   `json:"address"`
+		PlusCode        string   `json:"plus_code"`
 		PlaceID         string   `json:"place_id"`
 		ObjectOfWorship []string `json:"object_of_worship"`
 		HasGoshuin      bool     `json:"has_goshuin"`
@@ -75,6 +76,7 @@ func writejsonResp(w http.ResponseWriter, shrs []*models.Shrine) {
 		shrListResp = append(shrListResp, ShrinesListResp{
 			Name:            shr.Name,
 			Address:         shr.Address,
+			PlusCode:        shr.PlusCode,
 			PlaceID:         shr.PlaceID,
 			ObjectOfWorship: nil,
 			HasGoshuin:      false,
