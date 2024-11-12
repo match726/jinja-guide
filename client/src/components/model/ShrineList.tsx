@@ -8,12 +8,14 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 
 import '@/styles/global.css';
 
+const FRONTEND_URL=import.meta.env.VITE_FRONTEND_URL;
 const BACKEND_ENDPOINT=import.meta.env.VITE_BACKEND_ENDPOINT;
 
 // 神社一覧の型定義
 type Shrine = {
   name: string
   address: string
+  plus_code: string
   place_id: string
   object_of_worship: string[]
   has_goshuin: boolean
@@ -55,7 +57,7 @@ const ShrineList = () => {
   return (
     <>
       <Header />
-      <div className="bg-gradient-to-b from-red-50 to-white container mx-auto p-4 max-w-4xl">
+      <div className="container mx-auto p-4 max-w-4xl">
         <div className="bg-red-900 text-white p-4 rounded-t-lg shadow-lg">
           <h2 className="text-2xl font-bold text-center">神社一覧</h2>
         </div>
@@ -72,10 +74,17 @@ const ShrineList = () => {
             <TableBody>
               {shrines.map((shrine: Shrine, index) => (
                 <TableRow 
-                  key={shrine.name}
+                  key={shrine.plus_code}
                   className={`${index % 2 === 0 ? 'bg-red-50' : 'bg-white'} hover:bg-red-100 transition-colors`}
                 >
-                  <TableCell className="font-medium">{shrine.name}</TableCell>
+                  <TableCell className="font-medium">
+                    <a href={FRONTEND_URL + "/shrine?code=" + shrine.plus_code}
+                      className="text-blue-600 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 rounded px-1"
+                      target="_blank"
+                    >
+                      {shrine.name}
+                    </a>
+                  </TableCell>
                   <TableCell>
                     <a href={"https://www.google.com/maps/search/?api=1&query=" + shrine.name + "&query_place_id=" + shrine.place_id}
                       className="text-blue-600 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 rounded px-1"

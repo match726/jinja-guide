@@ -78,15 +78,13 @@ const Prefs = () => {
   return (
     <>
       <Header />
-      <div className="bg-gradient-to-b from-red-50 to-white">
-        <h1 className="text-[min(4vw,30px)] flex py-4 items-center justify-center">
-          都道府県／市区町村検索
-        </h1>
-        <div className="w-full max-w-md mx-auto p-4 space-y-2 border rounded-lg shadow-sm">
-          {sacrs.filter((row: SacRelationship) => row.kinds === "Pref").map((elem: SacRelationship) => (
-            <RenderPrefNode key={elem.std_area_code} sacr={elem} />
-          ))}
-        </div>
+      <h1 className="text-[min(4vw,30px)] flex py-4 items-center justify-center">
+        都道府県／市区町村検索
+      </h1>
+      <div className="w-full max-w-md mx-auto p-4 space-y-2 border rounded-lg shadow-sm">
+        {sacrs.filter((row: SacRelationship) => row.kinds === "Pref").map((elem: SacRelationship) => (
+          <RenderPrefNode key={elem.std_area_code} sacr={elem} />
+        ))}
       </div>
     </>
   );
