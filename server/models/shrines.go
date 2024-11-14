@@ -197,9 +197,13 @@ func (pg *Postgres) GetShrineDetails(shr *Shrine) (shrd *ShrineDetails, err erro
 						FROM t_shrines shr
 						WHERE shr.plus_code = $1`
 
-	row := pg.dbPool.QueryRow(context.Background(), query, shr.PlusCode)
-	fmt.Println(row)
-	err = row.Scan(&shrd.Name, &shrd.Address)
+	rows, err := pg.dbPool.Query(context.Background(), query, shr.PlusCode)
+	if err != nil {
+		return nil, fmt.Errorf("神社詳細 取得失敗： %w", err)
+	}
+	defer rows.Close()
+
+	shrd, err = pgx.CollectOneRow(rows, pgx.RowToStructByName[*ShrineDetails])
 	if err != nil {
 		return nil, fmt.Errorf("スキャン失敗： %w", err)
 	}
