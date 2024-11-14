@@ -193,6 +193,7 @@ func (pg *Postgres) GetShrinesByStdAreaCode(sacr *SacRelationship) (shrs []*Shri
 
 func (pg *Postgres) GetShrineDetails(shr *Shrine) (shrd ShrineDetails, err error) {
 
+	fmt.Println("GetShrineDetails", shr.PlusCode)
 	query := `SELECT shr.name, shr.address
 						FROM t_shrines shr
 						WHERE shr.plus_code = $1`
