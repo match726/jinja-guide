@@ -28,7 +28,6 @@ func FetchShrineDetails(w http.ResponseWriter, r *http.Request) {
 	var pg *models.Postgres
 	var err error
 
-	fmt.Println(r)
 	// HTTPリクエストからカスタムヘッダーを取得
 	strCustom := r.Header.Get("ShrGuide-Shrines-Authorization")
 

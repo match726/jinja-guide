@@ -50,6 +50,7 @@ const ShrineInfo = () => {
     const fetchShrineInfo = async () => {
       try {
         const resp = await axios(reqOptions);
+        console.log("HTTPレスポンス: ", resp.data)
         setShrDetails(resp.data);
       } catch (error) {
         console.error("GETリクエスト失敗", error);
