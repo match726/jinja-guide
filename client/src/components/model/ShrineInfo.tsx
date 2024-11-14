@@ -36,6 +36,7 @@ const ShrineInfo = () => {
   const plus_code = query.get('code') || ""
   const payload = {plus_code: plus_code.replace("+", "%2B")};
 
+  console.log(plus_code)
   useEffect(() => {
 
     const reqOptions = {
