@@ -191,11 +191,11 @@ func (pg *Postgres) GetShrinesByStdAreaCode(sacr *SacRelationship) (shrs []*Shri
 
 }
 
-func (pg *Postgres) GetShrineDetails(shr *Shrine) (shrd *ShrineDetails, err error) {
+func (pg *Postgres) GetShrineDetails(shr *Shrine) (shrd ShrineDetails, err error) {
 
-	//shrd.Tags = []string{}
-	//shrd.ObjectOfWorship = []string{}
-	//shrd.ShrineRank = []string{}
+	shrd.Tags = []string{}
+	shrd.ObjectOfWorship = []string{}
+	shrd.ShrineRank = []string{}
 
 	query := `SELECT shr.name, shr.address
 						FROM t_shrines shr
@@ -207,7 +207,7 @@ func (pg *Postgres) GetShrineDetails(shr *Shrine) (shrd *ShrineDetails, err erro
 	}
 	defer row.Close()
 
-	shrd, err = pgx.CollectOneRow(row, pgx.RowToStructByName[*ShrineDetails])
+	shrd, err = pgx.CollectOneRow(row, pgx.RowToStructByName[ShrineDetails])
 	if err != nil {
 		return shrd, fmt.Errorf("スキャン失敗： %w", err)
 	}
