@@ -25,3 +25,16 @@ CREATE TABLE IF NOT EXISTS t_shrines (
   updated_at    timestamp,
   PRIMARY KEY (name, address)
 )
+
+CREATE TABLE IF NOT EXISTS t_shrine_contents (
+  id         smallint NOT NULL,
+  seq        smallint NOT NULL,
+  keyword1   char(12) NOT NULL,
+  keyword2   char(2),
+  content1   text     NOT NULL,
+  content2   text,
+  content3   text,
+  created_at timestamp,
+  updated_at timestamp,
+  PRIMARY KEY (id, seq, keyword1, keyword2)
+)
