@@ -32,9 +32,9 @@ const ShrineInfo = () => {
 
   const [shrDetails, setShrDetails] = useState<ShrineDetails>({name: "", furigana: "", alt_name: "", address: "", image: "", description: "", tags: [""], founded_year: "", object_of_worship: [""], shrine_rank: [""], has_goshuin: false, website_url: "", wikipedia_url: ""});
   const search = useLocation().search;
-  const query = new URLSearchParams(search);
+  // プラス記号が空白として解釈されるため、置換する
+  const query = new URLSearchParams(search.replace("+", "%2B"));
   const payload = {plus_code: query.get('code')};
-  console.log(search)
 
   useEffect(() => {
 
