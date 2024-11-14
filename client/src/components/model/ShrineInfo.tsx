@@ -65,8 +65,8 @@ const ShrineInfo = () => {
     <>
       <Header />
       <div className="min-h-screen bg-stone-100 flex items-center justify-center p-4">
-        <Card className="w-full max-w-4xl bg-white shadow-lg rounded-lg overflow-hidden border-2 border-red-800">
-          <CardHeader className="bg-red-800 text-white p-4">
+        <Card className="w-full max-w-4xl bg-white shadow-lg rounded-lg overflow-hidden border-2 border-red-900">
+          <CardHeader className="bg-red-900 text-white p-4">
             <h2 className="text-2xl font-bold text-center">{shrDetails.name}</h2>
             <p className="text-center text-gray-200">{shrDetails.furigana}</p>
           </CardHeader>
