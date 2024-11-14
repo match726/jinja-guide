@@ -60,6 +60,7 @@ func FetchShrineDetails(w http.ResponseWriter, r *http.Request) {
 func writejsonResp(w http.ResponseWriter, shrd *models.ShrineDetails) {
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+
 	b, err := json.Marshal(shrd)
 	if err != nil {
 		fmt.Println(err)

@@ -198,6 +198,7 @@ func (pg *Postgres) GetShrineDetails(shr *Shrine) (shrd *ShrineDetails, err erro
 						WHERE shr.plus_code = $1`
 
 	row := pg.dbPool.QueryRow(context.Background(), query, shr.PlusCode)
+	fmt.Println(row)
 	err = row.Scan(&shrd.Name, &shrd.Address)
 	if err != nil {
 		return nil, fmt.Errorf("スキャン失敗： %w", err)
