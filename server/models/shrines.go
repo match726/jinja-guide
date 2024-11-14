@@ -216,7 +216,7 @@ func (pg *Postgres) GetShrineDetails(shr *Shrine) (shrd ShrineDetails, err error
 		return shrd, fmt.Errorf("スキャン１失敗： %w", err)
 	}
 
-	query2 := `SELECT shrc.content1, shrc.content2, shrc.content3
+	query2 := `SELECT shrc.id, shrc.content1, shrc.content2, shrc.content3
               FROM t_shrine_contents shrc
               WHERE shrc.keyword1 = $1
               ORDER BY shrc.id, shrc.keyword1, shrc.keyword2`
