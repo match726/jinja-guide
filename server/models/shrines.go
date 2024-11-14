@@ -28,7 +28,7 @@ type Shrine struct {
 type ShrineDetails struct {
 	Name            string   `json:"name"`
 	Furigana        string   `json:"furigana"`
-	AltName         string   `json:"alt_name"`
+	AltName         []string `json:"alt_name"`
 	Address         string   `json:"address"`
 	Image           string   `json:"image"`
 	Description     string   `json:"description"`
@@ -204,9 +204,18 @@ func (pg *Postgres) GetShrineDetails(shr *Shrine) (shrd ShrineDetails, err error
 		return shrd, fmt.Errorf("スキャン失敗： %w", err)
 	}
 
-	shrd.Tags = []string{}
-	shrd.ObjectOfWorship = []string{}
-	shrd.ShrineRank = []string{}
+	if len(shrd.AltName) == 0 {
+		shrd.AltName = []string{"登録なし"}
+	}
+	if len(shrd.Tags) == 0 {
+		shrd.Tags = []string{"登録なし"}
+	}
+	if len(shrd.ObjectOfWorship) == 0 {
+		shrd.ObjectOfWorship = []string{"登録なし"}
+	}
+	if len(shrd.ShrineRank) == 0 {
+		shrd.ShrineRank = []string{"登録なし"}
+	}
 
 	return shrd, err
 
