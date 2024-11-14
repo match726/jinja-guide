@@ -1,6 +1,9 @@
 import { Routes, Route } from 'react-router-dom';
 
 import Home from '@/components/model/Home';
+import PrefList from '@/components/model/PrefList';
+import ShrineInfo from '@/components/model/ShrineInfo';
+import ShrineList from '@/components/model/ShrineList';
 import Admin from '@/components/model/Admin';
 import AdminRegisterShrine from '@/components/model/AdminRegisterShrine';
 import AdminStdAreaCode from '@/components/model/AdminStdAreaCode';
@@ -12,6 +15,9 @@ function App() {
       <div>
       <Routes>
         <Route path="/" element={ <Home /> } />
+        <Route path="/prefs" element={ <PrefList /> } />
+        <Route path="/shrine" element={ <ShrineInfo /> } />
+        <Route path="/shrines" element={ <ShrineList /> } />
         <Route path="/admin" element={ <Admin /> } />
         <Route path="/admin/regist" element={ <AdminRegisterShrine /> } />
         <Route path="/admin/stdareacode" element={ <AdminStdAreaCode /> } />

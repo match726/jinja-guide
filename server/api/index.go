@@ -5,6 +5,6 @@ import (
 	"net/http"
 )
 
-func Stdareacode(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, fmt.Sprintf("<p>Hello from Golang!! %s</p>", r))
+func Handler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "<p>Hello from Golang!!</p>")
 }

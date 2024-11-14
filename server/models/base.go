@@ -4,52 +4,61 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"time"
 
-	"github.com/goark/gocli/exitcode"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/rs/xid"
 )
 
-var dbPool *pgxpool.Pool
-var err error
+type Postgres struct {
+	dbPool *pgxpool.Pool
+}
 
-func Run() exitcode.ExitCode {
+var pgInstance *Postgres
+
+// コネクションプールの作成
+func NewPool() (*Postgres, error) {
 
 	dbname := os.Getenv("POSTGRES_DATABASE")
 	dsn := os.Getenv("POSTGRES_URL")
 
-	dbPool, err := GetPool(context.Background(), dsn)
+	ctx := context.Background()
 
+	cfg, err := pgxpool.ParseConfig(dsn)
 	if err != nil {
-		fmt.Println(err)
-		return exitcode.Abnormal
-	} else {
-		fmt.Printf("Message: データベース[%s]へ接続", dbname)
+		return nil, err
 	}
 
-	defer dbPool.Close()
+	pool, err := pgxpool.NewWithConfig(ctx, cfg)
+	if err != nil {
+		return nil, err
+	} else {
+		pgInstance = &Postgres{pool}
+	}
 
-	return exitcode.Normal
+	if err = pgInstance.dbPool.Ping(ctx); err != nil {
+		return nil, err
+	} else {
+		fmt.Printf("NewPool: データベース[%s]へ接続\n", dbname)
+	}
+
+	return pgInstance, err
 
 }
 
-func GetPool(ctx context.Context, dsn string) (*pgxpool.Pool, error) {
+// コネクションプールのクローズ
+func (pg *Postgres) ClosePool() {
+	pg.dbPool.Close()
+}
 
-	conn, err := pgxpool.ParseConfig(dsn)
-	if err != nil {
-		return nil, err
-	}
+func GetNowTime() time.Time {
 
-	pool, err := pgxpool.NewWithConfig(ctx, conn)
-	if err != nil {
-		return nil, err
-	}
+	var current time.Time
 
-	if err := pool.Ping(ctx); err != nil {
-		return nil, err
-	}
+	jstZone := time.FixedZone("Asia/Tokyo", 9*60*60)
+	current = time.Now().In(jstZone)
 
-	return pool, nil
+	return current
 
 }
 

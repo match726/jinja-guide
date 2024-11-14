@@ -7,6 +7,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
+const FRONTEND_URL=import.meta.env.VITE_FRONTEND_URL
+
 const Header: React.FC = () => {
   return (
     <header className="bg-red-900 text-white">
@@ -40,13 +42,10 @@ const Header: React.FC = () => {
                 <a href="#about">概要</a>
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <a href="#map">マップ</a>
+              <a href={FRONTEND_URL + "/prefs"}>都道府県／市区町村検索</a>
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <a href="#events">イベント</a>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <a href="admin">管理者画面</a>
+                <a href={FRONTEND_URL + "/admin"}>管理者画面</a>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

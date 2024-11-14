@@ -19,21 +19,23 @@ const Admin: React.FC = () => {
   ];
 
   return (
-    <div>
+    <>
       <Header />
-      <h1 className="text-[min(4vw,30px)] flex py-4 items-center justify-center">
-        管理者画面
-      </h1>
-      <section className="container flex grid grid-cols-2 gap-10 xl:grid-cols-3">
-        {cardData.map((data) => (
-          <ShrineCard
-            cardTitle={data.title}
-            cardDescription={data.description}
-            cardLink={data.link}
-          />
-        ))}
-      </section>
-    </div>
+      <div className="bg-gradient-to-b from-red-50 to-white">
+        <h1 className="text-[min(4vw,30px)] flex py-4 items-center justify-center">
+          管理者画面
+        </h1>
+        <section className="container flex grid grid-cols-2 gap-10 xl:grid-cols-3">
+          {cardData.map((data) => (
+            <ShrineCard
+              cardTitle={data.title}
+              cardDescription={data.description}
+              cardLink={data.link}
+            />
+          ))}
+        </section>
+      </div>
+    </>
   );
 };
 

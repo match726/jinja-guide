@@ -5,16 +5,21 @@
     }
   },
   "rewrites": [
-    { "source": "/api", "destination": "/api" }
+    { "source": "/api", "destination": "/api" },
+    { "source": "/api/prefs", "destination": "/api/prefs" },
+    { "source": "/api/shrine", "destination": "/api/shrine" },
+    { "source": "/api/shrines", "destination": "/api/shrines" },
+    { "source": "/api/admin/regist", "destination": "/api/admin/regist" },
+    { "source": "/api/admin/sac", "destination": "/api/admin/sac" }
   ],
   "headers": [
     {
       "source": "/api/(.*)",
       "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "https://jinja-guide.vercel.app/" },
-        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, OPTIONS" },
+        { "key": "Access-Control-Allow-Origin", "value": "https://jinja-guide-dev.vercel.app" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, PUT, OPTIONS" },
         { "key": "Content-Type", "value": "application/json" },
-        { "key": "Access-Control-Allow-Headers", "value": "Content-Type, ShrGuide-User-Authorization, ShrGuide-Shrines-Authorization" }
+        { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Authorization, ShrGuide-Shrines-Authorization" }
       ]
     }
   ]
