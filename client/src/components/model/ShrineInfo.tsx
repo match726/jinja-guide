@@ -15,7 +15,7 @@ const BACKEND_ENDPOINT=import.meta.env.VITE_BACKEND_ENDPOINT;
 type ShrineDetails = {
   name: string
   furigana: string
-  alt_name: string
+  alt_name: string[]
   address: string
   image: string
   description: string
@@ -30,7 +30,7 @@ type ShrineDetails = {
 
 const ShrineInfo = () => {
 
-  const [shrDetails, setShrDetails] = useState<ShrineDetails>({name: "", furigana: "", alt_name: "", address: "", image: "", description: "", tags: [""], founded_year: "", object_of_worship: [""], shrine_rank: [""], has_goshuin: false, website_url: "", wikipedia_url: ""});
+  const [shrDetails, setShrDetails] = useState<ShrineDetails>({name: "", furigana: "", alt_name: [""], address: "", image: "", description: "", tags: [""], founded_year: "", object_of_worship: [""], shrine_rank: [""], has_goshuin: false, website_url: "", wikipedia_url: ""});
   const search = useLocation().search;
   // プラス記号が空白として解釈されるため、置換する
   const query = new URLSearchParams(search.replace("+", "%2B"));
@@ -75,7 +75,9 @@ const ShrineInfo = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <h3 className="text-lg font-semibold mb-2">別名称</h3>
-                <p>{shrDetails.alt_name}</p>
+                  {shrDetails.alt_name.map((item, index) => (
+                    <li key={index}>{item}</li>
+                  ))}
               </div>
               <div>
                 <h3 className="text-lg font-semibold mb-2">所在地</h3>
