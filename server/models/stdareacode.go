@@ -10,9 +10,6 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-// ★北海道の郡のコード付番をstd_area_codeのINSERT時に行う
-// ⇒神社の一覧取得時に引っ掛からないため
-
 type StdAreaCode struct {
 	StdAreaCode     string
 	PrefAreaCode    string
