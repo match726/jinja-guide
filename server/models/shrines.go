@@ -204,9 +204,9 @@ func (pg *Postgres) GetShrineDetails(shr *Shrine) (shrd ShrineDetails, err error
 		return shrd, fmt.Errorf("スキャン失敗： %w", err)
 	}
 
-	//shrd.Tags = []string{}
-	//shrd.ObjectOfWorship = []string{}
-	//shrd.ShrineRank = []string{}
+	shrd.Tags = []string{}
+	shrd.ObjectOfWorship = []string{}
+	shrd.ShrineRank = []string{}
 
 	return shrd, err
 
