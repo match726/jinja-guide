@@ -487,11 +487,11 @@ func (pg *Postgres) GetStdAreaCodes() ([]StdAreaCodeGet, error) {
 // 特定の都道府県に属する標準地域コードの一覧を取得する (神社の住所からの標準地域コード取得用)
 func (pg *Postgres) GetStdAreaCodeListByPrefName(prefname string) (sacs []StdAreaCode, err error) {
 
-	query := fmt.Sprintf(`SELECT std_area_code, pref_area_code, subpref_area_code, munic_area_code1, munic_area_code2, pref_name, subpref_name, munic_name1, munic_name2
+	query := `SELECT std_area_code, pref_area_code, subpref_area_code, munic_area_code1, munic_area_code2, pref_name, subpref_name, munic_name1, munic_name2
 					FROM m_stdareacode
-					WHERE pref_name = '%s'`, prefname)
+					WHERE pref_name = $1`
 
-	rows, err := pg.dbPool.Query(context.Background(), query)
+	rows, err := pg.dbPool.Query(context.Background(), query, prefname)
 	if err != nil {
 		return nil, fmt.Errorf("標準地域コード一覧 取得失敗： %w", err)
 	}

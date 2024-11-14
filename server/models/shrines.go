@@ -203,9 +203,13 @@ func (pg *Postgres) GetShrineDetails(shr *Shrine) (shrd ShrineDetails, err error
 	}
 	defer rows.Close()
 
-	shrd, err = pgx.CollectOneRow(rows, pgx.RowToStructByName[ShrineDetails])
-	if err != nil {
-		return shrd, fmt.Errorf("スキャン失敗： %w", err)
+	for rows.Next() {
+
+		err = rows.Scan(&shrd.Name, &shrd.Address)
+		if err != nil {
+			return shrd, fmt.Errorf("スキャン失敗： %w", err)
+		}
+
 	}
 
 	return shrd, err
