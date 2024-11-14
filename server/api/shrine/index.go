@@ -45,7 +45,7 @@ func FetchShrineDetails(w http.ResponseWriter, r *http.Request) {
 	}
 	defer pg.ClosePool()
 
-	var shrd *models.ShrineDetails
+	var shrd models.ShrineDetails
 	shrd, err = pg.GetShrineDetails(shrReq)
 	if err != nil {
 		fmt.Printf("[Err] <GetShrinesByStdAreaCode> Err:%s\n", err)
@@ -57,7 +57,7 @@ func FetchShrineDetails(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func writejsonResp(w http.ResponseWriter, shrd *models.ShrineDetails) {
+func writejsonResp(w http.ResponseWriter, shrd models.ShrineDetails) {
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
