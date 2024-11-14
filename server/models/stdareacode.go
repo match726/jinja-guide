@@ -568,8 +568,7 @@ func (pg *Postgres) GetSacRelationship() (sacr []SacRelationship, err error) {
 	}
 
 	// mapのキー(標準地域コード)を元にソートする
-	keys := []string{}
-	keys = getKeys(msh)
+	keys := getKeys(msh)
 	sort.Strings(keys)
 	for _, k := range keys {
 		sacr = append(sacr, msh[k])
