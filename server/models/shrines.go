@@ -197,20 +197,16 @@ func (pg *Postgres) GetShrineDetails(shr *Shrine) (shrd ShrineDetails, err error
 						FROM t_shrines shr
 						WHERE shr.plus_code = $1`
 
-	row, err := pg.dbPool.Query(context.Background(), query, shr.PlusCode)
-	if err != nil {
-		return shrd, fmt.Errorf("神社詳細 取得失敗： %w", err)
-	}
-	defer row.Close()
+	row := pg.dbPool.QueryRow(context.Background(), query, shr.PlusCode)
 
 	err = row.Scan(&shrd.Name, &shrd.Address)
 	if err != nil {
 		return shrd, fmt.Errorf("スキャン失敗： %w", err)
 	}
 
-	shrd.Tags = []string{}
-	shrd.ObjectOfWorship = []string{}
-	shrd.ShrineRank = []string{}
+	//shrd.Tags = []string{}
+	//shrd.ObjectOfWorship = []string{}
+	//shrd.ShrineRank = []string{}
 
 	return shrd, err
 
