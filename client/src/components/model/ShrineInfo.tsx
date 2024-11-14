@@ -31,12 +31,12 @@ type ShrineDetails = {
 const ShrineInfo = () => {
 
   const [shrDetails, setShrDetails] = useState<ShrineDetails>({name: "", furigana: "", alt_name: "", address: "", image: "", description: "", tags: [""], founded_year: "", object_of_worship: [""], shrine_rank: [""], has_goshuin: false, website_url: "", wikipedia_url: ""});
-  const search = useLocation().search;
+  const search = encodeURIComponent(useLocation().search);
   const query = new URLSearchParams(search);
-  const plus_code = query.get('code') || ""
-  const payload = {plus_code: plus_code.replace("+", "%2B")};
+  const payload = {plus_code: query.get('code')};
 
-  console.log(plus_code)
+  console.log(payload)
+
   useEffect(() => {
 
     const reqOptions = {
