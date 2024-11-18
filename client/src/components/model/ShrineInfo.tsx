@@ -15,9 +15,10 @@ const BACKEND_ENDPOINT=import.meta.env.VITE_BACKEND_ENDPOINT;
 type ShrineDetails = {
   name: string
   furigana: string
+  image: string
   alt_name: string[]
   address: string
-  image: string
+  place_id: string
   description: string
   tags: string[]
   founded_year: string
@@ -30,7 +31,7 @@ type ShrineDetails = {
 
 const ShrineInfo = () => {
 
-  const [shrDetails, setShrDetails] = useState<ShrineDetails>({name: "", furigana: "", alt_name: [""], address: "", image: "", description: "", tags: [""], founded_year: "", object_of_worship: [""], shrine_rank: [""], has_goshuin: false, website_url: "", wikipedia_url: ""});
+  const [shrDetails, setShrDetails] = useState<ShrineDetails>({name: "", furigana: "", alt_name: [""], address: "", place_id: "", image: "", description: "", tags: [""], founded_year: "", object_of_worship: [""], shrine_rank: [""], has_goshuin: false, website_url: "", wikipedia_url: ""});
   const search = useLocation().search;
   // プラス記号が空白として解釈されるため、置換する
   const query = new URLSearchParams(search.replace("+", "%2B"));
@@ -81,7 +82,12 @@ const ShrineInfo = () => {
               </div>
               <div>
                 <h3 className="text-lg font-semibold mb-2">所在地</h3>
-                <p>{shrDetails.address}</p>
+                <a href={"https://www.google.com/maps/search/?api=1&query=" + shrDetails.name + "&query_place_id=" + shrDetails.place_id}
+                  className="text-blue-600 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 rounded px-1"
+                  target="_blank"
+                >
+                  {shrDetails.address}
+                </a>
               </div>
               <div>
                 <h3 className="text-lg font-semibold mb-2">創建年</h3>

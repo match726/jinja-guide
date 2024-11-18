@@ -39,9 +39,10 @@ type ShrineContents struct {
 type ShrineDetails struct {
 	Name            string   `json:"name"`
 	Furigana        string   `json:"furigana"`
+	Image           string   `json:"image"`
 	AltName         []string `json:"alt_name"`
 	Address         string   `json:"address"`
-	Image           string   `json:"image"`
+	PlaceID         string   `json:"place_id"`
 	Description     string   `json:"description"`
 	Tags            []string `json:"tags"`
 	FoundedYear     string   `json:"founded_year"`
@@ -205,13 +206,13 @@ func (pg *Postgres) GetShrinesByStdAreaCode(sacr *SacRelationship) (shrs []*Shri
 // 神社の詳細情報を取得
 func (pg *Postgres) GetShrineDetails(shr *Shrine) (shrd ShrineDetails, err error) {
 
-	query1 := `SELECT shr.name, shr.address
+	query1 := `SELECT shr.name, shr.address, shr.place_id
 						FROM t_shrines shr
 						WHERE shr.plus_code = $1`
 
 	row := pg.dbPool.QueryRow(context.Background(), query1, shr.PlusCode)
 
-	err = row.Scan(&shrd.Name, &shrd.Address)
+	err = row.Scan(&shrd.Name, &shrd.Address, &shrd.PlaceID)
 	if err != nil {
 		return shrd, fmt.Errorf("スキャン１失敗： %w", err)
 	}
