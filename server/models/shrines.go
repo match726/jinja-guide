@@ -74,7 +74,7 @@ func GetLocnInfoFromPlaceAPI(shr *Shrine) error {
 	}
 
 	req := &maps.TextSearchRequest{
-		Query:    shr.Name,
+		Query:    shr.Name + "　" + shr.Address,
 		Language: "ja",
 	}
 
