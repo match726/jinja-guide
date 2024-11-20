@@ -26,7 +26,7 @@ const ShrineList = () => {
   const [shrines, setShrines] = useState<Shrine[]>([]);
   const search = useLocation().search;
   const query = new URLSearchParams(search);
-  const payload = {kinds: query.get('kinds'), std_area_code: query.get('code')};
+  const payload = {kinds: query.get('kinds'), stdAreaCode: query.get('code')};
 
   useEffect(() => {
 
