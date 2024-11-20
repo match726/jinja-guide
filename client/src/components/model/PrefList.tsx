@@ -16,8 +16,8 @@ type SacRelationship = {
   hasChild: boolean
 };
 
-const LINK_URL=import.meta.env.VITE_FRONTEND_URL + "/shrines";
-const BACKEND_ENDPOINT=import.meta.env.VITE_BACKEND_ENDPOINT;
+const linkUrl = import.meta.env.VITE_FRONTEND_URL + "/shrines";
+const backendEndpoint = import.meta.env.VITE_BACKEND_ENDPOINT;
 
 const Prefs = () => {
 
@@ -28,7 +28,7 @@ const Prefs = () => {
 
     const reqOptions = {
       method: "GET",
-      url: BACKEND_ENDPOINT + "/api/prefs",
+      url: backendEndpoint + "/api/prefs",
       headers: {
         "Content-Type": "application/json"
       }
@@ -56,7 +56,7 @@ const Prefs = () => {
         <CollapsibleTrigger asChild>
         <Button variant="ghost" className="w-full justify-start p-2 hover:bg-transparent">
           {isOpen ? <ChevronDown className="mr-2 h-4 w-4" /> : <ChevronRight className="mr-2 h-4 w-4" />}
-          <a href={LINK_URL + "?kinds=" + sacr.kinds + "&code=" + sacr.stdAreaCode}
+          <a href={linkUrl + "?kinds=" + sacr.kinds + "&code=" + sacr.stdAreaCode}
             className="text-blue-600 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 rounded px-1"
             onClick={(e) => e.stopPropagation()}
           >

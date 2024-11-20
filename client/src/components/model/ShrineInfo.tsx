@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 
 import '@/styles/global.css';
 
-const BACKEND_ENDPOINT=import.meta.env.VITE_BACKEND_ENDPOINT;
+const backendEndpoint = import.meta.env.VITE_BACKEND_ENDPOINT;
 
 type ShrineDetails = {
   name: string
@@ -41,7 +41,7 @@ const ShrineInfo = () => {
 
     const reqOptions = {
       method: "GET",
-      url: BACKEND_ENDPOINT + "/api/shrine",
+      url: backendEndpoint + "/api/shrine",
       headers: {
         "Content-Type": "application/json",
         "ShrGuide-Shrines-Authorization": JSON.stringify(payload),

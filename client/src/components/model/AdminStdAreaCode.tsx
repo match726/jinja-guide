@@ -3,7 +3,7 @@ import axios from 'axios';
 
 import { Header } from '@/components/ui/header';
 
-const BACKEND_ENDPOINT=import.meta.env.VITE_BACKEND_ENDPOINT
+const backendEndpoint = import.meta.env.VITE_BACKEND_ENDPOINT
 
 // 標準地域コードのデータ型を定義
 type stdAreaCode = {
@@ -28,7 +28,7 @@ const AdminStdAreaCode: React.FC = () => {
 
     const options1 = {
       method: "GET",
-      url: BACKEND_ENDPOINT + "/api/admin/sac",
+      url: backendEndpoint + "/api/admin/sac",
       headers: {
         "Content-Type": "application/json"
       }

@@ -8,8 +8,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 
 import '@/styles/global.css';
 
-const FRONTEND_URL=import.meta.env.VITE_FRONTEND_URL;
-const BACKEND_ENDPOINT=import.meta.env.VITE_BACKEND_ENDPOINT;
+const frontendUrl = import.meta.env.VITE_FRONTEND_URL;
+const backendEndpoint = import.meta.env.VITE_BACKEND_ENDPOINT;
 
 // 神社一覧の型定義
 type Shrine = {
@@ -32,7 +32,7 @@ const ShrineList = () => {
 
     const reqOptions = {
       method: "GET",
-      url: BACKEND_ENDPOINT + "/api/shrines",
+      url: backendEndpoint + "/api/shrines",
       headers: {
         "Content-Type": "application/json",
         "ShrGuide-Shrines-Authorization": JSON.stringify(payload),
@@ -78,7 +78,7 @@ const ShrineList = () => {
                   className={`${index % 2 === 0 ? 'bg-red-50' : 'bg-white'} hover:bg-red-100 transition-colors`}
                 >
                   <TableCell className="font-medium">
-                    <a href={FRONTEND_URL + "/shrine?code=" + shrine.plusCode}
+                    <a href={frontendUrl + "/shrine?code=" + shrine.plusCode}
                       className="text-blue-600 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 rounded px-1"
                       target="_blank"
                     >
