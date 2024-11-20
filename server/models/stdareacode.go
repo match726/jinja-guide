@@ -11,31 +11,31 @@ import (
 )
 
 type StdAreaCode struct {
-	stdAreaCode     string
-	prefAreaCode    string
-	subprefAreaCode string
-	municAreaCode1  string
-	municAreaCode2  string
-	prefName        string
-	subprefName     string
-	municName1      string
-	municName2      string
+	StdAreaCode     string `json:"stdAreaCode"`
+	PrefAreaCode    string `json:"prefAreaCode"`
+	SubPrefAreaCode string `json:"subPrefAreaCode"`
+	MunicAreaCode1  string `json:"municAreaCode1"`
+	MunicAreaCode2  string `json:"municAreaCode2"`
+	PrefName        string `json:"prefName"`
+	SubPrefName     string `json:"subPrefName"`
+	MunicName1      string `json:"municName1"`
+	MunicName2      string `json:"municName2"`
 }
 
 // SELECT用の構造体(タイムスタンプをYYYY/MM/DD HH24:MM:SS形式で取得する)
 type StdAreaCodeGet struct {
 	StdAreaCode
-	createdAt string
-	updatedAt string
+	CreatedAt string `json:"createdAt"`
+	UpdatedAt string `json:"updatedAt"`
 }
 
 // 市区町村の関係性を示すための構造体
 type SacRelationship struct {
-	stdAreaCode    string
-	name           string
-	supStdAreaCode string
-	kinds          string
-	hasChild       bool
+	StdAreaCode    string `json:"stdAreaCode"`
+	Name           string `json:"name"`
+	SupStdAreaCode string `json:"supStdAreaCode"`
+	Kinds          string `json:"kinds"`
+	HasChild       bool   `json:"hasChild"`
 }
 
 // 標準エリアコードの最新化
@@ -44,7 +44,7 @@ func (pg *Postgres) UpdateStdAreaCode() (err error) {
 	var sacs []StdAreaCode
 	var rows [][]interface{}
 
-	query := `TRUNCATE TABLE m_stdAreaCode`
+	query := `TRUNCATE TABLE m_stdareacode`
 
 	_, err = pg.dbPool.Exec(context.Background(), query)
 
@@ -57,222 +57,222 @@ func (pg *Postgres) UpdateStdAreaCode() (err error) {
 
 	for _, m := range sacs {
 
-		prefCode, _ := strconv.Atoi(m.stdAreaCode[0:2])
-		municCode, _ := strconv.Atoi(m.stdAreaCode[2:5])
+		prefCode, _ := strconv.Atoi(m.StdAreaCode[0:2])
+		municCode, _ := strconv.Atoi(m.StdAreaCode[2:5])
 		// 北海道の振興局に属する町村の場合
 		// 北海道の郡には標準地域コードが振られていないため、付番する
 		if prefCode == 01 && municCode >= 300 {
 			switch {
 			case municCode >= 300 && municCode < 330:
 				// 石狩振興局の場合
-				switch m.municName1 {
+				switch m.MunicName1 {
 				case "石狩郡":
-					m.municAreaCode1 = "1300A"
+					m.MunicAreaCode1 = "1300A"
 				}
 			case municCode >= 330 && municCode < 360:
 				//  渡島総合振興局の場合
-				switch m.municName1 {
+				switch m.MunicName1 {
 				case "松前郡":
-					m.municAreaCode1 = "0133A"
+					m.MunicAreaCode1 = "0133A"
 				case "上磯郡":
-					m.municAreaCode1 = "0133B"
+					m.MunicAreaCode1 = "0133B"
 				case "亀田郡":
-					m.municAreaCode1 = "0133C"
+					m.MunicAreaCode1 = "0133C"
 				case "茅部郡":
-					m.municAreaCode1 = "0133D"
+					m.MunicAreaCode1 = "0133D"
 				case "二海郡":
-					m.municAreaCode1 = "0133E"
+					m.MunicAreaCode1 = "0133E"
 				case "山越郡":
-					m.municAreaCode1 = "0133F"
+					m.MunicAreaCode1 = "0133F"
 				}
 			case municCode >= 360 && municCode < 390:
 				// 檜山振興局の場合
-				switch m.municName1 {
+				switch m.MunicName1 {
 				case "檜山郡":
-					m.municAreaCode1 = "0136A"
+					m.MunicAreaCode1 = "0136A"
 				case "爾志郡":
-					m.municAreaCode1 = "0136B"
+					m.MunicAreaCode1 = "0136B"
 				case "奥尻郡":
-					m.municAreaCode1 = "0136C"
+					m.MunicAreaCode1 = "0136C"
 				case "瀬棚郡":
-					m.municAreaCode1 = "0136D"
+					m.MunicAreaCode1 = "0136D"
 				case "久遠郡":
-					m.municAreaCode1 = "0136E"
+					m.MunicAreaCode1 = "0136E"
 				}
 			case municCode >= 390 && municCode < 420:
 				// 後志総合振興局の場合
-				switch m.municName1 {
+				switch m.MunicName1 {
 				case "島牧郡":
-					m.municAreaCode1 = "0139A"
+					m.MunicAreaCode1 = "0139A"
 				case "寿都郡":
-					m.municAreaCode1 = "0139B"
+					m.MunicAreaCode1 = "0139B"
 				case "磯谷郡":
-					m.municAreaCode1 = "0139C"
+					m.MunicAreaCode1 = "0139C"
 				case "虻田郡":
-					m.municAreaCode1 = "0139D"
+					m.MunicAreaCode1 = "0139D"
 				case "岩内郡":
-					m.municAreaCode1 = "0139E"
+					m.MunicAreaCode1 = "0139E"
 				case "古宇郡":
-					m.municAreaCode1 = "0139F"
+					m.MunicAreaCode1 = "0139F"
 				case "積丹郡":
-					m.municAreaCode1 = "0139G"
+					m.MunicAreaCode1 = "0139G"
 				case "古平郡":
-					m.municAreaCode1 = "0139H"
+					m.MunicAreaCode1 = "0139H"
 				case "余市郡":
-					m.municAreaCode1 = "0139I"
+					m.MunicAreaCode1 = "0139I"
 				}
 			case municCode >= 420 && municCode < 450:
 				// 空知総合振興局の場合
-				switch m.municName1 {
+				switch m.MunicName1 {
 				case "空知郡":
-					m.municAreaCode1 = "0142A"
+					m.MunicAreaCode1 = "0142A"
 				case "夕張郡":
-					m.municAreaCode1 = "0142B"
+					m.MunicAreaCode1 = "0142B"
 				case "樺戸郡":
-					m.municAreaCode1 = "0142C"
+					m.MunicAreaCode1 = "0142C"
 				case "雨竜郡":
-					m.municAreaCode1 = "0142D"
+					m.MunicAreaCode1 = "0142D"
 				}
 			case municCode >= 450 && municCode < 480:
 				// 上川総合振興局の場合
-				switch m.municName1 {
+				switch m.MunicName1 {
 				case "上川郡":
-					m.municAreaCode1 = "0145A"
+					m.MunicAreaCode1 = "0145A"
 				case "空知郡":
-					m.municAreaCode1 = "0145B"
+					m.MunicAreaCode1 = "0145B"
 				case "勇払郡":
-					m.municAreaCode1 = "0145C"
+					m.MunicAreaCode1 = "0145C"
 				case "中川郡":
-					m.municAreaCode1 = "0145D"
+					m.MunicAreaCode1 = "0145D"
 				case "雨竜郡":
-					m.municAreaCode1 = "0145E"
+					m.MunicAreaCode1 = "0145E"
 				}
 			case municCode >= 480 && municCode < 510:
 				// 留萌振興局の場合
-				switch m.municName1 {
+				switch m.MunicName1 {
 				case "増毛郡":
-					m.municAreaCode1 = "0148A"
+					m.MunicAreaCode1 = "0148A"
 				case "留萌郡":
-					m.municAreaCode1 = "0148B"
+					m.MunicAreaCode1 = "0148B"
 				case "苫前郡":
-					m.municAreaCode1 = "0148C"
+					m.MunicAreaCode1 = "0148C"
 				case "天塩郡":
-					m.municAreaCode1 = "0148D"
+					m.MunicAreaCode1 = "0148D"
 				}
 			case municCode >= 510 && municCode < 540:
 				// 宗谷総合振興局の場合
-				switch m.municName1 {
+				switch m.MunicName1 {
 				case "宗谷郡":
-					m.municAreaCode1 = "0151A"
+					m.MunicAreaCode1 = "0151A"
 				case "枝幸郡":
-					m.municAreaCode1 = "0151B"
+					m.MunicAreaCode1 = "0151B"
 				case "天塩郡":
-					m.municAreaCode1 = "0151C"
+					m.MunicAreaCode1 = "0151C"
 				case "礼文郡":
-					m.municAreaCode1 = "0151D"
+					m.MunicAreaCode1 = "0151D"
 				case "利尻郡":
-					m.municAreaCode1 = "0151E"
+					m.MunicAreaCode1 = "0151E"
 				}
 			case municCode >= 540 && municCode < 570:
 				// オホーツク総合振興局の場合
-				switch m.municName1 {
+				switch m.MunicName1 {
 				case "網走郡":
-					m.municAreaCode1 = "0154A"
+					m.MunicAreaCode1 = "0154A"
 				case "斜里郡":
-					m.municAreaCode1 = "0154B"
+					m.MunicAreaCode1 = "0154B"
 				case "常呂郡":
-					m.municAreaCode1 = "0154C"
+					m.MunicAreaCode1 = "0154C"
 				case "紋別郡":
-					m.municAreaCode1 = "0154D"
+					m.MunicAreaCode1 = "0154D"
 				}
 			case municCode >= 570 && municCode < 600:
 				// 胆振総合振興局の場合
-				switch m.municName1 {
+				switch m.MunicName1 {
 				case "虻田郡":
-					m.municAreaCode1 = "0157A"
+					m.MunicAreaCode1 = "0157A"
 				case "有珠郡":
-					m.municAreaCode1 = "0157B"
+					m.MunicAreaCode1 = "0157B"
 				case "白老郡":
-					m.municAreaCode1 = "0157C"
+					m.MunicAreaCode1 = "0157C"
 				case "勇払郡":
-					m.municAreaCode1 = "0157D"
+					m.MunicAreaCode1 = "0157D"
 				}
 			case municCode >= 600 && municCode < 630:
 				// 日高振興局の場合
-				switch m.municName1 {
+				switch m.MunicName1 {
 				case "沙流郡":
-					m.municAreaCode1 = "0160A"
+					m.MunicAreaCode1 = "0160A"
 				case "新冠郡":
-					m.municAreaCode1 = "0160B"
+					m.MunicAreaCode1 = "0160B"
 				case "浦河郡":
-					m.municAreaCode1 = "0160C"
+					m.MunicAreaCode1 = "0160C"
 				case "様似郡":
-					m.municAreaCode1 = "0160D"
+					m.MunicAreaCode1 = "0160D"
 				case "幌泉郡":
-					m.municAreaCode1 = "0160E"
+					m.MunicAreaCode1 = "0160E"
 				case "日高郡":
-					m.municAreaCode1 = "0160F"
+					m.MunicAreaCode1 = "0160F"
 				}
 			case municCode >= 630 && municCode < 660:
 				// 十勝総合振興局の場合
-				switch m.municName1 {
+				switch m.MunicName1 {
 				case "河東郡":
-					m.municAreaCode1 = "0163A"
+					m.MunicAreaCode1 = "0163A"
 				case "上川郡":
-					m.municAreaCode1 = "0163B"
+					m.MunicAreaCode1 = "0163B"
 				case "河西郡":
-					m.municAreaCode1 = "0163C"
+					m.MunicAreaCode1 = "0163C"
 				case "広尾郡":
-					m.municAreaCode1 = "0163D"
+					m.MunicAreaCode1 = "0163D"
 				case "中川郡":
-					m.municAreaCode1 = "0163E"
+					m.MunicAreaCode1 = "0163E"
 				case "足寄郡":
-					m.municAreaCode1 = "0163F"
+					m.MunicAreaCode1 = "0163F"
 				case "十勝郡":
-					m.municAreaCode1 = "0163G"
+					m.MunicAreaCode1 = "0163G"
 				}
 			case municCode >= 660 && municCode < 690:
 				// 釧路総合振興局の場合
-				switch m.municName1 {
+				switch m.MunicName1 {
 				case "釧路郡":
-					m.municAreaCode1 = "0166A"
+					m.MunicAreaCode1 = "0166A"
 				case "厚岸郡":
-					m.municAreaCode1 = "0166B"
+					m.MunicAreaCode1 = "0166B"
 				case "川上郡":
-					m.municAreaCode1 = "0166C"
+					m.MunicAreaCode1 = "0166C"
 				case "阿寒郡":
-					m.municAreaCode1 = "0166D"
+					m.MunicAreaCode1 = "0166D"
 				case "白糠郡":
-					m.municAreaCode1 = "0166E"
+					m.MunicAreaCode1 = "0166E"
 				}
 			case municCode >= 690:
 				// 根室振興局の場合
-				switch m.municName1 {
+				switch m.MunicName1 {
 				case "野付郡":
-					m.municAreaCode1 = "0169A"
+					m.MunicAreaCode1 = "0169A"
 				case "標津郡":
-					m.municAreaCode1 = "0169B"
+					m.MunicAreaCode1 = "0169B"
 				case "目梨郡":
-					m.municAreaCode1 = "0169C"
+					m.MunicAreaCode1 = "0169C"
 				case "色丹郡":
-					m.municAreaCode1 = "0169D"
+					m.MunicAreaCode1 = "0169D"
 				case "国後郡":
-					m.municAreaCode1 = "0169E"
+					m.MunicAreaCode1 = "0169E"
 				case "択捉郡":
-					m.municAreaCode1 = "0169F"
+					m.MunicAreaCode1 = "0169F"
 				case "紗那郡":
-					m.municAreaCode1 = "0169G"
+					m.MunicAreaCode1 = "0169G"
 				case "蘂取郡":
-					m.municAreaCode1 = "0169H"
+					m.MunicAreaCode1 = "0169H"
 				}
 			}
 		}
-		rows = append(rows, []interface{}{m.stdAreaCode, m.prefAreaCode, m.subprefAreaCode, m.municAreaCode1, m.municAreaCode2, m.prefName, m.subprefName, m.municName1, m.municName2, current, current})
+		rows = append(rows, []interface{}{m.StdAreaCode, m.PrefAreaCode, m.SubPrefAreaCode, m.MunicAreaCode1, m.MunicAreaCode2, m.PrefName, m.SubPrefName, m.MunicName1, m.MunicName2, current, current})
 	}
 
 	cnt, err := pg.dbPool.CopyFrom(
 		context.Background(),
-		pgx.Identifier{"m_stdAreaCode"},
+		pgx.Identifier{"m_stdareacode"},
 		[]string{"std_area_code", "pref_area_code", "subpref_area_code", "munic_area_code1", "munic_area_code2", "pref_name", "subpref_name", "munic_name1", "munic_name2", "created_at", "updated_at"},
 		pgx.CopyFromRows(rows),
 	)
@@ -280,7 +280,7 @@ func (pg *Postgres) UpdateStdAreaCode() (err error) {
 	if err != nil {
 		return fmt.Errorf("標準地域コード 書き込み失敗： %w", err)
 	} else {
-		fmt.Printf("UpdatestdAreaCode: 書き込み成功(%d行)\n", cnt)
+		fmt.Printf("UpdateStdAreaCode: 書き込み成功(%d行)\n", cnt)
 	}
 
 	if int(cnt) != len(sacs) {
@@ -468,7 +468,7 @@ ORDER BY ?areacode`
 func (pg *Postgres) GetStdAreaCodes() ([]StdAreaCodeGet, error) {
 
 	query := `SELECT std_area_code, pref_area_code, subpref_area_code, munic_area_code1, munic_area_code2, pref_name, subpref_name, munic_name1, munic_name2, to_char(created_at,'YYYY/MM/DD HH24:MI:SS') AS "created_at", to_char(updated_at,'YYYY/MM/DD HH24:MI:SS') AS "updated_at"
-					FROM m_stdAreaCode
+					FROM m_stdareacode
 					ORDER BY std_area_code`
 
 	rows, err := pg.dbPool.Query(context.Background(), query)
@@ -482,13 +482,13 @@ func (pg *Postgres) GetStdAreaCodes() ([]StdAreaCodeGet, error) {
 }
 
 // 特定の都道府県に属する標準地域コードの一覧を取得する (神社の住所からの標準地域コード取得用)
-func (pg *Postgres) GetStdAreaCodeListByprefName(prefName string) (sacs []StdAreaCode, err error) {
+func (pg *Postgres) GetStdAreaCodeListByPrefName(prefname string) (sacs []StdAreaCode, err error) {
 
 	query := `SELECT std_area_code, pref_area_code, subpref_area_code, munic_area_code1, munic_area_code2, pref_name, subpref_name, munic_name1, munic_name2
-					FROM m_stdAreaCode
+					FROM m_stdareacode
 					WHERE pref_name = $1`
 
-	rows, err := pg.dbPool.Query(context.Background(), query, prefName)
+	rows, err := pg.dbPool.Query(context.Background(), query, prefname)
 	if err != nil {
 		return nil, fmt.Errorf("標準地域コード一覧 取得失敗： %w", err)
 	}
@@ -505,7 +505,7 @@ func (pg *Postgres) GetSacRelationship() (sacr []SacRelationship, err error) {
 
 	query := `SELECT shr.std_area_code, sac.pref_area_code, sac.subpref_area_code, sac.munic_area_code1, sac.munic_area_code2, sac.pref_name, sac.subpref_name, sac.munic_name1, sac.munic_name2
 					FROM t_shrines shr
-					INNER JOIN m_stdAreaCode sac
+					INNER JOIN m_stdareacode sac
 						ON shr.std_area_code = sac.std_area_code
 					GROUP BY shr.std_area_code, sac.pref_area_code, sac.subpref_area_code, sac.munic_area_code1, sac.munic_area_code2, sac.pref_name, sac.subpref_name, sac.munic_name1, sac.munic_name2
 					ORDER BY shr.std_area_code`
@@ -518,48 +518,48 @@ func (pg *Postgres) GetSacRelationship() (sacr []SacRelationship, err error) {
 
 	for rows.Next() {
 
-		err = rows.Scan(&sac.stdAreaCode, &sac.prefAreaCode, &sac.subprefAreaCode, &sac.municAreaCode1, &sac.municAreaCode2, &sac.prefName, &sac.subprefName, &sac.municName1, &sac.municName2)
+		err = rows.Scan(&sac.StdAreaCode, &sac.PrefAreaCode, &sac.SubPrefAreaCode, &sac.MunicAreaCode1, &sac.MunicAreaCode2, &sac.PrefName, &sac.SubPrefName, &sac.MunicName1, &sac.MunicName2)
 		if err != nil {
 			return nil, fmt.Errorf("スキャン失敗： %w", err)
 		}
 
-		prefCode, _ := strconv.Atoi(sac.stdAreaCode[0:2])
-		municCode, _ := strconv.Atoi(sac.stdAreaCode[2:5])
+		prefCode, _ := strconv.Atoi(sac.StdAreaCode[0:2])
+		municCode, _ := strconv.Atoi(sac.StdAreaCode[2:5])
 
 		switch {
 		case prefCode == 13 && municCode >= 100 && municCode <= 199:
 			// 東京都の特別区部に属する区の場合
-			msh[sac.prefAreaCode] = SacRelationship{sac.prefAreaCode, sac.prefName, "", "Pref", true}
-			msh[sac.subprefAreaCode] = SacRelationship{sac.subprefAreaCode, sac.subprefName, sac.prefAreaCode, "SubPref", true}
-			msh[sac.stdAreaCode] = SacRelationship{sac.stdAreaCode, sac.municName2, sac.subprefAreaCode, "Ward", false}
+			msh[sac.PrefAreaCode] = SacRelationship{sac.PrefAreaCode, sac.PrefName, "", "Pref", true}
+			msh[sac.SubPrefAreaCode] = SacRelationship{sac.SubPrefAreaCode, sac.SubPrefName, sac.PrefAreaCode, "SubPref", true}
+			msh[sac.StdAreaCode] = SacRelationship{sac.StdAreaCode, sac.MunicName2, sac.SubPrefAreaCode, "Ward", false}
 		case municCode >= 100 && municCode <= 199:
 			// 政令指定都市に属する区の場合
-			msh[sac.prefAreaCode] = SacRelationship{sac.prefAreaCode, sac.prefName, "", "Pref", true}
-			msh[sac.municAreaCode1] = SacRelationship{sac.municAreaCode1, sac.municName1, sac.prefAreaCode, "City", true}
-			msh[sac.stdAreaCode] = SacRelationship{sac.stdAreaCode, sac.municName2, sac.municAreaCode1, "Ward", false}
+			msh[sac.PrefAreaCode] = SacRelationship{sac.PrefAreaCode, sac.PrefName, "", "Pref", true}
+			msh[sac.MunicAreaCode1] = SacRelationship{sac.MunicAreaCode1, sac.MunicName1, sac.PrefAreaCode, "City", true}
+			msh[sac.StdAreaCode] = SacRelationship{sac.StdAreaCode, sac.MunicName2, sac.MunicAreaCode1, "Ward", false}
 		case municCode >= 201 && municCode <= 299:
 			// 政令指定都市以外の市の場合
-			msh[sac.prefAreaCode] = SacRelationship{sac.prefAreaCode, sac.prefName, "", "Pref", true}
-			msh[sac.stdAreaCode] = SacRelationship{sac.stdAreaCode, sac.municName1, sac.prefAreaCode, "City", false}
+			msh[sac.PrefAreaCode] = SacRelationship{sac.PrefAreaCode, sac.PrefName, "", "Pref", true}
+			msh[sac.StdAreaCode] = SacRelationship{sac.StdAreaCode, sac.MunicName1, sac.PrefAreaCode, "City", false}
 		case prefCode == 01 && municCode >= 300:
 			// 北海道の振興局に属する町村の場合
-			msh[sac.prefAreaCode] = SacRelationship{sac.prefAreaCode, sac.prefName, "", "Pref", true}
-			msh[sac.subprefAreaCode] = SacRelationship{sac.subprefAreaCode, sac.subprefName, sac.prefAreaCode, "SubPref", true}
-			msh[sac.municAreaCode1] = SacRelationship{sac.municAreaCode1, sac.municName1, sac.subprefAreaCode, "District", true}
-			msh[sac.stdAreaCode] = SacRelationship{sac.stdAreaCode, sac.municName2, sac.municAreaCode1, "Town/Village", false}
+			msh[sac.PrefAreaCode] = SacRelationship{sac.PrefAreaCode, sac.PrefName, "", "Pref", true}
+			msh[sac.SubPrefAreaCode] = SacRelationship{sac.SubPrefAreaCode, sac.SubPrefName, sac.PrefAreaCode, "SubPref", true}
+			msh[sac.MunicAreaCode1] = SacRelationship{sac.MunicAreaCode1, sac.MunicName1, sac.SubPrefAreaCode, "District", true}
+			msh[sac.StdAreaCode] = SacRelationship{sac.StdAreaCode, sac.MunicName2, sac.MunicAreaCode1, "Town/Village", false}
 		case prefCode == 13 && municCode >= 360:
 			// 東京都の支庁(離島)に属する町村の場合
-			msh[sac.prefAreaCode] = SacRelationship{sac.prefAreaCode, sac.prefName, "", "Pref", true}
-			msh[sac.subprefAreaCode] = SacRelationship{sac.subprefAreaCode, sac.subprefName, sac.prefAreaCode, "SubPref", true}
-			msh[sac.stdAreaCode] = SacRelationship{sac.stdAreaCode, sac.municName2, sac.subprefAreaCode, "Town/Village", false}
+			msh[sac.PrefAreaCode] = SacRelationship{sac.PrefAreaCode, sac.PrefName, "", "Pref", true}
+			msh[sac.SubPrefAreaCode] = SacRelationship{sac.SubPrefAreaCode, sac.SubPrefName, sac.PrefAreaCode, "SubPref", true}
+			msh[sac.StdAreaCode] = SacRelationship{sac.StdAreaCode, sac.MunicName2, sac.SubPrefAreaCode, "Town/Village", false}
 		case municCode >= 300:
 			// 北海道以外の郡に属する町村の場合
-			msh[sac.prefAreaCode] = SacRelationship{sac.prefAreaCode, sac.prefName, "", "Pref", true}
-			msh[sac.municAreaCode1] = SacRelationship{sac.municAreaCode1, sac.municName1, sac.prefAreaCode, "District", true}
-			msh[sac.stdAreaCode] = SacRelationship{sac.stdAreaCode, sac.municName2, sac.municAreaCode1, "Town/Village", false}
+			msh[sac.PrefAreaCode] = SacRelationship{sac.PrefAreaCode, sac.PrefName, "", "Pref", true}
+			msh[sac.MunicAreaCode1] = SacRelationship{sac.MunicAreaCode1, sac.MunicName1, sac.PrefAreaCode, "District", true}
+			msh[sac.StdAreaCode] = SacRelationship{sac.StdAreaCode, sac.MunicName2, sac.MunicAreaCode1, "Town/Village", false}
 		default:
 			// 上記に該当しない場合(エラーとする)
-			fmt.Printf("[エラー] prefName: %s, subprefName: %s, municName1: %s, municName2: %s, stdAreaCode: %s\n", sac.prefName, sac.subprefName, sac.municName1, sac.municName2, sac.stdAreaCode)
+			fmt.Printf("[エラー] PrefName: %s, SubPrefName: %s, MunicName1: %s, MunicName2: %s, StdAreaCode: %s\n", sac.PrefName, sac.SubPrefName, sac.MunicName1, sac.MunicName2, sac.StdAreaCode)
 		}
 
 	}
