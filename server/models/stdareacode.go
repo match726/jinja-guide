@@ -10,7 +10,7 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-type stdAreaCode struct {
+type StdAreaCode struct {
 	stdAreaCode     string
 	prefAreaCode    string
 	subprefAreaCode string
@@ -23,8 +23,8 @@ type stdAreaCode struct {
 }
 
 // SELECT用の構造体(タイムスタンプをYYYY/MM/DD HH24:MM:SS形式で取得する)
-type stdAreaCodeGet struct {
-	stdAreaCode
+type StdAreaCodeGet struct {
+	StdAreaCode
 	createdAt string
 	updatedAt string
 }
@@ -33,15 +33,15 @@ type stdAreaCodeGet struct {
 type SacRelationship struct {
 	stdAreaCode    string
 	name           string
-	supstdAreaCode string
+	supStdAreaCode string
 	kinds          string
 	hasChild       bool
 }
 
 // 標準エリアコードの最新化
-func (pg *Postgres) UpdatestdAreaCode() (err error) {
+func (pg *Postgres) UpdateStdAreaCode() (err error) {
 
-	var sacs []stdAreaCode
+	var sacs []StdAreaCode
 	var rows [][]interface{}
 
 	query := `TRUNCATE TABLE m_stdAreaCode`
@@ -52,7 +52,7 @@ func (pg *Postgres) UpdatestdAreaCode() (err error) {
 		return fmt.Errorf("標準地域コード TRUNCATE失敗： %w", err)
 	}
 
-	sacs = GetAllstdAreaCodesFromEstat()
+	sacs = GetAllStdAreaCodesFromEstat()
 	current := GetNowTime()
 
 	for _, m := range sacs {
@@ -292,7 +292,7 @@ func (pg *Postgres) UpdatestdAreaCode() (err error) {
 }
 
 // e-Statの統計LODから最新の標準地域コードを取得する
-func GetAllstdAreaCodesFromEstat() (sacs []stdAreaCode) {
+func GetAllStdAreaCodesFromEstat() (sacs []StdAreaCode) {
 
 	prefix := `PREFIX sacs: <http://data.e-stat.go.jp/lod/terms/sacs#>
 PREFIX dcterms: <http://purl.org/dc/terms/>
@@ -457,7 +457,7 @@ ORDER BY ?areacode`
 	resp := QuerySparql(os.Getenv("ESTAT_ENDPOINT"), query)
 
 	for _, m := range resp.Results.Bindings {
-		sacs = append(sacs, stdAreaCode{m["AREACODE"].Value, m["PSAC"].Value, m["SPSAC"].Value, m["M1SAC"].Value, m["M2SAC"].Value, m["PREF"].Value, m["SUBPREF"].Value, m["MUNIC1"].Value, m["MUNIC2"].Value})
+		sacs = append(sacs, StdAreaCode{m["AREACODE"].Value, m["PSAC"].Value, m["SPSAC"].Value, m["M1SAC"].Value, m["M2SAC"].Value, m["PREF"].Value, m["SUBPREF"].Value, m["MUNIC1"].Value, m["MUNIC2"].Value})
 	}
 
 	return sacs
@@ -465,7 +465,7 @@ ORDER BY ?areacode`
 }
 
 // 標準地域コードの一覧を全件取得する
-func (pg *Postgres) GetstdAreaCodes() ([]stdAreaCodeGet, error) {
+func (pg *Postgres) GetStdAreaCodes() ([]StdAreaCodeGet, error) {
 
 	query := `SELECT std_area_code, pref_area_code, subpref_area_code, munic_area_code1, munic_area_code2, pref_name, subpref_name, munic_name1, munic_name2, to_char(created_at,'YYYY/MM/DD HH24:MI:SS') AS "created_at", to_char(updated_at,'YYYY/MM/DD HH24:MI:SS') AS "updated_at"
 					FROM m_stdAreaCode
@@ -477,12 +477,12 @@ func (pg *Postgres) GetstdAreaCodes() ([]stdAreaCodeGet, error) {
 	}
 	defer rows.Close()
 
-	return pgx.CollectRows(rows, pgx.RowToStructByName[stdAreaCodeGet])
+	return pgx.CollectRows(rows, pgx.RowToStructByName[StdAreaCodeGet])
 
 }
 
 // 特定の都道府県に属する標準地域コードの一覧を取得する (神社の住所からの標準地域コード取得用)
-func (pg *Postgres) GetstdAreaCodeListByprefName(prefName string) (sacs []stdAreaCode, err error) {
+func (pg *Postgres) GetStdAreaCodeListByprefName(prefName string) (sacs []StdAreaCode, err error) {
 
 	query := `SELECT std_area_code, pref_area_code, subpref_area_code, munic_area_code1, munic_area_code2, pref_name, subpref_name, munic_name1, munic_name2
 					FROM m_stdAreaCode
@@ -494,13 +494,13 @@ func (pg *Postgres) GetstdAreaCodeListByprefName(prefName string) (sacs []stdAre
 	}
 	defer rows.Close()
 
-	return pgx.CollectRows(rows, pgx.RowToStructByName[stdAreaCode])
+	return pgx.CollectRows(rows, pgx.RowToStructByName[StdAreaCode])
 
 }
 
 func (pg *Postgres) GetSacRelationship() (sacr []SacRelationship, err error) {
 
-	var sac stdAreaCode
+	var sac StdAreaCode
 	msh := make(map[string]SacRelationship)
 
 	query := `SELECT shr.std_area_code, sac.pref_area_code, sac.subpref_area_code, sac.munic_area_code1, sac.munic_area_code2, sac.pref_name, sac.subpref_name, sac.munic_name1, sac.munic_name2
