@@ -16,22 +16,22 @@ type ShrineDetails = {
   name: string
   furigana: string
   image: string
-  alt_name: string[]
+  altName: string[]
   address: string
-  place_id: string
+  placeId: string
   description: string
   tags: string[]
-  founded_year: string
-  object_of_worship: string[]
-  shrine_rank: string[]
-  has_goshuin: boolean
-  website_url: string
-  wikipedia_url: string
+  foundedYear: string
+  objectOfWorship: string[]
+  shrineRank: string[]
+  hasGoshuin: boolean
+  websiteUrl: string
+  wikipediaUrl: string
 };
 
 const ShrineInfo = () => {
 
-  const [shrDetails, setShrDetails] = useState<ShrineDetails>({name: "", furigana: "", alt_name: [""], address: "", place_id: "", image: "", description: "", tags: [""], founded_year: "", object_of_worship: [""], shrine_rank: [""], has_goshuin: false, website_url: "", wikipedia_url: ""});
+  const [shrDetails, setShrDetails] = useState<ShrineDetails>({name: "", furigana: "", altName: [""], address: "", placeId: "", image: "", description: "", tags: [""], foundedYear: "", objectOfWorship: [""], shrineRank: [""], hasGoshuin: false, websiteUrl: "", wikipediaUrl: ""});
   const search = useLocation().search;
   // プラス記号が空白として解釈されるため、置換する
   const query = new URLSearchParams(search.replace("+", "%2B"));
@@ -76,13 +76,13 @@ const ShrineInfo = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <h3 className="text-lg font-semibold mb-2">別名称</h3>
-                  {shrDetails.alt_name.map((item, index) => (
+                  {shrDetails.altName.map((item, index) => (
                     <li key={index}>{item}</li>
                   ))}
               </div>
               <div>
                 <h3 className="text-lg font-semibold mb-2">所在地</h3>
-                <a href={"https://www.google.com/maps/search/?api=1&query=" + shrDetails.name + "&query_place_id=" + shrDetails.place_id}
+                <a href={"https://www.google.com/maps/search/?api=1&query=" + shrDetails.name + "&query_place_id=" + shrDetails.placeId}
                   className="text-blue-600 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 rounded px-1"
                   target="_blank"
                 >
@@ -91,25 +91,25 @@ const ShrineInfo = () => {
               </div>
               <div>
                 <h3 className="text-lg font-semibold mb-2">創建年</h3>
-                <p>{shrDetails.founded_year}</p>
+                <p>{shrDetails.foundedYear}</p>
               </div>
               <div>
                 <h3 className="text-lg font-semibold mb-2">社格</h3>
-                  {shrDetails.shrine_rank.map((item, index) => (
+                  {shrDetails.shrineRank.map((item, index) => (
                     <li key={index}>{item}</li>
                   ))}
               </div>
               <div>
                 <h3 className="text-lg font-semibold mb-2">御祭神</h3>
                 <ul className="list-disc list-inside">
-                  {shrDetails.object_of_worship.map((deity, index) => (
+                  {shrDetails.objectOfWorship.map((deity, index) => (
                     <li key={index}>{deity}</li>
                   ))}
                 </ul>
               </div>
               <div>
                 <h3 className="text-lg font-semibold mb-2">御朱印</h3>
-                <p>{shrDetails.has_goshuin ? "あり" : "なし"}</p>
+                <p>{shrDetails.hasGoshuin ? "あり" : "なし"}</p>
               </div>
               <div className="md:col-span-2">
                 <h3 className="text-lg font-semibold mb-2">説明</h3>
@@ -126,7 +126,7 @@ const ShrineInfo = () => {
               <div>
                 <h3 className="text-lg font-semibold mb-2">公式HP</h3>
                 <Button variant="link" className="p-0">
-                  <a href={shrDetails.website_url} target="_blank" rel="noopener noreferrer" className="flex items-center">
+                  <a href={shrDetails.websiteUrl} target="_blank" rel="noopener noreferrer" className="flex items-center">
                     公式サイトへ <ExternalLink className="ml-1 h-4 w-4" />
                   </a>
                 </Button>
@@ -134,7 +134,7 @@ const ShrineInfo = () => {
               <div>
                 <h3 className="text-lg font-semibold mb-2">Wikipedia</h3>
                 <Button variant="link" className="p-0">
-                  <a href={shrDetails.wikipedia_url} target="_blank" rel="noopener noreferrer" className="flex items-center">
+                  <a href={shrDetails.wikipediaUrl} target="_blank" rel="noopener noreferrer" className="flex items-center">
                     Wikipediaへ <ExternalLink className="ml-1 h-4 w-4" />
                   </a>
                 </Button>

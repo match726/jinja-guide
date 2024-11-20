@@ -15,10 +15,10 @@ const BACKEND_ENDPOINT=import.meta.env.VITE_BACKEND_ENDPOINT;
 type Shrine = {
   name: string
   address: string
-  plus_code: string
-  place_id: string
-  object_of_worship: string[]
-  has_goshuin: boolean
+  plusCode: string
+  placeId: string
+  objectOfWorship: string[]
+  hasGoshuin: boolean
 };
 
 const ShrineList = () => {
@@ -74,11 +74,11 @@ const ShrineList = () => {
             <TableBody>
               {shrines.map((shrine: Shrine, index) => (
                 <TableRow 
-                  key={shrine.plus_code}
+                  key={shrine.plusCode}
                   className={`${index % 2 === 0 ? 'bg-red-50' : 'bg-white'} hover:bg-red-100 transition-colors`}
                 >
                   <TableCell className="font-medium">
-                    <a href={FRONTEND_URL + "/shrine?code=" + shrine.plus_code}
+                    <a href={FRONTEND_URL + "/shrine?code=" + shrine.plusCode}
                       className="text-blue-600 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 rounded px-1"
                       target="_blank"
                     >
@@ -86,16 +86,16 @@ const ShrineList = () => {
                     </a>
                   </TableCell>
                   <TableCell>
-                    <a href={"https://www.google.com/maps/search/?api=1&query=" + shrine.name + "&query_place_id=" + shrine.place_id}
+                    <a href={"https://www.google.com/maps/search/?api=1&query=" + shrine.name + "&query_place_id=" + shrine.placeId}
                       className="text-blue-600 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 rounded px-1"
                       target="_blank"
                     >
                       {shrine.address}
                     </a>
                   </TableCell>
-                  <TableCell>{shrine.object_of_worship}</TableCell>
+                  <TableCell>{shrine.objectOfWorship}</TableCell>
                   <TableCell className="text-center">
-                    {shrine.has_goshuin && (
+                    {shrine.hasGoshuin && (
                       <Stamp className="inline-block text-red-800" size={24} />
                     )}
                   </TableCell>
