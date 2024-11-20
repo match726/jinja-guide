@@ -13,48 +13,48 @@ import (
 )
 
 type Shrine struct {
-	Name        string    `json:"name"`
-	Address     string    `json:"address"`
-	StdAreaCode string    `json:"std_area_code"`
-	PlusCode    string    `json:"plus_code"`
-	Seq         string    `json:"seq"`
-	PlaceID     string    `json:"place_id"`
-	Latitude    float64   `json:"latitude"`
-	Longitude   float64   `json:"longitude"`
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
+	name        string
+	address     string
+	stdAreaCode string
+	plusCode    string
+	seq         string
+	placeId     string
+	latitude    float64
+	longitude   float64
+	createdAt   time.Time
+	updatedAt   time.Time
 }
 
-type ShrineContents struct {
-	Id        int
-	Keyword1  string
-	Keyword2  string
-	Content1  string
-	Content2  string
-	Content3  string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+type Shrinecontents struct {
+	id        int
+	keyword1  string
+	keyword2  string
+	content1  string
+	content2  string
+	content3  string
+	createdAt time.Time
+	updatedAt time.Time
 }
 
 type ShrineDetails struct {
-	Name            string   `json:"name"`
-	Furigana        string   `json:"furigana"`
-	Image           string   `json:"image"`
-	AltName         []string `json:"alt_name"`
-	Address         string   `json:"address"`
-	PlaceID         string   `json:"place_id"`
-	Description     string   `json:"description"`
-	Tags            []string `json:"tags"`
-	FoundedYear     string   `json:"founded_year"`
-	ObjectOfWorship []string `json:"object_of_worship"`
-	ShrineRank      []string `json:"shrine_rank"`
-	HasGoshuin      bool     `json:"has_goshuin"`
-	WebsiteURL      string   `json:"website_url"`
-	WikipediaURL    string   `json:"wikipedia_url"`
+	name            string
+	furigana        string
+	image           string
+	altName         []string
+	address         string
+	placeId         string
+	description     string
+	tags            []string
+	foundedYear     string
+	objectOfWorship []string
+	shrineRank      []string
+	hasGoshuin      bool
+	websiteUrl      string
+	wikipediaUrl    string
 }
 
 // 住所から都道府県部分を抽出する
-func ExtractPrefName(address string) string {
+func ExtractPrefname(address string) string {
 
 	// ★県の一致が\Wでは雑過ぎない??
 	reg, _ := regexp.Compile(`^東京都|^北海道|^(大阪|京都)府|^\W{2,3}県`)
@@ -75,7 +75,7 @@ func GetLocnInfoFromPlaceAPI(shr *Shrine) error {
 	}
 
 	req := &maps.TextSearchRequest{
-		Query:    shr.Name + "　" + shr.Address,
+		Query:    shr.name + "　" + shr.address,
 		Language: "ja",
 	}
 
@@ -86,10 +86,10 @@ func GetLocnInfoFromPlaceAPI(shr *Shrine) error {
 		fmt.Printf("%#v\n", resp)
 	}
 
-	shr.PlaceID = resp.Results[0].PlaceID
-	shr.Latitude = resp.Results[0].Geometry.Location.Lat
-	shr.Longitude = resp.Results[0].Geometry.Location.Lng
-	shr.PlusCode = olc.Encode(shr.Latitude, shr.Longitude, 11)
+	shr.placeId = resp.Results[0].PlaceID
+	shr.latitude = resp.Results[0].Geometry.Location.Lat
+	shr.longitude = resp.Results[0].Geometry.Location.Lng
+	shr.plusCode = olc.Encode(shr.latitude, shr.longitude, 11)
 
 	return nil
 
@@ -124,14 +124,14 @@ func (pg *Postgres) InsertShrine(shr *Shrine) error {
 						)`
 
 	args := pgx.NamedArgs{
-		"name":        shr.Name,
-		"address":     shr.Address,
-		"stdAreaCode": shr.StdAreaCode,
-		"plusCode":    shr.PlusCode,
-		"seq":         shr.Seq,
-		"placeId":     shr.PlaceID,
-		"latitude":    shr.Latitude,
-		"longitude":   shr.Longitude,
+		"name":        shr.name,
+		"address":     shr.address,
+		"stdAreaCode": shr.stdAreaCode,
+		"plusCode":    shr.plusCode,
+		"seq":         shr.seq,
+		"placeId":     shr.placeId,
+		"latitude":    shr.latitude,
+		"longitude":   shr.longitude,
 		"createdAt":   GetNowTime(),
 		"updatedAt":   GetNowTime(),
 	}
@@ -145,42 +145,42 @@ func (pg *Postgres) InsertShrine(shr *Shrine) error {
 
 }
 
-func (pg *Postgres) GetShrinesByStdAreaCode(sacr *SacRelationship) (shrs []*Shrine, err error) {
+func (pg *Postgres) GetShrinesBystdAreaCode(sacr *SacRelationship) (shrs []*Shrine, err error) {
 
 	var query string
 
-	switch sacr.Kinds {
+	switch sacr.kinds {
 	case "Pref":
 		query = `SELECT shr.name, shr.address, shr.plus_code, shr.place_id
 					FROM t_shrines shr
-					INNER JOIN m_stdareacode sac
+					INNER JOIN m_stdAreaCode sac
 						ON sac.pref_area_code = $1
 						AND shr.std_area_code = sac.std_area_code
 					ORDER BY shr.std_area_code, shr.address, shr.name`
 	case "SubPref":
 		query = `SELECT shr.name, shr.address, shr.plus_code, shr.place_id
 					FROM t_shrines shr
-					INNER JOIN m_stdareacode sac
+					INNER JOIN m_stdAreaCode sac
 						ON sac.subpref_area_code = $1
 						AND shr.std_area_code = sac.std_area_code
 					ORDER BY shr.std_area_code, shr.address, shr.name`
 	case "City", "District":
 		query = `SELECT shr.name, shr.address, shr.plus_code, shr.place_id
 					FROM t_shrines shr
-					INNER JOIN m_stdareacode sac
+					INNER JOIN m_stdAreaCode sac
 						ON sac.munic_area_code1 = $1
 						AND shr.std_area_code = sac.std_area_code
 					ORDER BY shr.std_area_code, shr.address, shr.name`
 	case "Town/Village", "Ward":
 		query = `SELECT shr.name, shr.address, shr.plus_code, shr.place_id
 					FROM t_shrines shr
-					INNER JOIN m_stdareacode sac
+					INNER JOIN m_stdAreaCode sac
 						ON sac.munic_area_code2 = $1
 						AND shr.std_area_code = sac.std_area_code
 					ORDER BY shr.std_area_code, shr.address, shr.name`
 	}
 
-	rows, err := pg.dbPool.Query(context.Background(), query, sacr.StdAreaCode)
+	rows, err := pg.dbPool.Query(context.Background(), query, sacr.stdAreaCode)
 	if err != nil {
 		return nil, fmt.Errorf("神社一覧 取得失敗： %w", err)
 	}
@@ -190,7 +190,7 @@ func (pg *Postgres) GetShrinesByStdAreaCode(sacr *SacRelationship) (shrs []*Shri
 
 		var shr Shrine
 
-		err = rows.Scan(&shr.Name, &shr.Address, &shr.PlusCode, &shr.PlaceID)
+		err = rows.Scan(&shr.name, &shr.address, &shr.plusCode, &shr.placeId)
 		if err != nil {
 			return nil, fmt.Errorf("スキャン失敗： %w", err)
 		}
@@ -210,9 +210,9 @@ func (pg *Postgres) GetShrineDetails(shr *Shrine) (shrd ShrineDetails, err error
 						FROM t_shrines shr
 						WHERE shr.plus_code = $1`
 
-	row := pg.dbPool.QueryRow(context.Background(), query1, shr.PlusCode)
+	row := pg.dbPool.QueryRow(context.Background(), query1, shr.plusCode)
 
-	err = row.Scan(&shrd.Name, &shrd.Address, &shrd.PlaceID)
+	err = row.Scan(&shrd.name, &shrd.address, &shrd.placeId)
 	if err != nil {
 		return shrd, fmt.Errorf("スキャン１失敗： %w", err)
 	}
@@ -222,7 +222,7 @@ func (pg *Postgres) GetShrineDetails(shr *Shrine) (shrd ShrineDetails, err error
               WHERE shrc.keyword1 = $1
               ORDER BY shrc.id, shrc.keyword1, shrc.keyword2`
 
-	rows, err := pg.dbPool.Query(context.Background(), query2, shr.PlusCode)
+	rows, err := pg.dbPool.Query(context.Background(), query2, shr.plusCode)
 	if err != nil {
 		return shrd, fmt.Errorf("神社詳細情報 取得失敗： %w", err)
 	}
@@ -230,58 +230,58 @@ func (pg *Postgres) GetShrineDetails(shr *Shrine) (shrd ShrineDetails, err error
 
 	for rows.Next() {
 
-		var shrc ShrineContents
+		var shrc Shrinecontents
 
-		err = rows.Scan(&shrc.Id, &shrc.Content1, &shrc.Content2, &shrc.Content3)
+		err = rows.Scan(&shrc.id, &shrc.content1, &shrc.content2, &shrc.content3)
 		if err != nil {
 			return shrd, fmt.Errorf("スキャン失敗： %w", err)
 		}
 
-		switch shrc.Id {
+		switch shrc.id {
 		case 1:
 			// 振り仮名の設定
-			shrd.Furigana = shrc.Content1
+			shrd.furigana = shrc.content1
 		case 2:
 			// 別名称の設定
-			shrd.AltName = append(shrd.AltName, shrc.Content1)
+			shrd.altName = append(shrd.altName, shrc.content1)
 		case 3:
 			// 説明の設定
-			shrd.Description = shrc.Content1
+			shrd.description = shrc.content1
 		case 4:
 			// 関連タグの設定
-			shrd.Tags = append(shrd.Tags, shrc.Content1)
+			shrd.tags = append(shrd.tags, shrc.content1)
 		case 5:
 			// 創建年の設定
-			shrd.FoundedYear = shrc.Content1
+			shrd.foundedYear = shrc.content1
 		case 6:
 			// 御祭神の設定
-			shrd.ObjectOfWorship = append(shrd.ObjectOfWorship, shrc.Content1)
+			shrd.objectOfWorship = append(shrd.objectOfWorship, shrc.content1)
 		case 7:
 			// 社格の設定
-			shrd.ShrineRank = append(shrd.ShrineRank, shrc.Content1)
+			shrd.shrineRank = append(shrd.shrineRank, shrc.content1)
 		//case 8:
 		// 御朱印の設定
 		case 9:
 			// 公式サイトの設定
-			shrd.WebsiteURL = shrc.Content1
+			shrd.websiteUrl = shrc.content1
 		case 10:
 			// Wikipediaの設定
-			shrd.WikipediaURL = shrc.Content1
+			shrd.wikipediaUrl = shrc.content1
 		}
 
 	}
 
-	if len(shrd.AltName) == 0 {
-		shrd.AltName = []string{"登録なし"}
+	if len(shrd.altName) == 0 {
+		shrd.altName = []string{"登録なし"}
 	}
-	if len(shrd.Tags) == 0 {
-		shrd.Tags = []string{"登録なし"}
+	if len(shrd.tags) == 0 {
+		shrd.tags = []string{"登録なし"}
 	}
-	if len(shrd.ObjectOfWorship) == 0 {
-		shrd.ObjectOfWorship = []string{"登録なし"}
+	if len(shrd.objectOfWorship) == 0 {
+		shrd.objectOfWorship = []string{"登録なし"}
 	}
-	if len(shrd.ShrineRank) == 0 {
-		shrd.ShrineRank = []string{"登録なし"}
+	if len(shrd.shrineRank) == 0 {
+		shrd.shrineRank = []string{"登録なし"}
 	}
 
 	return shrd, err
