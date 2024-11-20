@@ -35,7 +35,7 @@ const ShrineInfo = () => {
   const search = useLocation().search;
   // プラス記号が空白として解釈されるため、置換する
   const query = new URLSearchParams(search.replace("+", "%2B"));
-  const payload = {plus_code: query.get('code')};
+  const payload = {plusCode: query.get('code')};
 
   useEffect(() => {
 
