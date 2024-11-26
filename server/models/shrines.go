@@ -278,7 +278,7 @@ func (pg *Postgres) GetShrineDetails(shr *Shrine) (shrd ShrineDetails, err error
 			return shrd, fmt.Errorf("%w", err)
 		} else {
 			shrd.Image = image
-			if len(shrd.Description) != 0 {
+			if len(shrd.Description) == 0 {
 				shrd.Description = extract
 			}
 		}
