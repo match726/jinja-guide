@@ -9,9 +9,9 @@ import (
 )
 
 type WikiMediaResp struct {
-	Thumbnail struct {
+	OriginalImage struct {
 		Source string `json:"source"`
-	} `json:"thumbnail"`
+	} `json:"originalimage"`
 	Extarct string `json:"extract"`
 }
 
@@ -33,6 +33,6 @@ func GetShrineDetailsFromWikipedia(url string) (image string, extract string, er
 
 	json.Unmarshal(body, &wikiMediaResp)
 
-	return wikiMediaResp.Thumbnail.Source, wikiMediaResp.Extarct, nil
+	return wikiMediaResp.OriginalImage.Source, wikiMediaResp.Extarct, nil
 
 }
