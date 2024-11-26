@@ -271,6 +271,19 @@ func (pg *Postgres) GetShrineDetails(shr *Shrine) (shrd ShrineDetails, err error
 
 	}
 
+	// Wikipediaから情報取得
+	if len(shrd.WikipediaURL) != 0 {
+		image, extract, err := GetShrineDetailsFromWikipedia(shrd.WikipediaURL)
+		if err != nil {
+			return shrd, fmt.Errorf("%w", err)
+		} else {
+			shrd.Image = image
+			if len(shrd.Description) != 0 {
+				shrd.Description = extract
+			}
+		}
+	}
+
 	if len(shrd.AltName) == 0 {
 		shrd.AltName = []string{"登録なし"}
 	}

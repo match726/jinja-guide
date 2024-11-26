@@ -82,6 +82,7 @@ func writejsonResp(w http.ResponseWriter, shrs []*models.Shrine) {
 			HasGoshuin:      false,
 		})
 	}
+
 	b, err := json.Marshal(shrListResp)
 	if err != nil {
 		fmt.Println(err)
@@ -92,6 +93,7 @@ func writejsonResp(w http.ResponseWriter, shrs []*models.Shrine) {
 		}
 		return
 	}
+
 	w.WriteHeader(http.StatusOK)
 	if _, err := w.Write(b); err != nil {
 		fmt.Println(err)
