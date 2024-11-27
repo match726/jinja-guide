@@ -253,7 +253,7 @@ func (pg *Postgres) GetShrineDetails(shr *Shrine) (shrd ShrineDetails, err error
 			shrd.Tags = append(shrd.Tags, shrc.Content1)
 		case 5:
 			// 創建年の設定
-			if _, err = strconv.Atoi(shrd.FoundedYear); err == nil {
+			if _, err = strconv.Atoi(shrc.Content1); err == nil {
 				shrd.FoundedYear = shrc.Content1 + "年"
 			} else {
 				shrd.FoundedYear = shrc.Content1
