@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"regexp"
+	"strconv"
 	"time"
 
 	olc "github.com/google/open-location-code/go"
@@ -252,7 +253,12 @@ func (pg *Postgres) GetShrineDetails(shr *Shrine) (shrd ShrineDetails, err error
 			shrd.Tags = append(shrd.Tags, shrc.Content1)
 		case 5:
 			// 創建年の設定
-			shrd.FoundedYear = shrc.Content1
+			if _, err = strconv.Atoi(shrd.FoundedYear); err == nil {
+				shrd.FoundedYear = shrc.Content1 + "年"
+			} else {
+				shrd.FoundedYear = shrc.Content1
+			}
+
 		case 6:
 			// 御祭神の設定
 			shrd.ObjectOfWorship = append(shrd.ObjectOfWorship, shrc.Content1)
