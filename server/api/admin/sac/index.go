@@ -37,7 +37,7 @@ func FetchStdAreaCodes(w http.ResponseWriter, r *http.Request) {
 	}
 	defer pg.ClosePool()
 
-	sacs, err = pg.GetStdAreaCodes()
+	sacs, err = pg.GetStdAreaCodeList()
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(sacs)

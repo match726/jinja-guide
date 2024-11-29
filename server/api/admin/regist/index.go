@@ -4,10 +4,16 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strings"
 
 	"github.com/match726/jinja-guide/tree/main/server/models"
 )
+
+type ShrinePostReq struct {
+	Name         string `json:"name"`
+	Furigana     string `json:"furigana"`
+	Address      string `json:"address"`
+	WikipediaURL string `json:"wikipediaUrl"`
+}
 
 func ShrineRegistHandler(w http.ResponseWriter, r *http.Request) {
 
@@ -28,18 +34,22 @@ func RegisterShrine(w http.ResponseWriter, r *http.Request) {
 
 	var pg *models.Postgres
 	var err error
-	var sacs []models.StdAreaCode
 
 	// HTTPリクエストからボディを取得
 	body := make([]byte, r.ContentLength)
 	r.Body.Read(body)
 
-	// Shrine構造体へ変換
-	var shr *models.Shrine
-	err = json.Unmarshal([]byte(string(body)), &shr)
+	// ShrinePostReq構造体へ変換
+	var shr models.Shrine
+	var shrpr *ShrinePostReq
+	err = json.Unmarshal([]byte(string(body)), &shrpr)
 	if err != nil {
 		fmt.Printf("[Err] <RegisterShrine> Err: パラメータ取得エラー %s\n", err)
 	}
+
+	// Shrine構造体へ代入
+	shr.ShrineName(shrpr.Name)
+	shr.ShrineAddress(shrpr.Address)
 
 	pg, err = models.NewPool()
 	if err != nil {
@@ -50,42 +60,44 @@ func RegisterShrine(w http.ResponseWriter, r *http.Request) {
 
 	// 住所より都道府県の取得
 	prefname := models.ExtractPrefName(shr.Address)
-	fmt.Printf("prefname: %s\n", prefname)
 	// 該当の都道府県の標準地域コード一覧を取得
-	sacs, err = pg.GetStdAreaCodeListByPrefName(prefname)
+	err = pg.GetStdAreaCodeByPrefName(prefname, &shr)
 	if err != nil {
-		fmt.Printf("[Err] <GetStdAreaCodeListByPrefName> Err:%s\n", err)
+		fmt.Printf("[Err] <GetStdAreaCodeByPrefName> Err:%s\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 
-	// 標準地域コードの紐づけ
-	for i := len(sacs) - 1; i >= 0; i-- {
-		if sacs[i].MunicName1 == "" && sacs[i].MunicName2 == "" {
-			continue
-		} else {
-			keyword := sacs[i].PrefName + sacs[i].MunicName1 + sacs[i].MunicName2
-			if strings.HasPrefix(shr.Address, keyword) {
-				shr.StdAreaCode = sacs[i].StdAreaCode
-				break
-			}
-		}
-	}
-
-	// PlaceAPIから位置情報(PlaceID、緯度、経度)、取得した緯度、経度からPlusCodeを取得
-	// ★画像を取得
-	err = models.GetLocnInfoFromPlaceAPI(shr)
+	// PlaceAPIから位置情報(PlaceID、緯度、経度)、及び取得した緯度経度からPlusCodeを取得
+	err = models.GetLocnInfoFromPlaceAPI(&shr)
 	if err != nil {
 		fmt.Printf("[Err] <GetLocnInfoFromPlaceAPI> Err:%s\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 
-	err = pg.InsertShrine(shr)
+	err = pg.InsertShrine(&shr)
 	if err != nil {
 		fmt.Printf("[Err] <InsertShrine> Err:%s\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
-	} else {
-		writeJsonResp(w, shr)
 	}
+
+	if len(shr.PlusCode) != 0 {
+		if len(shrpr.Furigana) != 0 {
+			err = pg.InsertShrineContents(1, shrpr.Furigana, shr.PlusCode)
+			if err != nil {
+				fmt.Printf("[Err] <InsertShrineContents> Err:%s\n", err)
+				w.WriteHeader(http.StatusInternalServerError)
+			}
+		}
+		if len(shrpr.WikipediaURL) != 0 {
+			err = pg.InsertShrineContents(10, shrpr.WikipediaURL, shr.PlusCode)
+			if err != nil {
+				fmt.Printf("[Err] <InsertShrineContents> Err:%s\n", err)
+				w.WriteHeader(http.StatusInternalServerError)
+			}
+		}
+	}
+
+	writeJsonResp(w, &shr)
 
 }
 
