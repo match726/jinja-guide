@@ -11,32 +11,44 @@ func (pg *Postgres) GetShrinesListByStdAreaCode(sacr *SacRelationship) (shrs []*
 
 	switch sacr.Kinds {
 	case "Pref":
-		query = `SELECT shr.name, shr.address, shr.plus_code, shr.place_id
+		query = `SELECT shr.name, shr.address, shr.plus_code, shr.place_id, shrc.content1
 					FROM t_shrines shr
 					INNER JOIN m_stdareacode sac
 						ON sac.pref_area_code = $1
 						AND shr.std_area_code = sac.std_area_code
+					LEFT JOIN t_shrine_contents shrc
+						ON shrc.id = 8
+						AND shr.plus_code = shrc.keyword1
 					ORDER BY shr.std_area_code, shr.address, shr.name`
 	case "SubPref":
-		query = `SELECT shr.name, shr.address, shr.plus_code, shr.place_id
+		query = `SELECT shr.name, shr.address, shr.plus_code, shr.place_id, shrc.content1
 					FROM t_shrines shr
 					INNER JOIN m_stdareacode sac
 						ON sac.subpref_area_code = $1
 						AND shr.std_area_code = sac.std_area_code
+					LEFT JOIN t_shrine_contents shrc
+						ON shrc.id = 8
+						AND shr.plus_code = shrc.keyword1
 					ORDER BY shr.std_area_code, shr.address, shr.name`
 	case "City", "District":
-		query = `SELECT shr.name, shr.address, shr.plus_code, shr.place_id
+		query = `SELECT shr.name, shr.address, shr.plus_code, shr.place_id, shrc.content1
 					FROM t_shrines shr
 					INNER JOIN m_stdareacode sac
 						ON sac.munic_area_code1 = $1
 						AND shr.std_area_code = sac.std_area_code
+					LEFT JOIN t_shrine_contents shrc
+						ON shrc.id = 8
+						AND shr.plus_code = shrc.keyword1
 					ORDER BY shr.std_area_code, shr.address, shr.name`
 	case "Town/Village", "Ward":
-		query = `SELECT shr.name, shr.address, shr.plus_code, shr.place_id
+		query = `SELECT shr.name, shr.address, shr.plus_code, shr.place_id, shrc.content1
 					FROM t_shrines shr
 					INNER JOIN m_stdareacode sac
 						ON sac.munic_area_code2 = $1
 						AND shr.std_area_code = sac.std_area_code
+					LEFT JOIN t_shrine_contents shrc
+						ON shrc.id = 8
+						AND shr.plus_code = shrc.keyword1
 					ORDER BY shr.std_area_code, shr.address, shr.name`
 	}
 
