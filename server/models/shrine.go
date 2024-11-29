@@ -48,10 +48,12 @@ type ShrineDetails struct {
 	WikipediaURL    string   `json:"wikipediaUrl"`
 }
 
+// 神社名称のレシーバ
 func (shr *Shrine) ShrineName(name string) {
 	shr.Name = name
 }
 
+// 神社住所のレシーバ
 func (shr *Shrine) ShrineAddress(address string) {
 	shr.Address = address
 }

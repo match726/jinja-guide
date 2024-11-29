@@ -66,8 +66,11 @@ func (pg *Postgres) GetShrineDetails(shr *Shrine) (shrd ShrineDetails, err error
 		case 7:
 			// 社格の設定
 			shrd.ShrineRank = append(shrd.ShrineRank, shrc.Content1)
-		//case 8:
-		// 御朱印の設定
+		case 8:
+			//御朱印の設定
+			if shrc.Content1 == "あり" {
+				shrd.HasGoshuin = true
+			}
 		case 9:
 			// 公式サイトの設定
 			shrd.WebsiteURL = shrc.Content1
