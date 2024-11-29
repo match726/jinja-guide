@@ -5,7 +5,16 @@ import (
 	"fmt"
 )
 
-func (pg *Postgres) GetShrinesListByStdAreaCode(sacr *SacRelationship) (shrs []*Shrine, err error) {
+type ShrinesListResp struct {
+	Name            string   `json:"name"`
+	Address         string   `json:"address"`
+	PlusCode        string   `json:"plusCode"`
+	PlaceID         string   `json:"placeId"`
+	ObjectOfWorship []string `json:"objectOfWorship"`
+	HasGoshuin      bool     `json:"hasGoshuin"`
+}
+
+func (pg *Postgres) GetShrinesListByStdAreaCode(sacr *SacRelationship) (shrlrs []*ShrinesListResp, err error) {
 
 	var query string
 
@@ -60,17 +69,17 @@ func (pg *Postgres) GetShrinesListByStdAreaCode(sacr *SacRelationship) (shrs []*
 
 	for rows.Next() {
 
-		var shr Shrine
+		var shrlr ShrinesListResp
 
-		err = rows.Scan(&shr.Name, &shr.Address, &shr.PlusCode, &shr.PlaceID)
+		err = rows.Scan(&shrlr.Name, &shrlr.Address, &shrlr.PlusCode, &shrlr.PlaceID, &shrlr.ObjectOfWorship)
 		if err != nil {
 			return nil, fmt.Errorf("スキャン失敗： %w", err)
 		}
 
-		shrs = append(shrs, &shr)
+		shrlrs = append(shrlrs, &shrlr)
 
 	}
 
-	return shrs, err
+	return shrlrs, err
 
 }

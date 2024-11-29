@@ -46,40 +46,31 @@ func FetchShrineList(w http.ResponseWriter, r *http.Request) {
 	}
 	defer pg.ClosePool()
 
-	var shrs []*models.Shrine
-	shrs, err = pg.GetShrinesListByStdAreaCode(sacr)
+	var shrlrs []*models.ShrinesListResp
+	shrlrs, err = pg.GetShrinesListByStdAreaCode(sacr)
 	if err != nil {
 		fmt.Printf("[Err] <GetShrinesByStdAreaCode> Err:%s\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
 	} else {
-		fmt.Println(shrs)
-		writejsonResp(w, shrs)
+		fmt.Println(shrlrs)
+		writejsonResp(w, shrlrs)
 	}
 
 }
 
-func writejsonResp(w http.ResponseWriter, shrs []*models.Shrine) {
+func writejsonResp(w http.ResponseWriter, shrlrs []*models.ShrinesListResp) {
 
-	type ShrinesListResp struct {
-		Name            string   `json:"name"`
-		Address         string   `json:"address"`
-		PlusCode        string   `json:"plusCode"`
-		PlaceID         string   `json:"placeId"`
-		ObjectOfWorship []string `json:"objectOfWorship"`
-		HasGoshuin      bool     `json:"hasGoshuin"`
-	}
-
-	var shrListResp []ShrinesListResp
+	var shrListResp []models.ShrinesListResp
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	for _, shr := range shrs {
-		shrListResp = append(shrListResp, ShrinesListResp{
-			Name:            shr.Name,
-			Address:         shr.Address,
-			PlusCode:        shr.PlusCode,
-			PlaceID:         shr.PlaceID,
+	for _, shrlr := range shrlrs {
+		shrListResp = append(shrListResp, models.ShrinesListResp{
+			Name:            shrlr.Name,
+			Address:         shrlr.Address,
+			PlusCode:        shrlr.PlusCode,
+			PlaceID:         shrlr.PlaceID,
 			ObjectOfWorship: nil,
-			HasGoshuin:      false,
+			HasGoshuin:      shrlr.HasGoshuin,
 		})
 	}
 
