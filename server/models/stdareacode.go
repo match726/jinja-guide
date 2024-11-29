@@ -6,6 +6,7 @@ import (
 	"os"
 	"sort"
 	"strconv"
+	"strings"
 
 	"github.com/jackc/pgx/v5"
 )
@@ -465,7 +466,7 @@ ORDER BY ?areacode`
 }
 
 // 標準地域コードの一覧を全件取得する
-func (pg *Postgres) GetStdAreaCodes() ([]StdAreaCodeGet, error) {
+func (pg *Postgres) GetStdAreaCodeList() ([]StdAreaCodeGet, error) {
 
 	query := `SELECT std_area_code, pref_area_code, subpref_area_code, munic_area_code1, munic_area_code2, pref_name, subpref_name, munic_name1, munic_name2, to_char(created_at,'YYYY/MM/DD HH24:MI:SS') AS "created_at", to_char(updated_at,'YYYY/MM/DD HH24:MI:SS') AS "updated_at"
 					FROM m_stdareacode
@@ -481,8 +482,10 @@ func (pg *Postgres) GetStdAreaCodes() ([]StdAreaCodeGet, error) {
 
 }
 
-// 特定の都道府県に属する標準地域コードの一覧を取得する (神社の住所からの標準地域コード取得用)
-func (pg *Postgres) GetStdAreaCodeListByPrefName(prefname string) (sacs []StdAreaCode, err error) {
+// 神社の住所から標準地域コードを取得する
+func (pg *Postgres) GetStdAreaCodeByPrefName(prefname string, shr *Shrine) error {
+
+	var sacs []StdAreaCode
 
 	query := `SELECT std_area_code, pref_area_code, subpref_area_code, munic_area_code1, munic_area_code2, pref_name, subpref_name, munic_name1, munic_name2
 					FROM m_stdareacode
@@ -490,11 +493,29 @@ func (pg *Postgres) GetStdAreaCodeListByPrefName(prefname string) (sacs []StdAre
 
 	rows, err := pg.dbPool.Query(context.Background(), query, prefname)
 	if err != nil {
-		return nil, fmt.Errorf("標準地域コード一覧 取得失敗： %w", err)
+		return fmt.Errorf("標準地域コード一覧 取得失敗： %w", err)
 	}
 	defer rows.Close()
 
-	return pgx.CollectRows(rows, pgx.RowToStructByName[StdAreaCode])
+	sacs, err = pgx.CollectRows(rows, pgx.RowToStructByName[StdAreaCode])
+	if err != nil {
+		return fmt.Errorf("標準地域コード一覧 フェッチ失敗： %w", err)
+	}
+
+	// 標準地域コードの紐づけ
+	for i := len(sacs) - 1; i >= 0; i-- {
+		if sacs[i].MunicName1 == "" && sacs[i].MunicName2 == "" {
+			continue
+		} else {
+			keyword := sacs[i].PrefName + sacs[i].MunicName1 + sacs[i].MunicName2
+			if strings.HasPrefix(shr.Address, keyword) {
+				shr.StdAreaCode = sacs[i].StdAreaCode
+				break
+			}
+		}
+	}
+
+	return nil
 
 }
 
