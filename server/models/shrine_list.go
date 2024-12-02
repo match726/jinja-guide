@@ -20,17 +20,17 @@ func (pg *Postgres) GetShrinesListByStdAreaCode(sacr *SacRelationship) (shrlrs [
 
 	switch sacr.Kinds {
 	case "Pref":
-		query = `SELECT shr.name, shr.address, shr.plus_code, shr.place_id, shrc.content1
+		query = `SELECT shr.name, shr.address, shr.plus_code, shr.place_id, CASE shrc.content1 WHEN 'あり' THEN true ELSE false END
 					FROM t_shrines shr
 					INNER JOIN m_stdareacode sac
 						ON sac.pref_area_code = $1
 						AND shr.std_area_code = sac.std_area_code
-					LEFT JOIN t_shrine_contents shrc
 						ON shrc.id = 8
+					LEFT JOIN t_shrine_contents shrc
 						AND shr.plus_code = shrc.keyword1
 					ORDER BY shr.std_area_code, shr.address, shr.name`
 	case "SubPref":
-		query = `SELECT shr.name, shr.address, shr.plus_code, shr.place_id, shrc.content1
+		query = `SELECT shr.name, shr.address, shr.plus_code, shr.place_id, CASE shrc.content1 WHEN 'あり' THEN true ELSE false END
 					FROM t_shrines shr
 					INNER JOIN m_stdareacode sac
 						ON sac.subpref_area_code = $1
@@ -40,7 +40,7 @@ func (pg *Postgres) GetShrinesListByStdAreaCode(sacr *SacRelationship) (shrlrs [
 						AND shr.plus_code = shrc.keyword1
 					ORDER BY shr.std_area_code, shr.address, shr.name`
 	case "City", "District":
-		query = `SELECT shr.name, shr.address, shr.plus_code, shr.place_id, shrc.content1
+		query = `SELECT shr.name, shr.address, shr.plus_code, shr.place_id, CASE shrc.content1 WHEN 'あり' THEN true ELSE false END
 					FROM t_shrines shr
 					INNER JOIN m_stdareacode sac
 						ON sac.munic_area_code1 = $1
@@ -50,7 +50,7 @@ func (pg *Postgres) GetShrinesListByStdAreaCode(sacr *SacRelationship) (shrlrs [
 						AND shr.plus_code = shrc.keyword1
 					ORDER BY shr.std_area_code, shr.address, shr.name`
 	case "Town/Village", "Ward":
-		query = `SELECT shr.name, shr.address, shr.plus_code, shr.place_id, shrc.content1
+		query = `SELECT shr.name, shr.address, shr.plus_code, shr.place_id, CASE shrc.content1 WHEN 'あり' THEN true ELSE false END
 					FROM t_shrines shr
 					INNER JOIN m_stdareacode sac
 						ON sac.munic_area_code2 = $1
@@ -71,7 +71,7 @@ func (pg *Postgres) GetShrinesListByStdAreaCode(sacr *SacRelationship) (shrlrs [
 
 		var shrlr ShrinesListResp
 
-		err = rows.Scan(&shrlr.Name, &shrlr.Address, &shrlr.PlusCode, &shrlr.PlaceID, &shrlr.ObjectOfWorship)
+		err = rows.Scan(&shrlr.Name, &shrlr.Address, &shrlr.PlusCode, &shrlr.PlaceID, &shrlr.HasGoshuin)
 		if err != nil {
 			return nil, fmt.Errorf("スキャン失敗： %w", err)
 		}

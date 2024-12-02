@@ -49,7 +49,7 @@ func FetchShrineList(w http.ResponseWriter, r *http.Request) {
 	var shrlrs []*models.ShrinesListResp
 	shrlrs, err = pg.GetShrinesListByStdAreaCode(sacr)
 	if err != nil {
-		fmt.Printf("[Err] <GetShrinesByStdAreaCode> Err:%s\n", err)
+		fmt.Printf("[Err] <GetShrinesListByStdAreaCode> Err:%s\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
 	} else {
 		fmt.Println(shrlrs)
