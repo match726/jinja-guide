@@ -25,8 +25,8 @@ func (pg *Postgres) GetShrinesListByStdAreaCode(sacr *SacRelationship) (shrlrs [
 					INNER JOIN m_stdareacode sac
 						ON sac.pref_area_code = $1
 						AND shr.std_area_code = sac.std_area_code
-						ON shrc.id = 8
 					LEFT JOIN t_shrine_contents shrc
+						ON shrc.id = 8
 						AND shr.plus_code = shrc.keyword1
 					ORDER BY shr.std_area_code, shr.address, shr.name`
 	case "SubPref":
