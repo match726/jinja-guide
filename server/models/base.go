@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/match726/jinja-guide/tree/main/server/logger"
 	"github.com/rs/xid"
 )
 
@@ -40,10 +41,10 @@ func NewPool() (*Postgres, error) {
 	pgInstance = &Postgres{pool}
 
 	if err = pgInstance.dbPool.Ping(ctx); err != nil {
-		return nil, fmt.Errorf("dbPool.Ping(): %w", err)
+		return nil, fmt.Errorf("pgInstance.dbPool.Ping(): %w", err)
 	}
 
-	fmt.Printf("NewPool: データベース[%s] 接続成功\n", dbname)
+	logger.WriteInfo("コネクションプール作成", "dbname", dbname)
 	return pgInstance, nil
 
 }
@@ -52,7 +53,7 @@ func NewPool() (*Postgres, error) {
 func (pg *Postgres) ClosePool() {
 
 	pg.dbPool.Close()
-	fmt.Printf("ClosePool: データベース[%s] 切断成功\n", dbname)
+	logger.WriteInfo("コネクションプール切断", "dbname", dbname)
 
 }
 
@@ -67,9 +68,9 @@ func GetNowTime() (current time.Time) {
 }
 
 // XIDの取得
-func GetXID() (uid string) {
+func GetXID() (id string) {
 
-	uid = xid.New().String()
-	return uid
+	id = xid.New().String()
+	return id
 
 }
