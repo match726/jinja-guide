@@ -2,6 +2,7 @@ package logger
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 	"os"
 
@@ -24,12 +25,13 @@ func setTrace(ctx context.Context, logger *slog.Logger) *slog.Logger {
 	span := trace.SpanFromContext(ctx)
 	sc := span.SpanContext()
 	if !sc.IsValid() {
+		fmt.Println(sc)
 		return logger
 	}
 
 	return logger.With(
-		slog.String("traceID", span.SpanContext().TraceID().String()),
-		slog.String("spanID", span.SpanContext().SpanID().String()),
+		slog.String("traceID", sc.TraceID().String()),
+		slog.String("spanID", sc.SpanID().String()),
 	)
 
 }
