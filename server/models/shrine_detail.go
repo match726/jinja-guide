@@ -7,13 +7,13 @@ import (
 )
 
 // 神社の詳細情報を取得
-func (pg *Postgres) GetShrineDetails(shr *Shrine) (shrd ShrineDetails, err error) {
+func (pg *Postgres) GetShrineDetails(ctx context.Context, shr *Shrine) (shrd ShrineDetails, err error) {
 
 	query1 := `SELECT shr.name, shr.address, shr.place_id
 						FROM t_shrines shr
 						WHERE shr.plus_code = $1`
 
-	row := pg.dbPool.QueryRow(context.Background(), query1, shr.PlusCode)
+	row := pg.dbPool.QueryRow(ctx, query1, shr.PlusCode)
 
 	err = row.Scan(&shrd.Name, &shrd.Address, &shrd.PlaceID)
 	if err != nil {
@@ -25,7 +25,7 @@ func (pg *Postgres) GetShrineDetails(shr *Shrine) (shrd ShrineDetails, err error
               WHERE shrc.keyword1 = $1
               ORDER BY shrc.id, shrc.keyword1, shrc.keyword2`
 
-	rows, err := pg.dbPool.Query(context.Background(), query2, shr.PlusCode)
+	rows, err := pg.dbPool.Query(ctx, query2, shr.PlusCode)
 	if err != nil {
 		return shrd, fmt.Errorf("神社詳細情報 取得失敗： %w", err)
 	}

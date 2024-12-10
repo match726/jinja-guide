@@ -23,7 +23,7 @@ func ExtractPrefName(address string) string {
 }
 
 // PlaceAPI(Google)から神社の情報を取得する
-func GetLocnInfoFromPlaceAPI(shr *Shrine) error {
+func GetLocnInfoFromPlaceAPI(ctx context.Context, shr *Shrine) error {
 
 	apikey := os.Getenv("GOOGLE_PLACE_API_KEY")
 
@@ -37,7 +37,7 @@ func GetLocnInfoFromPlaceAPI(shr *Shrine) error {
 		Language: "ja",
 	}
 
-	resp, err := client.TextSearch(context.Background(), req)
+	resp, err := client.TextSearch(ctx, req)
 	if err != nil {
 		return fmt.Errorf("PlaceAPI情報取得失敗： %w", err)
 	} else {
@@ -55,7 +55,7 @@ func GetLocnInfoFromPlaceAPI(shr *Shrine) error {
 
 // 神社テーブルへの登録
 // ★重複時の制御が必要
-func (pg *Postgres) InsertShrine(shr *Shrine) error {
+func (pg *Postgres) InsertShrine(ctx context.Context, shr *Shrine) error {
 
 	query := `INSERT INTO t_shrines (
 						name,
@@ -94,7 +94,7 @@ func (pg *Postgres) InsertShrine(shr *Shrine) error {
 		"updatedAt":   GetNowTime(),
 	}
 
-	_, err := pg.dbPool.Exec(context.Background(), query, args)
+	_, err := pg.dbPool.Exec(ctx, query, args)
 	if err != nil {
 		return fmt.Errorf("INSERT失敗： %w", err)
 	}
@@ -105,7 +105,7 @@ func (pg *Postgres) InsertShrine(shr *Shrine) error {
 
 // 神社詳細テーブルへの登録
 // ★重複時の制御が必要
-func (pg *Postgres) InsertShrineContents(id int, content string, plusCode string) error {
+func (pg *Postgres) InsertShrineContents(ctx context.Context, id int, content string, plusCode string) error {
 
 	query := `INSERT INTO t_shrine_contents (
 						id,
@@ -141,7 +141,7 @@ func (pg *Postgres) InsertShrineContents(id int, content string, plusCode string
 		"updatedAt": GetNowTime(),
 	}
 
-	_, err := pg.dbPool.Exec(context.Background(), query, args)
+	_, err := pg.dbPool.Exec(ctx, query, args)
 	if err != nil {
 		return fmt.Errorf("INSERT失敗： %w", err)
 	}

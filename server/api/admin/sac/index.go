@@ -31,13 +31,16 @@ func FetchStdAreaCodes(w http.ResponseWriter, r *http.Request) {
 	var err error
 	var sacs []models.StdAreaCodeGet
 
-	pg, err = models.NewPool()
+	// Contextを生成
+	ctx := r.Context()
+
+	pg, err = models.NewPool(ctx)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
-	defer pg.ClosePool()
+	defer pg.ClosePool(ctx)
 
-	sacs, err = pg.GetStdAreaCodeList()
+	sacs, err = pg.GetStdAreaCodeList(ctx)
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(sacs)
@@ -49,14 +52,17 @@ func UpdateStdAreaCodes(w http.ResponseWriter, r *http.Request) {
 	var pg *models.Postgres
 	var err error
 
-	pg, err = models.NewPool()
+	// Contextを生成
+	ctx := r.Context()
+
+	pg, err = models.NewPool(ctx)
 	if err != nil {
 		fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
-	defer pg.ClosePool()
+	defer pg.ClosePool(ctx)
 
-	err = pg.UpdateStdAreaCode()
+	err = pg.UpdateStdAreaCode(ctx)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	}

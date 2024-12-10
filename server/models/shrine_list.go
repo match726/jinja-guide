@@ -14,7 +14,7 @@ type ShrinesListResp struct {
 	HasGoshuin      bool     `json:"hasGoshuin"`
 }
 
-func (pg *Postgres) GetShrinesListByStdAreaCode(sacr *SacRelationship) (shrlrs []*ShrinesListResp, err error) {
+func (pg *Postgres) GetShrinesListByStdAreaCode(ctx context.Context, sacr *SacRelationship) (shrlrs []*ShrinesListResp, err error) {
 
 	var query string
 
@@ -61,9 +61,9 @@ func (pg *Postgres) GetShrinesListByStdAreaCode(sacr *SacRelationship) (shrlrs [
 					ORDER BY shr.std_area_code, shr.address, shr.name`
 	}
 
-	rows, err := pg.dbPool.Query(context.Background(), query, sacr.StdAreaCode)
+	rows, err := pg.dbPool.Query(ctx, query, sacr.StdAreaCode)
 	if err != nil {
-		return nil, fmt.Errorf("神社一覧 取得失敗： %w", err)
+		return nil, fmt.Errorf("pg.dbPool.Query: %w", err)
 	}
 	defer rows.Close()
 
@@ -73,7 +73,7 @@ func (pg *Postgres) GetShrinesListByStdAreaCode(sacr *SacRelationship) (shrlrs [
 
 		err = rows.Scan(&shrlr.Name, &shrlr.Address, &shrlr.PlusCode, &shrlr.PlaceID, &shrlr.HasGoshuin)
 		if err != nil {
-			return nil, fmt.Errorf("スキャン失敗： %w", err)
+			return nil, fmt.Errorf("rows.Scan: %w", err)
 		}
 
 		shrlrs = append(shrlrs, &shrlr)

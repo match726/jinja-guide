@@ -28,14 +28,17 @@ func FetchSacRelationship(w http.ResponseWriter, r *http.Request) {
 	var pg *models.Postgres
 	var err error
 
-	pg, err = models.NewPool()
+	// Contextを生成
+	ctx := r.Context()
+
+	pg, err = models.NewPool(ctx)
 	if err != nil {
 		fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
-	defer pg.ClosePool()
+	defer pg.ClosePool(ctx)
 
-	sacr, err := pg.GetSacRelationship()
+	sacr, err := pg.GetSacRelationship(ctx)
 	if err != nil {
 		fmt.Printf("[Err] <GetSacRelationship> Err:%s\n", err)
 		w.WriteHeader(http.StatusInternalServerError)

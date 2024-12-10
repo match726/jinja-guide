@@ -35,6 +35,9 @@ func RegisterShrine(w http.ResponseWriter, r *http.Request) {
 	var pg *models.Postgres
 	var err error
 
+	// Contextを生成
+	ctx := r.Context()
+
 	// HTTPリクエストからボディを取得
 	body := make([]byte, r.ContentLength)
 	r.Body.Read(body)
@@ -51,30 +54,30 @@ func RegisterShrine(w http.ResponseWriter, r *http.Request) {
 	shr.ShrineName(shrpr.Name)
 	shr.ShrineAddress(shrpr.Address)
 
-	pg, err = models.NewPool()
+	pg, err = models.NewPool(ctx)
 	if err != nil {
 		fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
-	defer pg.ClosePool()
+	defer pg.ClosePool(ctx)
 
 	// 住所より都道府県の取得
 	prefname := models.ExtractPrefName(shr.Address)
 	// 該当の都道府県の標準地域コード一覧を取得
-	err = pg.GetStdAreaCodeByPrefName(prefname, &shr)
+	err = pg.GetStdAreaCodeByPrefName(ctx, prefname, &shr)
 	if err != nil {
 		fmt.Printf("[Err] <GetStdAreaCodeByPrefName> Err:%s\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 
 	// PlaceAPIから位置情報(PlaceID、緯度、経度)、及び取得した緯度経度からPlusCodeを取得
-	err = models.GetLocnInfoFromPlaceAPI(&shr)
+	err = models.GetLocnInfoFromPlaceAPI(ctx, &shr)
 	if err != nil {
 		fmt.Printf("[Err] <GetLocnInfoFromPlaceAPI> Err:%s\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 
-	err = pg.InsertShrine(&shr)
+	err = pg.InsertShrine(ctx, &shr)
 	if err != nil {
 		fmt.Printf("[Err] <InsertShrine> Err:%s\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -82,14 +85,14 @@ func RegisterShrine(w http.ResponseWriter, r *http.Request) {
 
 	if len(shr.PlusCode) != 0 {
 		if len(shrpr.Furigana) != 0 {
-			err = pg.InsertShrineContents(1, shrpr.Furigana, shr.PlusCode)
+			err = pg.InsertShrineContents(ctx, 1, shrpr.Furigana, shr.PlusCode)
 			if err != nil {
 				fmt.Printf("[Err] <InsertShrineContents> Err:%s\n", err)
 				w.WriteHeader(http.StatusInternalServerError)
 			}
 		}
 		if len(shrpr.WikipediaURL) != 0 {
-			err = pg.InsertShrineContents(10, shrpr.WikipediaURL, shr.PlusCode)
+			err = pg.InsertShrineContents(ctx, 10, shrpr.WikipediaURL, shr.PlusCode)
 			if err != nil {
 				fmt.Printf("[Err] <InsertShrineContents> Err:%s\n", err)
 				w.WriteHeader(http.StatusInternalServerError)

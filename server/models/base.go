@@ -19,14 +19,13 @@ var pgInstance *Postgres
 var dbname string = os.Getenv("POSTGRES_DATABASE")
 
 // コネクションプールの作成
-func NewPool() (*Postgres, error) {
+func NewPool(ctx context.Context) (*Postgres, error) {
 
 	var cfg *pgxpool.Config
 	var pool *pgxpool.Pool
 	var err error
 
 	dsn := os.Getenv("POSTGRES_URL")
-	ctx := context.Background()
 
 	cfg, err = pgxpool.ParseConfig(dsn)
 	if err != nil {
@@ -44,16 +43,16 @@ func NewPool() (*Postgres, error) {
 		return nil, fmt.Errorf("pgInstance.dbPool.Ping(): %w", err)
 	}
 
-	logger.WriteInfo("コネクションプール作成", "dbname", dbname)
+	logger.WriteInfo(ctx, "コネクションプール作成", "dbname", dbname)
 	return pgInstance, nil
 
 }
 
 // コネクションプールのクローズ
-func (pg *Postgres) ClosePool() {
+func (pg *Postgres) ClosePool(ctx context.Context) {
 
 	pg.dbPool.Close()
-	logger.WriteInfo("コネクションプール切断", "dbname", dbname)
+	logger.WriteInfo(ctx, "コネクションプール切断", "dbname", dbname)
 
 }
 

@@ -28,6 +28,9 @@ func FetchShrineDetails(w http.ResponseWriter, r *http.Request) {
 	var pg *models.Postgres
 	var err error
 
+	// Contextを生成
+	ctx := r.Context()
+
 	// HTTPリクエストからカスタムヘッダーを取得
 	strCustom := r.Header.Get("ShrGuide-Shrines-Authorization")
 
@@ -38,15 +41,15 @@ func FetchShrineDetails(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 
-	pg, err = models.NewPool()
+	pg, err = models.NewPool(ctx)
 	if err != nil {
 		fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
-	defer pg.ClosePool()
+	defer pg.ClosePool(ctx)
 
 	var shrd models.ShrineDetails
-	shrd, err = pg.GetShrineDetails(shrReq)
+	shrd, err = pg.GetShrineDetails(ctx, shrReq)
 	if err != nil {
 		fmt.Printf("[Err] <GetShrinesByStdAreaCode> Err:%s\n", err)
 		w.WriteHeader(http.StatusInternalServerError)

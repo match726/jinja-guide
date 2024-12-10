@@ -34,9 +34,9 @@ func setTrace(ctx context.Context, logger *slog.Logger) *slog.Logger {
 
 }
 
-func WriteInfo(msg string, args ...any) {
+func WriteInfo(ctx context.Context, msg string, args ...any) {
 
-	logger := newLogger(context.Background())
+	logger := newLogger(ctx)
 
 	logger.Info(msg, args)
 
