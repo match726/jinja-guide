@@ -25,7 +25,8 @@ func setTrace(ctx context.Context, logger *slog.Logger) *slog.Logger {
 	span := trace.SpanFromContext(ctx)
 	sc := span.SpanContext()
 	if !sc.IsValid() {
-		fmt.Println(sc)
+		fmt.Println(ctx)
+		fmt.Println(span)
 		return logger
 	}
 
