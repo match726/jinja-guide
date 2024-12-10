@@ -30,6 +30,7 @@ func FetchSacRelationship(w http.ResponseWriter, r *http.Request) {
 
 	// Contextを生成
 	ctx := r.Context()
+	fmt.Println(ctx)
 
 	pg, err = models.NewPool(ctx)
 	if err != nil {
