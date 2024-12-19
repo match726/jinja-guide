@@ -23,10 +23,6 @@ var (
 	fields contextKey = "slog_fields"
 )
 
-func init() {
-	slog.SetDefault(slog.New(NewHandler()))
-}
-
 func NewHandler() *Handler {
 
 	opt := slog.HandlerOptions{
@@ -98,6 +94,8 @@ func copySyncMap(m *sync.Map) *sync.Map {
 }
 
 func log(ctx context.Context, level slog.Level, msg string, args ...any) {
+
+	slog.SetDefault(slog.New(NewHandler()))
 	logger := slog.Default()
 	if !logger.Enabled(ctx, level) {
 		return
