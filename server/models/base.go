@@ -43,7 +43,7 @@ func NewPool(ctx context.Context) (*Postgres, error) {
 		return nil, fmt.Errorf("pgInstance.dbPool.Ping(): %w", err)
 	}
 
-	logger.WriteInfo(ctx, "コネクションプール作成", "dbname", dbname)
+	logger.Info(ctx, "コネクションプール作成", "dbname", dbname)
 	return pgInstance, nil
 
 }
@@ -52,7 +52,7 @@ func NewPool(ctx context.Context) (*Postgres, error) {
 func (pg *Postgres) ClosePool(ctx context.Context) {
 
 	pg.dbPool.Close()
-	logger.WriteInfo(ctx, "コネクションプール切断", "dbname", dbname)
+	logger.Info(ctx, "コネクションプール切断", "dbname", dbname)
 
 }
 
