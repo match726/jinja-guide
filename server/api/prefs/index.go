@@ -32,7 +32,7 @@ func FetchSacRelationship(w http.ResponseWriter, r *http.Request) {
 	// Contextを生成
 	ctx := r.Context()
 	err = trace.InitTracer()
-
+	trace.ShowTraceID(ctx)
 	pg, err = models.NewPool(ctx)
 	if err != nil {
 		fmt.Println(err)
