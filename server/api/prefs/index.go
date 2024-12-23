@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/match726/jinja-guide/tree/main/server/models"
+	"github.com/match726/jinja-guide/tree/main/server/trace"
 )
 
 func PrefsHandler(w http.ResponseWriter, r *http.Request) {
@@ -30,6 +31,7 @@ func FetchSacRelationship(w http.ResponseWriter, r *http.Request) {
 
 	// Contextを生成
 	ctx := r.Context()
+	err = trace.InitTracer()
 
 	pg, err = models.NewPool(ctx)
 	if err != nil {
