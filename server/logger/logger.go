@@ -2,14 +2,13 @@ package logger
 
 import (
 	"context"
-	"fmt"
 	"log/slog"
 	"os"
 	"runtime"
 	"sync"
 	"time"
 
-	"go.opentelemetry.io/otel/trace"
+	"go.opentelemetry.io/otel"
 )
 
 type Handler struct {
@@ -42,15 +41,13 @@ func (h *Handler) Enabled(ctx context.Context, level slog.Level) bool {
 
 func (h *Handler) Handle(ctx context.Context, record slog.Record) error {
 
-	spanCtx := trace.SpanContextFromContext(ctx)
-	fmt.Printf("ctx: %s", ctx)
-	fmt.Printf("traceId: %s", spanCtx.TraceID().String())
-	if spanCtx.IsValid() {
-		record.AddAttrs(
-			slog.String("traceId", spanCtx.TraceID().String()),
-			slog.String("spanId", spanCtx.SpanID().String()),
-		)
-	}
+	tracer := otel.Tracer("backend-tracer")
+	ctx, span := tracer.Start(ctx, "some operation")
+
+	record.AddAttrs(
+		slog.String("traceId", span.SpanContext().TraceID().String()),
+		slog.String("spanId", span.SpanContext().SpanID().String()),
+	)
 
 	if v, ok := ctx.Value(fields).(*sync.Map); ok {
 		v.Range(func(key, val any) bool {
