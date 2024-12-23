@@ -2,6 +2,7 @@ package logger
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 	"os"
 	"runtime"
@@ -17,7 +18,7 @@ type Handler struct {
 
 type contextKey string
 
-var _ slog.Handler = Handler{}
+var _ slog.Handler = &Handler{}
 
 var (
 	fields contextKey = "slog_fields"
@@ -35,13 +36,14 @@ func NewHandler() *Handler {
 
 }
 
-func (h Handler) Enabled(ctx context.Context, level slog.Level) bool {
+func (h *Handler) Enabled(ctx context.Context, level slog.Level) bool {
 	return h.handler.Enabled(ctx, level)
 }
 
-func (h Handler) Handle(ctx context.Context, record slog.Record) error {
+func (h *Handler) Handle(ctx context.Context, record slog.Record) error {
 
 	spanCtx := trace.SpanContextFromContext(ctx)
+	fmt.Printf("traceId: %s", spanCtx.TraceID().String())
 	if spanCtx.IsValid() {
 		record.AddAttrs(
 			slog.String("traceId", spanCtx.TraceID().String()),
@@ -62,11 +64,11 @@ func (h Handler) Handle(ctx context.Context, record slog.Record) error {
 
 }
 
-func (h Handler) WithAttrs(attrs []slog.Attr) slog.Handler {
-	return Handler{h.handler.WithAttrs(attrs)}
+func (h *Handler) WithAttrs(attrs []slog.Attr) slog.Handler {
+	return &Handler{h.handler.WithAttrs(attrs)}
 }
 
-func (h Handler) WithGroup(name string) slog.Handler {
+func (h *Handler) WithGroup(name string) slog.Handler {
 	return h.handler.WithGroup(name)
 }
 
