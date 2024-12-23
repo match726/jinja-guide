@@ -43,6 +43,7 @@ func (h *Handler) Enabled(ctx context.Context, level slog.Level) bool {
 func (h *Handler) Handle(ctx context.Context, record slog.Record) error {
 
 	spanCtx := trace.SpanContextFromContext(ctx)
+	fmt.Printf("ctx: %s", ctx)
 	fmt.Printf("traceId: %s", spanCtx.TraceID().String())
 	if spanCtx.IsValid() {
 		record.AddAttrs(
