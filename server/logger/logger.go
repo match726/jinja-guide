@@ -41,8 +41,8 @@ func (h *Handler) Enabled(ctx context.Context, level slog.Level) bool {
 
 func (h *Handler) Handle(ctx context.Context, record slog.Record) error {
 
-	tracer := otel.Tracer("backend-tracer")
-	ctx, span := tracer.Start(ctx, "some operation")
+	_, span := otel.Tracer("backend-tracer").Start(ctx, "some operation")
+	defer span.End()
 
 	record.AddAttrs(
 		slog.String("traceId", span.SpanContext().TraceID().String()),
