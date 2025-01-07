@@ -2,6 +2,7 @@ package logger
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 	"os"
 	"runtime"
@@ -36,6 +37,7 @@ func NewHandler() *Handler {
 
 func (h *Handler) Handle(ctx context.Context, record slog.Record) error {
 
+	fmt.Println(ctx)
 	if v, ok := ctx.Value(fields).(*sync.Map); ok {
 		v.Range(func(key, val any) bool {
 			if keyString, ok := key.(string); ok {
