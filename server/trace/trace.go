@@ -2,6 +2,7 @@ package trace
 
 import (
 	"context"
+	"fmt"
 
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/propagation"
@@ -25,6 +26,8 @@ func GetContextWithTraceID(ctx context.Context, spanName string) context.Context
 
 	_, span := otel.Tracer("shrine-guide").Start(ctx, spanName)
 	defer span.End()
+
+	fmt.Printf("traceID: %s\n", span.SpanContext().TraceID().String())
 
 	return context.WithValue(ctx, "traceID", span.SpanContext().TraceID().String())
 
