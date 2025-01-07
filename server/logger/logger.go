@@ -7,17 +7,16 @@ import (
 	"runtime"
 	"sync"
 	"time"
-
-	"go.opentelemetry.io/otel"
 )
 
+// ハンドラーラッパー
 type Handler struct {
 	handler slog.Handler
 }
 
-type contextKey string
-
 var _ slog.Handler = &Handler{}
+
+type contextKey string
 
 var (
 	fields contextKey = "slog_fields"
@@ -35,19 +34,7 @@ func NewHandler() *Handler {
 
 }
 
-func (h *Handler) Enabled(ctx context.Context, level slog.Level) bool {
-	return h.handler.Enabled(ctx, level)
-}
-
 func (h *Handler) Handle(ctx context.Context, record slog.Record) error {
-
-	_, span := otel.Tracer("backend-tracer").Start(ctx, "some operation")
-	defer span.End()
-
-	record.AddAttrs(
-		slog.String("traceId", span.SpanContext().TraceID().String()),
-		slog.String("spanId", span.SpanContext().SpanID().String()),
-	)
 
 	if v, ok := ctx.Value(fields).(*sync.Map); ok {
 		v.Range(func(key, val any) bool {
@@ -62,12 +49,16 @@ func (h *Handler) Handle(ctx context.Context, record slog.Record) error {
 
 }
 
-func (h *Handler) WithAttrs(attrs []slog.Attr) slog.Handler {
-	return &Handler{h.handler.WithAttrs(attrs)}
+func (h *Handler) Enabled(ctx context.Context, level slog.Level) bool {
+	return h.handler.Enabled(ctx, level)
 }
 
+func (h *Handler) WithAttrs(attrs []slog.Attr) slog.Handler {
+	return &Handler{h.handler.WithAttrs(attrs)}
+
+}
 func (h *Handler) WithGroup(name string) slog.Handler {
-	return h.handler.WithGroup(name)
+	return &Handler{h.handler.WithGroup(name)}
 }
 
 func WithValue(parent context.Context, key string, val any) context.Context {
@@ -108,6 +99,7 @@ func log(ctx context.Context, level slog.Level, msg string, args ...any) {
 	r.Add(args...)
 
 	_ = logger.Handler().Handle(ctx, r)
+
 }
 
 func Info(ctx context.Context, msg string, args ...any) {
