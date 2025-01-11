@@ -30,7 +30,13 @@ func FetchSacRelationship(w http.ResponseWriter, r *http.Request) {
 	var err error
 
 	// Contextを生成
-	ctx := trace.GetContextWithTraceID(r.Context(), "FetchSacRelationship")
+	ctx := r.Context()
+	shutdown, err := trace.InitTracerProvider()
+	if err != nil {
+		panic(err)
+	}
+	defer shutdown(ctx)
+	ctx = trace.GetContextWithTraceID(r.Context(), "FetchSacRelationship")
 
 	pg, err = models.NewPool(ctx)
 	if err != nil {
