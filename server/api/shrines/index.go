@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/match726/jinja-guide/tree/main/server/models"
+	"github.com/match726/jinja-guide/tree/main/server/trace"
 )
 
 func ShrinesHandler(w http.ResponseWriter, r *http.Request) {
@@ -30,6 +31,12 @@ func FetchShrineList(w http.ResponseWriter, r *http.Request) {
 
 	// Contextを生成
 	ctx := r.Context()
+	shutdown, err := trace.InitTracerProvider()
+	if err != nil {
+		panic(err)
+	}
+	defer shutdown(ctx)
+	ctx = trace.GetContextWithTraceID(r.Context(), "FetchShrineDetails")
 
 	// HTTPリクエストからカスタムヘッダーを取得
 	strCustom := r.Header.Get("ShrGuide-Shrines-Authorization")

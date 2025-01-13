@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/match726/jinja-guide/tree/main/server/models"
+	"github.com/match726/jinja-guide/tree/main/server/trace"
 )
 
 func StdAreaCodeHandler(w http.ResponseWriter, r *http.Request) {
@@ -33,6 +34,12 @@ func FetchStdAreaCodes(w http.ResponseWriter, r *http.Request) {
 
 	// Contextを生成
 	ctx := r.Context()
+	shutdown, err := trace.InitTracerProvider()
+	if err != nil {
+		panic(err)
+	}
+	defer shutdown(ctx)
+	ctx = trace.GetContextWithTraceID(r.Context(), "FetchShrineDetails")
 
 	pg, err = models.NewPool(ctx)
 	if err != nil {
@@ -54,6 +61,12 @@ func UpdateStdAreaCodes(w http.ResponseWriter, r *http.Request) {
 
 	// Contextを生成
 	ctx := r.Context()
+	shutdown, err := trace.InitTracerProvider()
+	if err != nil {
+		panic(err)
+	}
+	defer shutdown(ctx)
+	ctx = trace.GetContextWithTraceID(r.Context(), "FetchShrineDetails")
 
 	pg, err = models.NewPool(ctx)
 	if err != nil {

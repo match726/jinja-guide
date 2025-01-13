@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/match726/jinja-guide/tree/main/server/models"
+	"github.com/match726/jinja-guide/tree/main/server/trace"
 )
 
 type ShrinePostReq struct {
@@ -37,6 +38,12 @@ func RegisterShrine(w http.ResponseWriter, r *http.Request) {
 
 	// Contextを生成
 	ctx := r.Context()
+	shutdown, err := trace.InitTracerProvider()
+	if err != nil {
+		panic(err)
+	}
+	defer shutdown(ctx)
+	ctx = trace.GetContextWithTraceID(r.Context(), "FetchShrineDetails")
 
 	// HTTPリクエストからボディを取得
 	body := make([]byte, r.ContentLength)
