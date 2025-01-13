@@ -2,12 +2,13 @@ package logger
 
 import (
 	"context"
-	"fmt"
 	"log/slog"
 	"os"
 	"runtime"
 	"sync"
 	"time"
+
+	"go.opentelemetry.io/otel/trace"
 )
 
 // ハンドラーラッパー
@@ -37,7 +38,12 @@ func NewHandler() *Handler {
 
 func (h *Handler) Handle(ctx context.Context, record slog.Record) error {
 
-	fmt.Println(ctx)
+	if ctx != nil {
+		if span := trace.SpanFromContext(ctx); span != nil && span.SpanContext().IsValid() {
+			record.AddAttrs(slog.String("traceID", span.SpanContext().TraceID().String()))
+		}
+	}
+
 	if v, ok := ctx.Value(fields).(*sync.Map); ok {
 		v.Range(func(key, val any) bool {
 			if keyString, ok := key.(string); ok {
