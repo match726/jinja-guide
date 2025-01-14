@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 
 import '@/styles/global.css';
 
+const frontendUrl = import.meta.env.VITE_FRONTEND_URL;
 const backendEndpoint = import.meta.env.VITE_BACKEND_ENDPOINT;
 
 type ShrineDetails = {
@@ -119,7 +120,11 @@ const ShrineInfo = () => {
                 <h3 className="text-lg font-semibold mb-2">関連ワード</h3>
                 <div className="flex flex-wrap gap-2">
                   {shrDetails.tags.map((item, index) => (
-                    <Badge key={index} variant="secondary">{item}</Badge>
+                    <Badge key={index} variant="secondary" className="cursor-pointer hover:bg-primary/80">
+                      <a href={frontendUrl + "/shrines?tag=" + item} rel="noopener noreferrer" className="flex items-center">
+                      {item}
+                      </a>
+                    </Badge>
                   ))}
                 </div>
               </div>
