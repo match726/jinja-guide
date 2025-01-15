@@ -36,7 +36,7 @@ func FetchShrineList(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 	defer shutdown(ctx)
-	ctx = trace.GetContextWithTraceID(r.Context(), "FetchShrineDetails")
+	ctx = trace.GetContextWithTraceID(r.Context(), "FetchShrineList")
 
 	// HTTPリクエストからカスタムヘッダーを取得
 	strCustom := r.Header.Get("ShrGuide-Shrines-Authorization")

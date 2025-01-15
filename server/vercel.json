@@ -8,7 +8,7 @@
     { "source": "/api", "destination": "/api" },
     { "source": "/api/prefs", "destination": "/api/prefs" },
     { "source": "/api/shrine", "destination": "/api/shrine" },
-    { "source": "/api/shrines", "destination": "/api/shrines" },
+    { "source": "/api/shrines/list", "destination": "/api/shrines/list" },
     { "source": "/api/shrines/tag", "destination": "/api/shrines/tag" },
     { "source": "/api/admin/regist", "destination": "/api/admin/regist" },
     { "source": "/api/admin/sac", "destination": "/api/admin/sac" }

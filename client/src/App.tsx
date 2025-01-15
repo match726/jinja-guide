@@ -18,7 +18,7 @@ function App() {
         <Route path="/" element={ <Home /> } />
         <Route path="/prefs" element={ <PrefList /> } />
         <Route path="/shrine" element={ <ShrineInfo /> } />
-        <Route path="/shrines" element={ <ShrineList /> } />
+        <Route path="/shrines/list" element={ <ShrineList /> } />
         <Route path="/shrines/tag" element={ <ShrineTagList /> } />
         <Route path="/admin" element={ <Admin /> } />
         <Route path="/admin/regist" element={ <AdminRegisterShrine /> } />
