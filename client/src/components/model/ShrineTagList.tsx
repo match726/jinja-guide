@@ -26,7 +26,7 @@ const ShrineTagList = () => {
   const [shrines, setShrines] = useState<Shrine[]>([]);
   const search = useLocation().search;
   const query = new URLSearchParams(search);
-  const payload = {tag: query.get('tag')};
+  const payload = {tags: query.get('tags')};
 
   useEffect(() => {
 

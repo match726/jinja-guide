@@ -83,3 +83,39 @@ func (pg *Postgres) GetShrinesListByStdAreaCode(ctx context.Context, sacr *SacRe
 	return shrlrs, err
 
 }
+
+func (pg *Postgres) GetShrinesListByTag(ctx context.Context, tag string) (shrlrs []*ShrinesListResp, err error) {
+
+	query := `SELECT shr.name, shr.address, shr.plus_code, shr.place_id, CASE shrc2.content1 WHEN 'あり' THEN true ELSE false END
+					FROM t_shrine_contents shrc
+					INNER JOIN t_shrines shr
+						ON shrc.keyword1 = shr.plus_code
+					LEFT JOIN t_shrine_contents shrc2
+						ON shrc2.id = 8
+						AND shr.plus_code = shrc2.keyword1
+					WHERE shrc.id = 4
+						AND shrc.content1 = $1
+					ORDER BY shr.std_area_code, shr.address, shr.name`
+
+	rows, err := pg.dbPool.Query(ctx, query, tag)
+	if err != nil {
+		return nil, fmt.Errorf("pg.dbPool.Query: %w", err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+
+		var shrlr ShrinesListResp
+
+		err = rows.Scan(&shrlr.Name, &shrlr.Address, &shrlr.PlusCode, &shrlr.PlaceID, &shrlr.HasGoshuin)
+		if err != nil {
+			return nil, fmt.Errorf("rows.Scan: %w", err)
+		}
+
+		shrlrs = append(shrlrs, &shrlr)
+
+	}
+
+	return shrlrs, err
+
+}
