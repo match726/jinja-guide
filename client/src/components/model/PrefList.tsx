@@ -16,7 +16,7 @@ type SacRelationship = {
   hasChild: boolean
 };
 
-const linkUrl = import.meta.env.VITE_FRONTEND_URL + "/shrines";
+const linkUrl = import.meta.env.VITE_FRONTEND_URL + "/shrines/list";
 const backendEndpoint = import.meta.env.VITE_BACKEND_ENDPOINT;
 
 const Prefs = () => {
