@@ -29,6 +29,7 @@ func FetchShrineTagList(w http.ResponseWriter, r *http.Request) {
 	var pg *models.Postgres
 	var err error
 
+	fmt.Printf("リクエスト: %s", r)
 	// Contextを生成
 	ctx := r.Context()
 	shutdown, err := trace.InitTracerProvider()
