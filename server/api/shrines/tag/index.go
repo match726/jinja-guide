@@ -50,6 +50,7 @@ func FetchShrineTagList(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 	tagDecoded, _ := url.QueryUnescape(tag)
+	fmt.Println(tagDecoded)
 
 	pg, err = models.NewPool(ctx)
 	if err != nil {
