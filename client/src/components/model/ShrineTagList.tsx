@@ -39,6 +39,7 @@ const ShrineTagList = () => {
       }
     };
 
+    console.log(payload)
     const fetchShrinesInfo = async () => {
       try {
         const resp = await axios(reqOptions);
