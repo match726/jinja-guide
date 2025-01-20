@@ -42,7 +42,7 @@ func FetchShrineTagList(w http.ResponseWriter, r *http.Request) {
 	// HTTPリクエストからカスタムヘッダーを取得
 	strCustom := r.Header.Get("ShrGuide-Shrines-Authorization")
 
-	var tag string
+	var tag *string
 	err = json.Unmarshal([]byte(strCustom), &tag)
 	if err != nil {
 		fmt.Println(err)
