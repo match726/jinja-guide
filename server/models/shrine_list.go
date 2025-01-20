@@ -84,7 +84,7 @@ func (pg *Postgres) GetShrinesListByStdAreaCode(ctx context.Context, sacr *SacRe
 
 }
 
-func (pg *Postgres) GetShrinesListByTag(ctx context.Context, tag *string) (shrlrs []*ShrinesListResp, err error) {
+func (pg *Postgres) GetShrinesListByTag(ctx context.Context, shrd *ShrineDetails) (shrlrs []*ShrinesListResp, err error) {
 
 	query := `SELECT shr.name, shr.address, shr.plus_code, shr.place_id, CASE shrc2.content1 WHEN 'あり' THEN true ELSE false END
 					FROM t_shrine_contents shrc
@@ -97,7 +97,7 @@ func (pg *Postgres) GetShrinesListByTag(ctx context.Context, tag *string) (shrlr
 						AND shrc.content1 = $1
 					ORDER BY shr.std_area_code, shr.address, shr.name`
 
-	rows, err := pg.dbPool.Query(ctx, query, tag)
+	rows, err := pg.dbPool.Query(ctx, query, shrd.Tags)
 	if err != nil {
 		return nil, fmt.Errorf("pg.dbPool.Query: %w", err)
 	}
