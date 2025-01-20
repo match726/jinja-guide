@@ -84,7 +84,7 @@ func (pg *Postgres) GetShrinesListByStdAreaCode(ctx context.Context, sacr *SacRe
 
 }
 
-func (pg *Postgres) GetShrinesListByTag(ctx context.Context, tag *string) (shrlrs []*ShrinesListResp, err error) {
+func (pg *Postgres) GetShrinesListByTag(ctx context.Context, tag string) (shrlrs []*ShrinesListResp, err error) {
 
 	query := `SELECT shr.name, shr.address, shr.plus_code, shr.place_id, CASE shrc2.content1 WHEN 'あり' THEN true ELSE false END
 					FROM t_shrine_contents shrc

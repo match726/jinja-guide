@@ -9,6 +9,10 @@ import (
 	"github.com/match726/jinja-guide/tree/main/server/trace"
 )
 
+type CustomHeader struct {
+	Tag string `json:"tags"`
+}
+
 func ShrinesTagHandler(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
@@ -29,7 +33,6 @@ func FetchShrineTagList(w http.ResponseWriter, r *http.Request) {
 	var pg *models.Postgres
 	var err error
 
-	fmt.Printf("Request: %s\n", r)
 	// Contextを生成
 	ctx := r.Context()
 	shutdown, err := trace.InitTracerProvider()
@@ -42,13 +45,14 @@ func FetchShrineTagList(w http.ResponseWriter, r *http.Request) {
 	// HTTPリクエストからカスタムヘッダーを取得
 	strCustom := r.Header.Get("ShrGuide-Shrines-Authorization")
 
-	fmt.Println(strCustom)
-	var tag *string
-	err = json.Unmarshal([]byte(strCustom), &tag)
+	var customHeader *CustomHeader
+	err = json.Unmarshal([]byte(strCustom), &customHeader)
 	if err != nil {
 		fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
+
+	fmt.Printf("customHeader.Tag: %s\n", customHeader.Tag)
 
 	pg, err = models.NewPool(ctx)
 	if err != nil {
@@ -58,7 +62,7 @@ func FetchShrineTagList(w http.ResponseWriter, r *http.Request) {
 	defer pg.ClosePool(ctx)
 
 	var shrlrs []*models.ShrinesListResp
-	shrlrs, err = pg.GetShrinesListByTag(ctx, tag)
+	shrlrs, err = pg.GetShrinesListByTag(ctx, customHeader.Tag)
 	if err != nil {
 		fmt.Printf("[Err] <GetShrinesListByTag> Err:%s\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
