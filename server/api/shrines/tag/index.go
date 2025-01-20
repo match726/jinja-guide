@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"net/url"
 
 	"github.com/match726/jinja-guide/tree/main/server/models"
 	"github.com/match726/jinja-guide/tree/main/server/trace"
@@ -49,8 +48,7 @@ func FetchShrineTagList(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
-	tagDecoded, _ := url.QueryUnescape(tag)
-	fmt.Println(tagDecoded)
+	fmt.Println(tag)
 
 	pg, err = models.NewPool(ctx)
 	if err != nil {
@@ -60,7 +58,7 @@ func FetchShrineTagList(w http.ResponseWriter, r *http.Request) {
 	defer pg.ClosePool(ctx)
 
 	var shrlrs []*models.ShrinesListResp
-	shrlrs, err = pg.GetShrinesListByTag(ctx, tagDecoded)
+	shrlrs, err = pg.GetShrinesListByTag(ctx, tag)
 	if err != nil {
 		fmt.Printf("[Err] <GetShrinesListByTag> Err:%s\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
