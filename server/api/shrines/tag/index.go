@@ -42,8 +42,9 @@ func FetchShrineTagList(w http.ResponseWriter, r *http.Request) {
 	// HTTPリクエストからカスタムヘッダーを取得
 	strCustom := r.Header.Get("ShrGuide-Shrines-Authorization")
 
-	var shrd *models.ShrineDetails
-	err = json.Unmarshal([]byte(strCustom), &shrd)
+	fmt.Println(strCustom)
+	var tag *string
+	err = json.Unmarshal([]byte(strCustom), &tag)
 	if err != nil {
 		fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -57,7 +58,7 @@ func FetchShrineTagList(w http.ResponseWriter, r *http.Request) {
 	defer pg.ClosePool(ctx)
 
 	var shrlrs []*models.ShrinesListResp
-	shrlrs, err = pg.GetShrinesListByTag(ctx, shrd)
+	shrlrs, err = pg.GetShrinesListByTag(ctx, tag)
 	if err != nil {
 		fmt.Printf("[Err] <GetShrinesListByTag> Err:%s\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
