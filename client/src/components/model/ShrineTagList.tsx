@@ -39,7 +39,6 @@ const ShrineTagList = () => {
       }
     };
 
-    console.log(payload)
     const fetchShrinesInfo = async () => {
       try {
         const resp = await axios(reqOptions);
@@ -59,6 +58,7 @@ const ShrineTagList = () => {
       <div className="container mx-auto p-4 max-w-4xl">
         <div className="bg-red-900 text-white p-4 rounded-t-lg shadow-lg">
           <h2 className="text-2xl font-bold text-center">神社一覧</h2>
+          <p className="text-center text-gray-200">関連ワード：{query.get('tags')}</p>
         </div>
         <div className="overflow-x-auto">
           <Table className="w-full">
