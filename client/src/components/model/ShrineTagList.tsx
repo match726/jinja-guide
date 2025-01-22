@@ -29,9 +29,9 @@ const ShrineTagList = () => {
   const query = new URLSearchParams(search);
   const payload = {tags: encodeURIComponent(query.get('tags') as string)};
 
-  // ページネーション
+  // ページネーション関連
   const [currentPage, setCurrentPage] = useState(1)
-  const itemsPerPage = 15
+  const itemsPerPage = 10
   const totalPages = Math.ceil(shrines.length / itemsPerPage)
 
   const startIndex = (currentPage - 1) * itemsPerPage
@@ -112,7 +112,7 @@ const ShrineTagList = () => {
             </TableBody>
           </Table>
         </div>
-        <div className="bg-gray-200 flex justify-between items-center mt-4">
+        <div className="bg-gray-200 flex justify-between items-center">
           <Button
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
@@ -121,7 +121,7 @@ const ShrineTagList = () => {
             前のページ
           </Button>
           <span className="text-red-900 bg-red-50 px-4 py-2 rounded-full border-2 border-red-900 font-semibold">
-            頁 {currentPage} / {totalPages}
+            {currentPage} / {totalPages} 頁
           </span>
           <Button
             onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
