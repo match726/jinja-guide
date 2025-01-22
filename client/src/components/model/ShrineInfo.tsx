@@ -121,10 +121,12 @@ const ShrineInfo = () => {
                 <div className="flex flex-wrap gap-2">
                   {shrDetails.tags.map((item, index) => (
                     item === "登録なし"
-                      ? <Badge key={index} variant="secondary">{item}</Badge>
+                      ? <Badge key={index} variant="secondary">
+                          {item}
+                        </Badge>
                       : <Badge key={index} variant="secondary" className="cursor-pointer hover:bg-primary/80">
                           <a href={frontendUrl + "/shrines/tag?tags=" + encodeURIComponent(item)} rel="noopener noreferrer" className="flex items-center">
-                          {item}
+                            {item}
                           </a>
                         </Badge>
                   ))}
@@ -132,19 +134,25 @@ const ShrineInfo = () => {
               </div>
               <div>
                 <h3 className="text-lg font-semibold mb-2">公式HP</h3>
-                <Button variant="link" className="p-0">
-                  <a href={shrDetails.websiteUrl} target="_blank" rel="noopener noreferrer" className="flex items-center">
-                    公式サイトへ <ExternalLink className="ml-1 h-4 w-4" />
-                  </a>
-                </Button>
+                {shrDetails.websiteUrl === ""
+                  ? "登録なし"
+                  : <Button variant="link" className="p-0">
+                      <a href={shrDetails.websiteUrl} target="_blank" rel="noopener noreferrer" className="flex items-center">
+                        公式サイトへ <ExternalLink className="ml-1 h-4 w-4" />
+                      </a>
+                    </Button>
+                }
               </div>
               <div>
                 <h3 className="text-lg font-semibold mb-2">Wikipedia</h3>
-                <Button variant="link" className="p-0">
-                  <a href={shrDetails.wikipediaUrl} target="_blank" rel="noopener noreferrer" className="flex items-center">
-                    Wikipediaへ <ExternalLink className="ml-1 h-4 w-4" />
-                  </a>
-                </Button>
+                {shrDetails.wikipediaUrl === ""
+                  ? "登録なし"
+                  : <Button variant="link" className="p-0">
+                      <a href={shrDetails.wikipediaUrl} target="_blank" rel="noopener noreferrer" className="flex items-center">
+                        Wikipediaへ <ExternalLink className="ml-1 h-4 w-4" />
+                      </a>
+                    </Button>
+                }
               </div>
             </div>
           </CardContent>
