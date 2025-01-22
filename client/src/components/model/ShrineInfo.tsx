@@ -120,13 +120,13 @@ const ShrineInfo = () => {
                 <h3 className="text-lg font-semibold mb-2">関連ワード</h3>
                 <div className="flex flex-wrap gap-2">
                   {shrDetails.tags.map((item, index) => (
-                    <Badge key={index} variant="secondary" className="cursor-pointer hover:bg-primary/80">
-                      {item === "登録なし" ? item :
-                        <a href={frontendUrl + "/shrines/tag?tags=" + encodeURIComponent(item)} rel="noopener noreferrer" className="flex items-center">
-                        {item}
-                        </a>
-                      }
-                    </Badge>
+                    item === "登録なし"
+                      ? <Badge key={index} variant="secondary">{item}</Badge>
+                      : <Badge key={index} variant="secondary" className="cursor-pointer hover:bg-primary/80">
+                          <a href={frontendUrl + "/shrines/tag?tags=" + encodeURIComponent(item)} rel="noopener noreferrer" className="flex items-center">
+                          {item}
+                          </a>
+                        </Badge>
                   ))}
                 </div>
               </div>
