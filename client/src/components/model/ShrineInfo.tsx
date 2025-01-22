@@ -121,9 +121,11 @@ const ShrineInfo = () => {
                 <div className="flex flex-wrap gap-2">
                   {shrDetails.tags.map((item, index) => (
                     <Badge key={index} variant="secondary" className="cursor-pointer hover:bg-primary/80">
-                      <a href={frontendUrl + "/shrines/tag?tags=" + encodeURIComponent(item)} rel="noopener noreferrer" className="flex items-center">
-                      {item}
-                      </a>
+                      {item === "登録なし" ? item :
+                        <a href={frontendUrl + "/shrines/tag?tags=" + encodeURIComponent(item)} rel="noopener noreferrer" className="flex items-center">
+                        {item}
+                        </a>
+                      }
                     </Badge>
                   ))}
                 </div>
