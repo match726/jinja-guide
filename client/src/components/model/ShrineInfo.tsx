@@ -136,7 +136,7 @@ const ShrineInfo = () => {
                 <h3 className="text-lg font-semibold mb-2">公式HP</h3>
                 {shrDetails.websiteUrl === ""
                   ? <Button variant="link" className="p-0">
-                      "登録なし"
+                      登録なし
                     </Button>
                   : <Button variant="link" className="p-0">
                       <a href={shrDetails.websiteUrl} target="_blank" rel="noopener noreferrer" className="flex items-center">
@@ -148,7 +148,9 @@ const ShrineInfo = () => {
               <div>
                 <h3 className="text-lg font-semibold mb-2">Wikipedia</h3>
                 {shrDetails.wikipediaUrl === ""
-                  ? "登録なし"
+                  ? <Button variant="link" className="p-0">
+                      登録なし
+                    </Button>
                   : <Button variant="link" className="p-0">
                       <a href={shrDetails.wikipediaUrl} target="_blank" rel="noopener noreferrer" className="flex items-center">
                         Wikipediaへ <ExternalLink className="ml-1 h-4 w-4" />
