@@ -4,6 +4,7 @@ import { Stamp } from 'lucide-react';
 import axios from 'axios';
 
 import { Header } from '@/components/ui/header';
+import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 import '@/styles/global.css';
@@ -27,6 +28,15 @@ const ShrineTagList = () => {
   const search = useLocation().search;
   const query = new URLSearchParams(search);
   const payload = {tags: encodeURIComponent(query.get('tags') as string)};
+
+  // ページネーション
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 20
+  const totalPages = Math.ceil(shrines.length / itemsPerPage)
+
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const currentShrines = shrines.slice(startIndex, endIndex)
 
   useEffect(() => {
 
@@ -70,7 +80,7 @@ const ShrineTagList = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {shrines.map((shrine: Shrine, index) => (
+              {currentShrines.map((shrine: Shrine, index) => (
                 <TableRow 
                   key={shrine.plusCode}
                   className={`${index % 2 === 0 ? 'bg-red-50' : 'bg-white'} hover:bg-red-100 transition-colors`}
@@ -101,6 +111,25 @@ const ShrineTagList = () => {
               ))}
             </TableBody>
           </Table>
+        </div>
+        <div className="bg-gray-200 flex justify-between items-center mt-4">
+          <Button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className="bg-red-900 text-white hover:text-bold"
+          >
+            前のページ
+          </Button>
+          <span className="text-red-900 bg-red-50 px-4 py-2 rounded-full border-2 border-red-900 font-semibold">
+            頁 {currentPage} / {totalPages}
+          </span>
+          <Button
+            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            disabled={currentPage === totalPages}
+            className="bg-red-900 text-white hover:text-bold"
+          >
+            次のページ
+          </Button>
         </div>
         <div className="bg-red-900 h-4 rounded-b-lg shadow-lg" />
       </div>
