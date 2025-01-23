@@ -112,21 +112,21 @@ const ShrineTagList = () => {
             </TableBody>
           </Table>
         </div>
-        <div className="bg-gray-200 flex justify-between items-center">
+        <div className="bg-red-50 flex justify-between items-center">
           <Button
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
-            className="bg-gray-800 text-white hover:bg-red-900"
+            className="bg-red-900 text-white hover:bg-red-500"
           >
             前へ
           </Button>
-          <span className="text-gray-800 bg-gray-200 px-4 py-2 rounded-full border-2 border-gray-800 font-semibold">
+          <span className="text-red-900 bg-red-100 px-4 py-2 rounded-full border-2 border-red-900 font-semibold">
             {currentPage} / {totalPages} 頁
           </span>
           <Button
             onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
             disabled={currentPage === totalPages}
-            className="bg-gray-800 text-white hover:bg-red-900"
+            className="bg-red-900 text-white hover:bg-red-500"
           >
             次へ
           </Button>
