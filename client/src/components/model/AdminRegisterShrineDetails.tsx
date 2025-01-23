@@ -27,6 +27,7 @@ const AdminRegisterShrineDetails = () => {
       data: JSON.stringify(payload)
     };
 
+    console.log(payload)
     if (isFirstRender.current) {
       isFirstRender.current = false;
       return
