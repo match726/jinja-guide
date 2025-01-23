@@ -67,7 +67,7 @@ const ShrineTagList = () => {
       <Header />
       <div className="container mx-auto p-4 max-w-4xl">
         <div className="bg-red-900 text-white p-4 rounded-t-lg shadow-lg">
-          <p className="font-bold text-center">関連ワード　{query.get('tags')}　の神社一覧</p>
+          <p className="font-bold text-center">関連ワード　「{query.get('tags')}」　の神社一覧</p>
         </div>
         <div className="overflow-x-auto">
           <Table className="w-full">
@@ -116,19 +116,19 @@ const ShrineTagList = () => {
           <Button
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
-            className="bg-red-900 text-white hover:text-bold"
+            className="bg-gray-800 text-white hover:bg-red-900"
           >
-            前のページ
+            前へ
           </Button>
-          <span className="text-red-900 bg-red-50 px-4 py-2 rounded-full border-2 border-red-900 font-semibold">
+          <span className="text-gray-800 bg-gray-200 px-4 py-2 rounded-full border-2 border-gray-800 font-semibold">
             {currentPage} / {totalPages} 頁
           </span>
           <Button
             onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
             disabled={currentPage === totalPages}
-            className="bg-red-900 text-white hover:text-bold"
+            className="bg-gray-800 text-white hover:bg-red-900"
           >
-            次のページ
+            次へ
           </Button>
         </div>
         <div className="bg-red-900 h-4 rounded-b-lg shadow-lg" />
