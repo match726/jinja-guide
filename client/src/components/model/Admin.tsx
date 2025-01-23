@@ -9,7 +9,12 @@ const Admin: React.FC = () => {
     {
       title: "神社登録",
       description: "名称と住所から神社を新規登録します。",
-      link: "admin/regist"
+      link: "admin/regist/shrine"
+    },
+    {
+      title: "神社詳細情報登録",
+      description: "PlusCodeから神社の詳細情報を新規登録します。",
+      link: "admin/regist/details"
     },
     {
       title: "標準地域コード管理",

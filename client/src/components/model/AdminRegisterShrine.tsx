@@ -20,7 +20,7 @@ const AdminRegisterShrine = () => {
 
     const options = {
       method: "POST",
-      url: backendEndpoint + "/api/admin/regist",
+      url: backendEndpoint + "/api/admin/regist/shrine",
       headers: {
         "Content-Type": "application/json"
       },
