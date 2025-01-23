@@ -1,6 +1,7 @@
 package models
 
 import (
+	"context"
 	"time"
 )
 
@@ -56,4 +57,28 @@ func (shr *Shrine) ShrineName(name string) {
 // 神社住所のレシーバ
 func (shr *Shrine) ShrineAddress(address string) {
 	shr.Address = address
+}
+
+// PlusCodeから神社の登録の有無を判定
+func (pg *Postgres) ExistsShrineByPlusCode(ctx context.Context, plusCode string) bool {
+
+	var count int
+
+	query := `SELECT count(*)
+						FROM t_shrines shr
+						WHERE shr.plus_code = $1`
+
+	row := pg.dbPool.QueryRow(ctx, query, plusCode)
+
+	err := row.Scan(&count)
+	if err != nil {
+		return false
+	}
+
+	if count == 1 {
+		return true
+	}
+
+	return false
+
 }

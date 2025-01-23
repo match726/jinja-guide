@@ -61,14 +61,19 @@ func RegisterShrineDetails(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("[Err] <RegisterShrineDetails> Err: パラメータ取得エラー %s\n", err)
 	}
 
-	fmt.Println(shrdpr)
-
 	pg, err = models.NewPool(ctx)
 	if err != nil {
 		fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 	defer pg.ClosePool(ctx)
+
+	// 神社の登録があるかをチェック
+	existsShrine := pg.ExistsShrineByPlusCode(ctx, shrdpr.PlusCode)
+
+	if !existsShrine {
+		fmt.Println(shrdpr)
+	}
 
 	writeJsonResp(w, shrdpr)
 
