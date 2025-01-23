@@ -12,7 +12,7 @@ const backendEndpoint = import.meta.env.VITE_BACKEND_ENDPOINT;
 
 const AdminRegisterShrineDetails = () => {
 
-  const [payload, setPayload] = useState({plusCode: "", furigana: "", altName: "", tag: "", foundedYear: "", hasGoshuin: "", objectOfWorship: "", websiteURL: "", wikipediaUrl: ""});
+  const [payload, setPayload] = useState({plusCode: "", furigana: "", altName: "", tags: "", foundedYear: "", hasGoshuin: "", objectOfWorship: "", websiteURL: "", wikipediaUrl: ""});
   // 初回レンダリングのリクエスト送信を無効化
   const isFirstRender = useRef(true);
 
@@ -58,7 +58,7 @@ const AdminRegisterShrineDetails = () => {
       shrineWebsiteURL: HTMLInputElement,
       shrineWikiUrl: HTMLInputElement
     }
-    setPayload({ plusCode: formElements.shrinePlusCode.value, furigana: formElements.shrineFurigana.value, altName: formElements.shrineAltName.value, tag: formElements.shrineTag.value, foundedYear: formElements.shrineFoundedYear.value, hasGoshuin: formElements.shrineHasGoshuin.value, objectOfWorship: formElements.shrineObjectOfWorship.value, websiteURL: formElements.shrineWebsiteURL.value, wikipediaUrl: formElements.shrineWikiUrl.value });
+    setPayload({ plusCode: formElements.shrinePlusCode.value, furigana: formElements.shrineFurigana.value, altName: formElements.shrineAltName.value, tags: formElements.shrineTag.value, foundedYear: formElements.shrineFoundedYear.value, hasGoshuin: formElements.shrineHasGoshuin.value, objectOfWorship: formElements.shrineObjectOfWorship.value, websiteURL: formElements.shrineWebsiteURL.value, wikipediaUrl: formElements.shrineWikiUrl.value });
 
     // フォームをクリア
     formElements.shrinePlusCode.value = "";

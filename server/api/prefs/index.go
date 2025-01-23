@@ -50,12 +50,12 @@ func FetchSacRelationship(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("[Err] <GetSacRelationship> Err:%s\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
 	} else {
-		writejsonResp(w, sacr)
+		writeJsonResp(w, sacr)
 	}
 
 }
 
-func writejsonResp(w http.ResponseWriter, sacr []models.SacRelationship) {
+func writeJsonResp(w http.ResponseWriter, sacr []models.SacRelationship) {
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	b, err := json.Marshal(sacr)

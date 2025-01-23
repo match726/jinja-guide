@@ -1,0 +1,95 @@
+package api
+
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+
+	"github.com/match726/jinja-guide/tree/main/server/models"
+	"github.com/match726/jinja-guide/tree/main/server/trace"
+)
+
+type ShrineDetailsPostReq struct {
+	PlusCode        string `json:"plusCode"`
+	Furigana        string `json:"furigana"`
+	AltName         string `json:"altName"`
+	Tags            string `json:"tags"`
+	FoundedYear     string `json:"foundedYear"`
+	ObjectOfWorship string `json:"objectOfWorship"`
+	HasGoshuin      string `json:"hasGoshuin"`
+	WebsiteURL      string `json:"websiteUrl"`
+	WikipediaURL    string `json:"wikipediaUrl"`
+}
+
+func ShrineDetailsRegistHandler(w http.ResponseWriter, r *http.Request) {
+
+	switch r.Method {
+	case http.MethodOptions:
+		w.WriteHeader(http.StatusOK)
+		return
+	case http.MethodPost:
+		RegisterShrineDetails(w, r)
+	default:
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+
+}
+
+func RegisterShrineDetails(w http.ResponseWriter, r *http.Request) {
+
+	var pg *models.Postgres
+	var err error
+
+	// Contextを生成
+	ctx := r.Context()
+	shutdown, err := trace.InitTracerProvider()
+	if err != nil {
+		panic(err)
+	}
+	defer shutdown(ctx)
+	ctx = trace.GetContextWithTraceID(r.Context(), "RegisterShrineDetails")
+
+	// HTTPリクエストからボディを取得
+	body := make([]byte, r.ContentLength)
+	r.Body.Read(body)
+
+	// ShrineDetailsPostReq構造体へ変換
+	var shrdpr *ShrineDetailsPostReq
+	err = json.Unmarshal([]byte(string(body)), &shrdpr)
+	if err != nil {
+		fmt.Printf("[Err] <RegisterShrineDetails> Err: パラメータ取得エラー %s\n", err)
+	}
+
+	fmt.Println(shrdpr)
+
+	pg, err = models.NewPool(ctx)
+	if err != nil {
+		fmt.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+	defer pg.ClosePool(ctx)
+
+	writeJsonResp(w, shrdpr)
+
+}
+
+func writeJsonResp(w http.ResponseWriter, shrdpr *ShrineDetailsPostReq) {
+
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	b, err := json.Marshal(shrdpr)
+	if err != nil {
+		fmt.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		s := `{"status":"500 Internal Server Error"}`
+		if _, err := w.Write([]byte(s)); err != nil {
+			fmt.Println(err)
+		}
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	if _, err := w.Write(b); err != nil {
+		fmt.Println(err)
+	}
+
+}

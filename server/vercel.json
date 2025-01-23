@@ -10,7 +10,8 @@
     { "source": "/api/shrine", "destination": "/api/shrine" },
     { "source": "/api/shrines/list", "destination": "/api/shrines/list" },
     { "source": "/api/shrines/tag", "destination": "/api/shrines/tag" },
-    { "source": "/api/admin/regist", "destination": "/api/admin/regist" },
+    { "source": "/api/admin/regist/shrine", "destination": "/api/admin/regist/shrine" },
+    { "source": "/api/admin/regist/details", "destination": "/api/admin/regist/details" },
     { "source": "/api/admin/sac", "destination": "/api/admin/sac" }
   ],
   "headers": [
