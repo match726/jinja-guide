@@ -62,20 +62,19 @@ func (shr *Shrine) ShrineAddress(address string) {
 // PlusCodeから神社の登録の有無を判定
 func (pg *Postgres) ExistsShrineByPlusCode(ctx context.Context, plusCode string) bool {
 
-	var count int
+	var shr Shrine
 
-	query := `SELECT count(*)
+	query := `SELECT shr.name
 						FROM t_shrines shr
 						WHERE shr.plus_code = $1`
 
-	row := pg.dbPool.QueryRow(ctx, query, plusCode)
+	err := pg.dbPool.QueryRow(ctx, query, plusCode).Scan(&shr.Name)
 
-	err := row.Scan(&count)
 	if err != nil {
 		return false
 	}
 
-	if count == 1 {
+	if shr.Name != "" {
 		return true
 	}
 
