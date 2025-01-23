@@ -116,7 +116,7 @@ const ShrineTagList = () => {
           <Button
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
-            className="bg-red-900 text-white py-1 hover:bg-red-700"
+            className="bg-red-900 text-white my-1 hover:bg-red-700"
           >
             前へ
           </Button>
@@ -126,7 +126,7 @@ const ShrineTagList = () => {
           <Button
             onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
             disabled={currentPage === totalPages}
-            className="bg-red-900 text-white py-1 hover:bg-red-700"
+            className="bg-red-900 text-white my-1 hover:bg-red-700"
           >
             次へ
           </Button>
