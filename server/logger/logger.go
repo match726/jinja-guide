@@ -114,3 +114,7 @@ func log(ctx context.Context, level slog.Level, msg string, args ...any) {
 func Info(ctx context.Context, msg string, args ...any) {
 	log(ctx, slog.LevelInfo, msg, args...)
 }
+
+func Error(ctx context.Context, msg string, args ...any) {
+	log(ctx, slog.LevelError, msg, args...)
+}

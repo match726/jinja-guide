@@ -3,6 +3,8 @@ package models
 import (
 	"context"
 	"time"
+
+	"github.com/match726/jinja-guide/tree/main/server/logger"
 )
 
 // 神社テーブル
@@ -71,6 +73,7 @@ func (pg *Postgres) ExistsShrineByPlusCode(ctx context.Context, plusCode string)
 	err := pg.dbPool.QueryRow(ctx, query, plusCode).Scan(&shr.Name)
 
 	if err != nil {
+		logger.Error(ctx, "SELECT失敗")
 		return false
 	}
 
