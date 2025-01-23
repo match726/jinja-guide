@@ -120,7 +120,7 @@ const ShrineTagList = () => {
           >
             前へ
           </Button>
-          <span className="text-red-900 bg-red-100 px-4 py-2 rounded-full border-2 border-red-900 font-semibold">
+          <span className="text-red-900 bg-white px-4 py-2 rounded-full border-2 border-red-900 font-semibold">
             {currentPage} / {totalPages} 頁
           </span>
           <Button
