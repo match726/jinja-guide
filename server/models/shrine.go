@@ -77,6 +77,8 @@ func (pg *Postgres) ExistsShrineByPlusCode(ctx context.Context, plusCode string)
 		return false
 	}
 
+	logger.Info(ctx, "SELECT結果", "name", shr.Name)
+
 	if shr.Name != "" {
 		return true
 	}
