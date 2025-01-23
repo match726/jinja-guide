@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/match726/jinja-guide/tree/main/server/logger"
 	"github.com/match726/jinja-guide/tree/main/server/models"
 	"github.com/match726/jinja-guide/tree/main/server/trace"
 )
@@ -71,6 +72,7 @@ func RegisterShrineDetails(w http.ResponseWriter, r *http.Request) {
 	// 神社の登録があるかをチェック
 	existsShrine := pg.ExistsShrineByPlusCode(ctx, shrdpr.PlusCode)
 
+	logger.Info(ctx, "神社存在チェック結果", "existsShrine", existsShrine)
 	if !existsShrine {
 		fmt.Println(shrdpr)
 	}
