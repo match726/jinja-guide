@@ -6,47 +6,48 @@ import (
 	"os"
 	"sort"
 	"strconv"
+	"strings"
 
 	"github.com/jackc/pgx/v5"
 )
 
 type StdAreaCode struct {
-	StdAreaCode     string
-	PrefAreaCode    string
-	SubPrefAreaCode string
-	MunicAreaCode1  string
-	MunicAreaCode2  string
-	PrefName        string
-	SubPrefName     string
-	MunicName1      string
-	MunicName2      string
+	StdAreaCode     string `json:"stdAreaCode"`
+	PrefAreaCode    string `json:"prefAreaCode"`
+	SubPrefAreaCode string `json:"subPrefAreaCode"`
+	MunicAreaCode1  string `json:"municAreaCode1"`
+	MunicAreaCode2  string `json:"municAreaCode2"`
+	PrefName        string `json:"prefName"`
+	SubPrefName     string `json:"subPrefName"`
+	MunicName1      string `json:"municName1"`
+	MunicName2      string `json:"municName2"`
 }
 
 // SELECT用の構造体(タイムスタンプをYYYY/MM/DD HH24:MM:SS形式で取得する)
 type StdAreaCodeGet struct {
 	StdAreaCode
-	CreatedAt string
-	UpdatedAt string
+	CreatedAt string `json:"createdAt"`
+	UpdatedAt string `json:"updatedAt"`
 }
 
 // 市区町村の関係性を示すための構造体
 type SacRelationship struct {
-	StdAreaCode    string `json:"std_area_code"`
+	StdAreaCode    string `json:"stdAreaCode"`
 	Name           string `json:"name"`
-	SupStdAreaCode string `json:"sup_std_area_code"`
+	SupStdAreaCode string `json:"supStdAreaCode"`
 	Kinds          string `json:"kinds"`
-	HasChild       bool   `json:"has_child"`
+	HasChild       bool   `json:"hasChild"`
 }
 
 // 標準エリアコードの最新化
-func (pg *Postgres) UpdateStdAreaCode() (err error) {
+func (pg *Postgres) UpdateStdAreaCode(ctx context.Context) (err error) {
 
 	var sacs []StdAreaCode
 	var rows [][]interface{}
 
 	query := `TRUNCATE TABLE m_stdareacode`
 
-	_, err = pg.dbPool.Exec(context.Background(), query)
+	_, err = pg.dbPool.Exec(ctx, query)
 
 	if err != nil {
 		return fmt.Errorf("標準地域コード TRUNCATE失敗： %w", err)
@@ -271,7 +272,7 @@ func (pg *Postgres) UpdateStdAreaCode() (err error) {
 	}
 
 	cnt, err := pg.dbPool.CopyFrom(
-		context.Background(),
+		ctx,
 		pgx.Identifier{"m_stdareacode"},
 		[]string{"std_area_code", "pref_area_code", "subpref_area_code", "munic_area_code1", "munic_area_code2", "pref_name", "subpref_name", "munic_name1", "munic_name2", "created_at", "updated_at"},
 		pgx.CopyFromRows(rows),
@@ -465,13 +466,13 @@ ORDER BY ?areacode`
 }
 
 // 標準地域コードの一覧を全件取得する
-func (pg *Postgres) GetStdAreaCodes() ([]StdAreaCodeGet, error) {
+func (pg *Postgres) GetStdAreaCodeList(ctx context.Context) ([]StdAreaCodeGet, error) {
 
 	query := `SELECT std_area_code, pref_area_code, subpref_area_code, munic_area_code1, munic_area_code2, pref_name, subpref_name, munic_name1, munic_name2, to_char(created_at,'YYYY/MM/DD HH24:MI:SS') AS "created_at", to_char(updated_at,'YYYY/MM/DD HH24:MI:SS') AS "updated_at"
 					FROM m_stdareacode
 					ORDER BY std_area_code`
 
-	rows, err := pg.dbPool.Query(context.Background(), query)
+	rows, err := pg.dbPool.Query(ctx, query)
 	if err != nil {
 		return nil, fmt.Errorf("標準地域コード 取得失敗： %w", err)
 	}
@@ -481,24 +482,44 @@ func (pg *Postgres) GetStdAreaCodes() ([]StdAreaCodeGet, error) {
 
 }
 
-// 特定の都道府県に属する標準地域コードの一覧を取得する (神社の住所からの標準地域コード取得用)
-func (pg *Postgres) GetStdAreaCodeListByPrefName(prefname string) (sacs []StdAreaCode, err error) {
+// 神社の住所から標準地域コードを取得する
+func (pg *Postgres) GetStdAreaCodeByPrefName(ctx context.Context, prefname string, shr *Shrine) error {
+
+	var sacs []StdAreaCode
 
 	query := `SELECT std_area_code, pref_area_code, subpref_area_code, munic_area_code1, munic_area_code2, pref_name, subpref_name, munic_name1, munic_name2
 					FROM m_stdareacode
 					WHERE pref_name = $1`
 
-	rows, err := pg.dbPool.Query(context.Background(), query, prefname)
+	rows, err := pg.dbPool.Query(ctx, query, prefname)
 	if err != nil {
-		return nil, fmt.Errorf("標準地域コード一覧 取得失敗： %w", err)
+		return fmt.Errorf("標準地域コード一覧 取得失敗： %w", err)
 	}
 	defer rows.Close()
 
-	return pgx.CollectRows(rows, pgx.RowToStructByName[StdAreaCode])
+	sacs, err = pgx.CollectRows(rows, pgx.RowToStructByName[StdAreaCode])
+	if err != nil {
+		return fmt.Errorf("標準地域コード一覧 フェッチ失敗： %w", err)
+	}
+
+	// 標準地域コードの紐づけ
+	for i := len(sacs) - 1; i >= 0; i-- {
+		if sacs[i].MunicName1 == "" && sacs[i].MunicName2 == "" {
+			continue
+		} else {
+			keyword := sacs[i].PrefName + sacs[i].MunicName1 + sacs[i].MunicName2
+			if strings.HasPrefix(shr.Address, keyword) {
+				shr.StdAreaCode = sacs[i].StdAreaCode
+				break
+			}
+		}
+	}
+
+	return nil
 
 }
 
-func (pg *Postgres) GetSacRelationship() (sacr []SacRelationship, err error) {
+func (pg *Postgres) GetSacRelationship(ctx context.Context) (sacr []SacRelationship, err error) {
 
 	var sac StdAreaCode
 	msh := make(map[string]SacRelationship)
@@ -510,7 +531,7 @@ func (pg *Postgres) GetSacRelationship() (sacr []SacRelationship, err error) {
 					GROUP BY shr.std_area_code, sac.pref_area_code, sac.subpref_area_code, sac.munic_area_code1, sac.munic_area_code2, sac.pref_name, sac.subpref_name, sac.munic_name1, sac.munic_name2
 					ORDER BY shr.std_area_code`
 
-	rows, err := pg.dbPool.Query(context.Background(), query)
+	rows, err := pg.dbPool.Query(ctx, query)
 	if err != nil {
 		return nil, fmt.Errorf("標準地域コード一覧 取得失敗： %w", err)
 	}

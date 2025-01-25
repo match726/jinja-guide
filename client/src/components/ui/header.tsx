@@ -1,11 +1,6 @@
 import { Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from '@/components/ui/dropdown-menu';
 
 const FRONTEND_URL=import.meta.env.VITE_FRONTEND_URL
 
@@ -38,9 +33,6 @@ const Header: React.FC = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem>
-                <a href="#about">概要</a>
-              </DropdownMenuItem>
               <DropdownMenuItem>
               <a href={FRONTEND_URL + "/prefs"}>都道府県／市区町村検索</a>
               </DropdownMenuItem>

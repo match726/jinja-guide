@@ -8,11 +8,11 @@ import { Label } from '@/components/ui/label';
 
 import '@/styles/global.css';
 
-const BACKEND_ENDPOINT=import.meta.env.VITE_BACKEND_ENDPOINT;
+const backendEndpoint = import.meta.env.VITE_BACKEND_ENDPOINT;
 
 const AdminRegisterShrine = () => {
 
-  const [payload, setPayload] = useState({name: "", address: ""});
+  const [payload, setPayload] = useState({name: "", furigana: "", address: "", wikipediaUrl: ""});
   // 初回レンダリングのリクエスト送信を無効化
   const isFirstRender = useRef(true);
 
@@ -20,7 +20,7 @@ const AdminRegisterShrine = () => {
 
     const options = {
       method: "POST",
-      url: BACKEND_ENDPOINT + "/api/admin/regist",
+      url: backendEndpoint + "/api/admin/regist/shrine",
       headers: {
         "Content-Type": "application/json"
       },
@@ -48,13 +48,17 @@ const AdminRegisterShrine = () => {
     const form = e.currentTarget
     const formElements = form.elements as typeof form.elements & {
       shrineName: HTMLInputElement,
-      shrineAddress: HTMLInputElement
+      shrineFurigana: HTMLInputElement,
+      shrineAddress: HTMLInputElement,
+      shrineWikiUrl: HTMLInputElement
     }
-    setPayload({ name: formElements.shrineName.value, address: formElements.shrineAddress.value });
+    setPayload({ name: formElements.shrineName.value, furigana: formElements.shrineFurigana.value, address: formElements.shrineAddress.value, wikipediaUrl: formElements.shrineWikiUrl.value });
 
     // フォームをクリア
     formElements.shrineName.value = "";
+    formElements.shrineFurigana.value = "";
     formElements.shrineAddress.value = "";
+    formElements.shrineWikiUrl.value = "";
 
   };
 
@@ -79,6 +83,17 @@ const AdminRegisterShrine = () => {
               />
             </div>
             <div className="space-y-2">
+              <Label htmlFor="shrineFurigana" className="text-lg font-medium text-gray-700 font-serif">
+                神社名称（振り仮名）
+              </Label>
+              <Input
+                id="shrineFurigana"
+                type="text"
+                placeholder="例：いせじんぐう ないくう（こうたいじんぐう）"
+                className="w-full border-2 border-red-800 rounded-md p-2 font-serif"
+              />
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="shrineAddress" className="text-lg font-medium text-gray-700 font-serif">
                 住所
               </Label>
@@ -87,6 +102,17 @@ const AdminRegisterShrine = () => {
                 name="address"
                 placeholder="例：三重県伊勢市宇治館町１"
                 className="w-full border-2 border-red-900 rounded-md p-2 font-serif"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="shrineWikiUrl" className="text-lg font-medium text-gray-700 font-serif">
+                WikipediaURL
+              </Label>
+              <Input
+                id="shrineWikiUrl"
+                type="text"
+                placeholder="例：https://ja.wikipedia.org/wiki/伊勢神宮"
+                className="w-full border-2 border-red-800 rounded-md p-2 font-serif"
               />
             </div>
             <Button className="w-full bg-red-900 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:scale-105 font-serif">

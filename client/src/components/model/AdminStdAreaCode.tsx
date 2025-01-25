@@ -3,21 +3,21 @@ import axios from 'axios';
 
 import { Header } from '@/components/ui/header';
 
-const BACKEND_ENDPOINT=import.meta.env.VITE_BACKEND_ENDPOINT
+const backendEndpoint = import.meta.env.VITE_BACKEND_ENDPOINT
 
 // 標準地域コードのデータ型を定義
 type stdAreaCode = {
-  StdAreaCode: string;
-  PrefAreaCode: string;
-  SubPrefAreaCode: string;
-  MunicAreaCode1: string;
-  MunicAreaCode2: string;
-  PrefName: string;
-  SubPrefName: string;
-  MunicName1: string;
-  MunicName2: string;
-  CreatedAt: string;
-  UpdatedAt: string;
+  stdAreaCode: string;
+  prefAreaCode: string;
+  subPrefAreaCode: string;
+  municAreaCode1: string;
+  municAreaCode2: string;
+  prefName: string;
+  subPrefName: string;
+  municName1: string;
+  municName2: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 const AdminStdAreaCode: React.FC = () => {
@@ -28,7 +28,7 @@ const AdminStdAreaCode: React.FC = () => {
 
     const options1 = {
       method: "GET",
-      url: BACKEND_ENDPOINT + "/api/admin/sac",
+      url: backendEndpoint + "/api/admin/sac",
       headers: {
         "Content-Type": "application/json"
       }
@@ -96,18 +96,18 @@ const AdminStdAreaCode: React.FC = () => {
             </thead>
             <tbody>
               {sacList.map((item, index) => (
-                <tr key={item.StdAreaCode} className={index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}>
-                  <td className="p-3 border-b">{item.StdAreaCode}</td>
-                  <td className="p-3 border-b">{item.PrefAreaCode}</td>
-                  <td className="p-3 border-b">{item.SubPrefAreaCode}</td>
-                  <td className="p-3 border-b">{item.MunicAreaCode1}</td>
-                  <td className="p-3 border-b">{item.MunicAreaCode2}</td>
-                  <td className="p-3 border-b">{item.PrefName}</td>
-                  <td className="p-3 border-b">{item.SubPrefName}</td>
-                  <td className="p-3 border-b">{item.MunicName1}</td>
-                  <td className="p-3 border-b">{item.MunicName2}</td>
-                  <td className="p-3 border-b">{item.CreatedAt}</td>
-                  <td className="p-3 border-b">{item.UpdatedAt}</td>
+                <tr key={item.stdAreaCode} className={index % 2 === 0 ? 'bg-gray-100' : 'bg-white'}>
+                  <td className="p-3 border-b">{item.stdAreaCode}</td>
+                  <td className="p-3 border-b">{item.prefAreaCode}</td>
+                  <td className="p-3 border-b">{item.subPrefAreaCode}</td>
+                  <td className="p-3 border-b">{item.municAreaCode1}</td>
+                  <td className="p-3 border-b">{item.municAreaCode2}</td>
+                  <td className="p-3 border-b">{item.prefName}</td>
+                  <td className="p-3 border-b">{item.subPrefName}</td>
+                  <td className="p-3 border-b">{item.municName1}</td>
+                  <td className="p-3 border-b">{item.municName2}</td>
+                  <td className="p-3 border-b">{item.createdAt}</td>
+                  <td className="p-3 border-b">{item.updatedAt}</td>
                 </tr>
               ))}
             </tbody>

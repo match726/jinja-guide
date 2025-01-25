@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/match726/jinja-guide/tree/main/server/logger"
 	"github.com/rs/xid"
 )
 
@@ -15,45 +16,48 @@ type Postgres struct {
 }
 
 var pgInstance *Postgres
+var dbname string = os.Getenv("POSTGRES_DATABASE")
 
 // コネクションプールの作成
-func NewPool() (*Postgres, error) {
+func NewPool(ctx context.Context) (*Postgres, error) {
 
-	dbname := os.Getenv("POSTGRES_DATABASE")
+	var cfg *pgxpool.Config
+	var pool *pgxpool.Pool
+	var err error
+
 	dsn := os.Getenv("POSTGRES_URL")
 
-	ctx := context.Background()
-
-	cfg, err := pgxpool.ParseConfig(dsn)
+	cfg, err = pgxpool.ParseConfig(dsn)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("pgxpool.ParseConfig(): %w", err)
 	}
 
-	pool, err := pgxpool.NewWithConfig(ctx, cfg)
+	pool, err = pgxpool.NewWithConfig(ctx, cfg)
 	if err != nil {
-		return nil, err
-	} else {
-		pgInstance = &Postgres{pool}
+		return nil, fmt.Errorf("pgxpool.NewWithConfig(): %w", err)
 	}
+
+	pgInstance = &Postgres{pool}
 
 	if err = pgInstance.dbPool.Ping(ctx); err != nil {
-		return nil, err
-	} else {
-		fmt.Printf("NewPool: データベース[%s]へ接続\n", dbname)
+		return nil, fmt.Errorf("pgInstance.dbPool.Ping(): %w", err)
 	}
 
-	return pgInstance, err
+	logger.Info(ctx, "コネクションプール作成", "dbname", dbname)
+	return pgInstance, nil
 
 }
 
 // コネクションプールのクローズ
-func (pg *Postgres) ClosePool() {
+func (pg *Postgres) ClosePool(ctx context.Context) {
+
 	pg.dbPool.Close()
+	logger.Info(ctx, "コネクションプール切断", "dbname", dbname)
+
 }
 
-func GetNowTime() time.Time {
-
-	var current time.Time
+// 現在日時の取得
+func GetNowTime() (current time.Time) {
 
 	jstZone := time.FixedZone("Asia/Tokyo", 9*60*60)
 	current = time.Now().In(jstZone)
@@ -63,9 +67,9 @@ func GetNowTime() time.Time {
 }
 
 // XIDの取得
-func GetXID() (uid string) {
+func GetXID() (id string) {
 
-	uid = xid.New().String()
-	return uid
+	id = xid.New().String()
+	return id
 
 }

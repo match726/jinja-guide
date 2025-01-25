@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/match726/jinja-guide/tree/main/server/models"
+	"github.com/match726/jinja-guide/tree/main/server/trace"
 )
 
 func StdAreaCodeHandler(w http.ResponseWriter, r *http.Request) {
@@ -31,13 +32,22 @@ func FetchStdAreaCodes(w http.ResponseWriter, r *http.Request) {
 	var err error
 	var sacs []models.StdAreaCodeGet
 
-	pg, err = models.NewPool()
+	// Contextを生成
+	ctx := r.Context()
+	shutdown, err := trace.InitTracerProvider()
+	if err != nil {
+		panic(err)
+	}
+	defer shutdown(ctx)
+	ctx = trace.GetContextWithTraceID(r.Context(), "FetchShrineDetails")
+
+	pg, err = models.NewPool(ctx)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
-	defer pg.ClosePool()
+	defer pg.ClosePool(ctx)
 
-	sacs, err = pg.GetStdAreaCodes()
+	sacs, err = pg.GetStdAreaCodeList(ctx)
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(sacs)
@@ -49,14 +59,23 @@ func UpdateStdAreaCodes(w http.ResponseWriter, r *http.Request) {
 	var pg *models.Postgres
 	var err error
 
-	pg, err = models.NewPool()
+	// Contextを生成
+	ctx := r.Context()
+	shutdown, err := trace.InitTracerProvider()
+	if err != nil {
+		panic(err)
+	}
+	defer shutdown(ctx)
+	ctx = trace.GetContextWithTraceID(r.Context(), "FetchShrineDetails")
+
+	pg, err = models.NewPool(ctx)
 	if err != nil {
 		fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
-	defer pg.ClosePool()
+	defer pg.ClosePool(ctx)
 
-	err = pg.UpdateStdAreaCode()
+	err = pg.UpdateStdAreaCode(ctx)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
