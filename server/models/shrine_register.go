@@ -8,7 +8,6 @@ import (
 
 	olc "github.com/google/open-location-code/go"
 	"github.com/jackc/pgx/v5"
-	"github.com/match726/jinja-guide/tree/main/server/logger"
 	"googlemaps.github.io/maps"
 )
 
@@ -172,7 +171,6 @@ func (pg *Postgres) GetShrineContentsSeq(ctx context.Context, id int, plusCode s
 
 	err := pg.dbPool.QueryRow(ctx, query, plusCode, id).Scan(&seq)
 	if err != nil {
-		logger.Error(ctx, "最大SEQ取得失敗")
 		return 0, err
 	}
 
