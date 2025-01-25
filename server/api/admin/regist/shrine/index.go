@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/match726/jinja-guide/tree/main/server/logger"
 	"github.com/match726/jinja-guide/tree/main/server/models"
 	"github.com/match726/jinja-guide/tree/main/server/trace"
 )
@@ -54,7 +55,7 @@ func RegisterShrine(w http.ResponseWriter, r *http.Request) {
 	var shrpr *ShrinePostReq
 	err = json.Unmarshal([]byte(string(body)), &shrpr)
 	if err != nil {
-		fmt.Printf("[Err] <RegisterShrine> Err: パラメータ取得エラー %s\n", err)
+		logger.Error(ctx, "パラメータ取得失敗", "errmsg", err)
 	}
 
 	// Shrine構造体へ代入
@@ -73,35 +74,37 @@ func RegisterShrine(w http.ResponseWriter, r *http.Request) {
 	// 該当の都道府県の標準地域コード一覧を取得
 	err = pg.GetStdAreaCodeByPrefName(ctx, prefname, &shr)
 	if err != nil {
-		fmt.Printf("[Err] <GetStdAreaCodeByPrefName> Err:%s\n", err)
+		logger.Error(ctx, "標準地域コード一覧取得失敗", "errmsg", err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 
 	// PlaceAPIから位置情報(PlaceID、緯度、経度)、及び取得した緯度経度からPlusCodeを取得
 	err = models.GetLocnInfoFromPlaceAPI(ctx, &shr)
 	if err != nil {
-		fmt.Printf("[Err] <GetLocnInfoFromPlaceAPI> Err:%s\n", err)
+		logger.Error(ctx, "PlaceAPI取得失敗", "errmsg", err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 
+	// 取得した情報を元に神社登録
 	err = pg.InsertShrine(ctx, &shr)
 	if err != nil {
-		fmt.Printf("[Err] <InsertShrine> Err:%s\n", err)
+		logger.Error(ctx, "神社登録失敗", "errmsg", err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 
+	// 神社詳細情報を登録
 	if len(shr.PlusCode) != 0 {
 		if len(shrpr.Furigana) != 0 {
 			err = pg.InsertShrineContents(ctx, 1, shrpr.Furigana, shr.PlusCode, 0)
 			if err != nil {
-				fmt.Printf("[Err] <InsertShrineContents> Err:%s\n", err)
+				logger.Error(ctx, "神社詳細情報[振り仮名]登録失敗", "errmsg", err)
 				w.WriteHeader(http.StatusInternalServerError)
 			}
 		}
 		if len(shrpr.WikipediaURL) != 0 {
 			err = pg.InsertShrineContents(ctx, 10, shrpr.WikipediaURL, shr.PlusCode, 0)
 			if err != nil {
-				fmt.Printf("[Err] <InsertShrineContents> Err:%s\n", err)
+				logger.Error(ctx, "神社詳細情報[WikipediaURL]登録失敗", "errmsg", err)
 				w.WriteHeader(http.StatusInternalServerError)
 			}
 		}

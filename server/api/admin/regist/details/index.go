@@ -83,49 +83,49 @@ func RegisterShrineDetails(w http.ResponseWriter, r *http.Request) {
 		if len(shrdpr.AltName) != 0 {
 			err = pg.InsertShrineContents(ctx, 2, shrdpr.AltName, shrdpr.PlusCode, 1)
 			if err != nil {
-				logger.Error(ctx, "神社詳細情報[別名称]登録失敗")
+				logger.Error(ctx, "神社詳細情報[別名称]登録失敗", "errmsg", err)
 				w.WriteHeader(http.StatusInternalServerError)
 			}
 		}
 		if len(shrdpr.Tags) != 0 {
 			err = pg.InsertShrineContents(ctx, 4, shrdpr.Tags, shrdpr.PlusCode, 1)
 			if err != nil {
-				logger.Error(ctx, "神社詳細情報[関連ワード]登録失敗")
+				logger.Error(ctx, "神社詳細情報[関連ワード]登録失敗", "errmsg", err)
 				w.WriteHeader(http.StatusInternalServerError)
 			}
 		}
 		if len(shrdpr.FoundedYear) != 0 {
 			err = pg.InsertShrineContents(ctx, 5, shrdpr.FoundedYear, shrdpr.PlusCode, 0)
 			if err != nil {
-				logger.Error(ctx, "神社詳細情報[創建年]登録失敗")
+				logger.Error(ctx, "神社詳細情報[創建年]登録失敗", "errmsg", err)
 				w.WriteHeader(http.StatusInternalServerError)
 			}
 		}
 		if len(shrdpr.ObjectOfWorship) != 0 {
 			err = pg.InsertShrineContents(ctx, 6, shrdpr.ObjectOfWorship, shrdpr.PlusCode, 1)
 			if err != nil {
-				logger.Error(ctx, "神社詳細情報[御祭神]登録失敗")
+				logger.Error(ctx, "神社詳細情報[御祭神]登録失敗", "errmsg", err)
 				w.WriteHeader(http.StatusInternalServerError)
 			}
 		}
 		if len(shrdpr.HasGoshuin) != 0 {
 			err = pg.InsertShrineContents(ctx, 8, shrdpr.HasGoshuin, shrdpr.PlusCode, 0)
 			if err != nil {
-				logger.Error(ctx, "神社詳細情報[御朱印]登録失敗")
+				logger.Error(ctx, "神社詳細情報[御朱印]登録失敗", "errmsg", err)
 				w.WriteHeader(http.StatusInternalServerError)
 			}
 		}
 		if len(shrdpr.WebsiteURL) != 0 {
 			err = pg.InsertShrineContents(ctx, 9, shrdpr.WebsiteURL, shrdpr.PlusCode, 0)
 			if err != nil {
-				logger.Error(ctx, "神社詳細情報[公式サイトURL]登録失敗")
+				logger.Error(ctx, "神社詳細情報[公式サイトURL]登録失敗", "errmsg", err)
 				w.WriteHeader(http.StatusInternalServerError)
 			}
 		}
 		if len(shrdpr.WikipediaURL) != 0 {
 			err = pg.InsertShrineContents(ctx, 10, shrdpr.WikipediaURL, shrdpr.PlusCode, 0)
 			if err != nil {
-				logger.Error(ctx, "神社詳細情報[WikipediaURL]登録失敗")
+				logger.Error(ctx, "神社詳細情報[WikipediaURL]登録失敗", "errmsg", err)
 				w.WriteHeader(http.StatusInternalServerError)
 			}
 		}
