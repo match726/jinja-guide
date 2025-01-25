@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/match726/jinja-guide/tree/main/server/logger"
 	"github.com/match726/jinja-guide/tree/main/server/models"
 	"github.com/match726/jinja-guide/tree/main/server/trace"
 )
@@ -45,8 +46,10 @@ func FetchSacRelationship(w http.ResponseWriter, r *http.Request) {
 	}
 	defer pg.ClosePool(ctx)
 
+	// 登録されている神社を元に都道府県の標準地域コードの紐付きを取得する
 	sacr, err := pg.GetSacRelationship(ctx)
 	if err != nil {
+		logger.Error(ctx, "標準地域コード（紐付き）取得失敗", "errmsg", err)
 		fmt.Printf("[Err] <GetSacRelationship> Err:%s\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
 	} else {
