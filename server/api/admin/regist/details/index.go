@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/match726/jinja-guide/tree/main/server/logger"
 	"github.com/match726/jinja-guide/tree/main/server/models"
 	"github.com/match726/jinja-guide/tree/main/server/trace"
 )
@@ -72,7 +73,20 @@ func RegisterShrineDetails(w http.ResponseWriter, r *http.Request) {
 	existsShrine := pg.ExistsShrineByPlusCode(ctx, shrdpr.PlusCode)
 
 	if existsShrine {
-		fmt.Println(shrdpr)
+		if len(shrdpr.Furigana) != 0 {
+			err = pg.InsertShrineContents(ctx, 1, shrdpr.Furigana, shrdpr.PlusCode, 0)
+			if err != nil {
+				logger.Error(ctx, "神社詳細情報[Furigana]登録失敗")
+				w.WriteHeader(http.StatusInternalServerError)
+			}
+		}
+		if len(shrdpr.WikipediaURL) != 0 {
+			err = pg.InsertShrineContents(ctx, 10, shrdpr.WikipediaURL, shrdpr.PlusCode, 0)
+			if err != nil {
+				logger.Error(ctx, "神社詳細情報[WikipediaURL]登録失敗")
+				w.WriteHeader(http.StatusInternalServerError)
+			}
+		}
 	}
 
 	writeJsonResp(w, shrdpr)

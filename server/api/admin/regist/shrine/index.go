@@ -92,14 +92,14 @@ func RegisterShrine(w http.ResponseWriter, r *http.Request) {
 
 	if len(shr.PlusCode) != 0 {
 		if len(shrpr.Furigana) != 0 {
-			err = pg.InsertShrineContents(ctx, 1, shrpr.Furigana, shr.PlusCode)
+			err = pg.InsertShrineContents(ctx, 1, shrpr.Furigana, shr.PlusCode, 0)
 			if err != nil {
 				fmt.Printf("[Err] <InsertShrineContents> Err:%s\n", err)
 				w.WriteHeader(http.StatusInternalServerError)
 			}
 		}
 		if len(shrpr.WikipediaURL) != 0 {
-			err = pg.InsertShrineContents(ctx, 10, shrpr.WikipediaURL, shr.PlusCode)
+			err = pg.InsertShrineContents(ctx, 10, shrpr.WikipediaURL, shr.PlusCode, 0)
 			if err != nil {
 				fmt.Printf("[Err] <InsertShrineContents> Err:%s\n", err)
 				w.WriteHeader(http.StatusInternalServerError)
