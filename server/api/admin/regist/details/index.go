@@ -76,7 +76,7 @@ func RegisterShrineDetails(w http.ResponseWriter, r *http.Request) {
 		if len(shrdpr.Furigana) != 0 {
 			err = pg.InsertShrineContents(ctx, 1, shrdpr.Furigana, shrdpr.PlusCode, 0)
 			if err != nil {
-				logger.Error(ctx, "神社詳細情報[振り仮名]登録失敗")
+				logger.Error(ctx, "神社詳細情報[振り仮名]登録失敗", "errmsg", err)
 				w.WriteHeader(http.StatusInternalServerError)
 			}
 		}
