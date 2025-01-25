@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/match726/jinja-guide/tree/main/server/models"
+	"github.com/match726/jinja-guide/tree/main/server/trace"
 )
 
 func ShrinesHandler(w http.ResponseWriter, r *http.Request) {
@@ -28,6 +29,15 @@ func FetchShrineList(w http.ResponseWriter, r *http.Request) {
 	var pg *models.Postgres
 	var err error
 
+	// Contextを生成
+	ctx := r.Context()
+	shutdown, err := trace.InitTracerProvider()
+	if err != nil {
+		panic(err)
+	}
+	defer shutdown(ctx)
+	ctx = trace.GetContextWithTraceID(r.Context(), "FetchShrineList")
+
 	// HTTPリクエストからカスタムヘッダーを取得
 	strCustom := r.Header.Get("ShrGuide-Shrines-Authorization")
 
@@ -39,49 +49,41 @@ func FetchShrineList(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 
-	pg, err = models.NewPool()
+	pg, err = models.NewPool(ctx)
 	if err != nil {
 		fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
-	defer pg.ClosePool()
+	defer pg.ClosePool(ctx)
 
-	var shrs []*models.Shrine
-	shrs, err = pg.GetShrinesByStdAreaCode(sacr)
+	var shrlrs []*models.ShrinesListResp
+	shrlrs, err = pg.GetShrinesListByStdAreaCode(ctx, sacr)
 	if err != nil {
-		fmt.Printf("[Err] <GetShrinesByStdAreaCode> Err:%s\n", err)
+		fmt.Printf("[Err] <GetShrinesListByStdAreaCode> Err:%s\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
 	} else {
-		fmt.Println(shrs)
-		writejsonResp(w, shrs)
+		fmt.Println(shrlrs)
+		writejsonResp(w, shrlrs)
 	}
 
 }
 
-func writejsonResp(w http.ResponseWriter, shrs []*models.Shrine) {
+func writejsonResp(w http.ResponseWriter, shrlrs []*models.ShrinesListResp) {
 
-	type ShrinesListResp struct {
-		Name            string   `json:"name"`
-		Address         string   `json:"address"`
-		PlusCode        string   `json:"plus_code"`
-		PlaceID         string   `json:"place_id"`
-		ObjectOfWorship []string `json:"object_of_worship"`
-		HasGoshuin      bool     `json:"has_goshuin"`
-	}
-
-	var shrListResp []ShrinesListResp
+	var shrListResp []models.ShrinesListResp
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	for _, shr := range shrs {
-		shrListResp = append(shrListResp, ShrinesListResp{
-			Name:            shr.Name,
-			Address:         shr.Address,
-			PlusCode:        shr.PlusCode,
-			PlaceID:         shr.PlaceID,
+	for _, shrlr := range shrlrs {
+		shrListResp = append(shrListResp, models.ShrinesListResp{
+			Name:            shrlr.Name,
+			Address:         shrlr.Address,
+			PlusCode:        shrlr.PlusCode,
+			PlaceID:         shrlr.PlaceID,
 			ObjectOfWorship: nil,
-			HasGoshuin:      false,
+			HasGoshuin:      shrlr.HasGoshuin,
 		})
 	}
+
 	b, err := json.Marshal(shrListResp)
 	if err != nil {
 		fmt.Println(err)
@@ -92,6 +94,7 @@ func writejsonResp(w http.ResponseWriter, shrs []*models.Shrine) {
 		}
 		return
 	}
+
 	w.WriteHeader(http.StatusOK)
 	if _, err := w.Write(b); err != nil {
 		fmt.Println(err)

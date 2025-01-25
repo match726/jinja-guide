@@ -4,10 +4,18 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strings"
 
+	"github.com/match726/jinja-guide/tree/main/server/logger"
 	"github.com/match726/jinja-guide/tree/main/server/models"
+	"github.com/match726/jinja-guide/tree/main/server/trace"
 )
+
+type ShrinePostReq struct {
+	Name         string `json:"name"`
+	Furigana     string `json:"furigana"`
+	Address      string `json:"address"`
+	WikipediaURL string `json:"wikipediaUrl"`
+}
 
 func ShrineRegistHandler(w http.ResponseWriter, r *http.Request) {
 
@@ -28,64 +36,81 @@ func RegisterShrine(w http.ResponseWriter, r *http.Request) {
 
 	var pg *models.Postgres
 	var err error
-	var sacs []models.StdAreaCode
+
+	// Contextを生成
+	ctx := r.Context()
+	shutdown, err := trace.InitTracerProvider()
+	if err != nil {
+		panic(err)
+	}
+	defer shutdown(ctx)
+	ctx = trace.GetContextWithTraceID(r.Context(), "FetchShrineDetails")
 
 	// HTTPリクエストからボディを取得
 	body := make([]byte, r.ContentLength)
 	r.Body.Read(body)
 
-	// Shrine構造体へ変換
-	var shr *models.Shrine
-	err = json.Unmarshal([]byte(string(body)), &shr)
+	// ShrinePostReq構造体へ変換
+	var shr models.Shrine
+	var shrpr *ShrinePostReq
+	err = json.Unmarshal([]byte(string(body)), &shrpr)
 	if err != nil {
-		fmt.Printf("[Err] <RegisterShrine> Err: パラメータ取得エラー %s\n", err)
+		logger.Error(ctx, "パラメータ取得失敗", "errmsg", err)
 	}
 
-	pg, err = models.NewPool()
+	// Shrine構造体へ代入
+	shr.ShrineName(shrpr.Name)
+	shr.ShrineAddress(shrpr.Address)
+
+	pg, err = models.NewPool(ctx)
 	if err != nil {
 		fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
-	defer pg.ClosePool()
+	defer pg.ClosePool(ctx)
 
 	// 住所より都道府県の取得
 	prefname := models.ExtractPrefName(shr.Address)
-	fmt.Printf("prefname: %s\n", prefname)
 	// 該当の都道府県の標準地域コード一覧を取得
-	sacs, err = pg.GetStdAreaCodeListByPrefName(prefname)
+	err = pg.GetStdAreaCodeByPrefName(ctx, prefname, &shr)
 	if err != nil {
-		fmt.Printf("[Err] <GetStdAreaCodeListByPrefName> Err:%s\n", err)
+		logger.Error(ctx, "標準地域コード一覧取得失敗", "errmsg", err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 
-	// 標準地域コードの紐づけ
-	for i := len(sacs) - 1; i >= 0; i-- {
-		if sacs[i].MunicName1 == "" && sacs[i].MunicName2 == "" {
-			continue
-		} else {
-			keyword := sacs[i].PrefName + sacs[i].MunicName1 + sacs[i].MunicName2
-			if strings.HasPrefix(shr.Address, keyword) {
-				shr.StdAreaCode = sacs[i].StdAreaCode
-				break
+	// PlaceAPIから位置情報(PlaceID、緯度、経度)、及び取得した緯度経度からPlusCodeを取得
+	err = models.GetLocnInfoFromPlaceAPI(ctx, &shr)
+	if err != nil {
+		logger.Error(ctx, "PlaceAPI取得失敗", "errmsg", err)
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+
+	// 取得した情報を元に神社登録
+	err = pg.InsertShrine(ctx, &shr)
+	if err != nil {
+		logger.Error(ctx, "神社登録失敗", "errmsg", err)
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+
+	// 神社詳細情報を登録
+	if len(shr.PlusCode) != 0 {
+		if len(shrpr.Furigana) != 0 {
+			err = pg.InsertShrineContents(ctx, 1, shrpr.Furigana, shr.PlusCode, 0)
+			if err != nil {
+				logger.Error(ctx, "神社詳細情報[振り仮名]登録失敗", "errmsg", err)
+				w.WriteHeader(http.StatusInternalServerError)
+			}
+		}
+		if len(shrpr.WikipediaURL) != 0 {
+			err = pg.InsertShrineContents(ctx, 10, shrpr.WikipediaURL, shr.PlusCode, 0)
+			if err != nil {
+				logger.Error(ctx, "神社詳細情報[WikipediaURL]登録失敗", "errmsg", err)
+				w.WriteHeader(http.StatusInternalServerError)
 			}
 		}
 	}
 
-	// PlaceAPIから位置情報(PlaceID、緯度、経度)、取得した緯度、経度からPlusCodeを取得
-	// ★画像を取得
-	err = models.GetLocnInfoFromPlaceAPI(shr)
-	if err != nil {
-		fmt.Printf("[Err] <GetLocnInfoFromPlaceAPI> Err:%s\n", err)
-		w.WriteHeader(http.StatusInternalServerError)
-	}
-
-	err = pg.InsertShrine(shr)
-	if err != nil {
-		fmt.Printf("[Err] <InsertShrine> Err:%s\n", err)
-		w.WriteHeader(http.StatusInternalServerError)
-	} else {
-		writeJsonResp(w, shr)
-	}
+	writeJsonResp(w, &shr)
 
 }
 
