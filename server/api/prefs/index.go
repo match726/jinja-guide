@@ -50,7 +50,6 @@ func FetchSacRelationship(w http.ResponseWriter, r *http.Request) {
 	sacr, err := pg.GetSacRelationship(ctx)
 	if err != nil {
 		logger.Error(ctx, "標準地域コード（紐付き）取得失敗", "errmsg", err)
-		fmt.Printf("[Err] <GetSacRelationship> Err:%s\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
 	} else {
 		writeJsonResp(w, sacr)
