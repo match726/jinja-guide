@@ -18,7 +18,7 @@
     {
       "source": "/api/(.*)",
       "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "https://jinja-guide.vercel.app" },
+        { "key": "Access-Control-Allow-Origin", "value": "https://jinja-guide-dev.vercel.app" },
         { "key": "Access-Control-Allow-Methods", "value": "GET, POST, PUT, OPTIONS" },
         { "key": "Content-Type", "value": "application/json" },
         { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Authorization, ShrGuide-Shrines-Authorization" }
