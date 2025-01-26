@@ -4,6 +4,7 @@ import { Stamp } from 'lucide-react';
 import axios from 'axios';
 
 import { Header } from '@/components/ui/header';
+import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 import '@/styles/global.css';
@@ -27,6 +28,15 @@ const ShrineList = () => {
   const search = useLocation().search;
   const query = new URLSearchParams(search);
   const payload = {kinds: query.get('kinds'), stdAreaCode: query.get('code')};
+
+  // ページネーション関連
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 10
+  const totalPages = Math.ceil(shrines.length / itemsPerPage)
+
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const currentShrines = shrines.slice(startIndex, endIndex)
 
   useEffect(() => {
 
@@ -72,7 +82,7 @@ const ShrineList = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {shrines.map((shrine: Shrine, index) => (
+              {currentShrines.map((shrine: Shrine, index) => (
                 <TableRow 
                   key={shrine.plusCode}
                   className={`${index % 2 === 0 ? 'bg-red-50' : 'bg-white'} hover:bg-red-100 transition-colors`}
@@ -103,6 +113,25 @@ const ShrineList = () => {
               ))}
             </TableBody>
           </Table>
+        </div>
+        <div className="bg-red-50 flex justify-between items-center">
+          <Button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className="bg-red-900 text-white hover:bg-red-700"
+          >
+            前へ
+          </Button>
+          <span className="text-white bg-red-900 px-4 py-2 rounded-t-lg font-semibold">
+            {currentPage} / {totalPages} 頁
+          </span>
+          <Button
+            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            disabled={currentPage === totalPages}
+            className="bg-red-900 text-white hover:bg-red-700"
+          >
+            次へ
+          </Button>
         </div>
         <div className="bg-red-900 h-4 rounded-b-lg shadow-lg" />
       </div>
