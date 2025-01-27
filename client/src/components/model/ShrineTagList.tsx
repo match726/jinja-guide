@@ -121,8 +121,7 @@ const ShrineTagList = () => {
             前へ
           </Button>
           <span className="text-sm text-white bg-red-900 px-4 py-2 rounded-t-lg font-semibold">
-            {currentPage} / {totalPages} 頁
-            {shrines.length} 件
+            {currentPage} / {totalPages} 頁 ({shrines.length})
           </span>
           <Button
             onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
