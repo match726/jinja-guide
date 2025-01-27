@@ -62,8 +62,6 @@ const ShrineList = () => {
 
   }, []);
 
-  console.log(shrines);
-
   return (
     <>
       <Header />
