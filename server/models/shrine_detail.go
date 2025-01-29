@@ -23,7 +23,7 @@ func (pg *Postgres) GetShrineDetails(ctx context.Context, shr *Shrine) (shrd Shr
 	query2 := `SELECT shrc.id, shrc.content1, shrc.content2, shrc.content3
               FROM t_shrine_contents shrc
               WHERE shrc.keyword1 = $1
-              ORDER BY shrc.id, shrc.keyword1, shrc.keyword2`
+              ORDER BY shrc.id, shrc.seq, shrc.keyword1, shrc.keyword2`
 
 	rows, err := pg.dbPool.Query(ctx, query2, shr.PlusCode)
 	if err != nil {
