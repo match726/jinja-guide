@@ -1,8 +1,9 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 
 import { Header } from '@/components/ui/header';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
@@ -13,6 +14,8 @@ const backendEndpoint = import.meta.env.VITE_BACKEND_ENDPOINT;
 const AdminRegisterShrine = () => {
 
   const [payload, setPayload] = useState({name: "", furigana: "", address: "", wikipediaUrl: ""});
+  const [respStatus, setRespStatus] = useState(0);
+  const [dialogOpen, setDialogOpen] = useState(false);
   // 初回レンダリングのリクエスト送信を無効化
   const isFirstRender = useRef(true);
 
@@ -33,6 +36,8 @@ const AdminRegisterShrine = () => {
     } else {
       axios(options)
         .then((resp) => {
+          setRespStatus(resp.status)
+          setDialogOpen(true)
           console.log('POSTリクエストが成功しました', resp)
         })
         .catch((err) => console.error("POSTリクエスト失敗", err));
@@ -120,6 +125,15 @@ const AdminRegisterShrine = () => {
             </Button>
           </form>
         </div>
+        <Dialog open={dialogOpen}>
+          <DialogContent className="sm:max-w-[425px] bg-red-50 border-2 border-red-900 rounded-none">
+            <DialogHeader className="relative">
+              <DialogTitle className="text-2xl font-bold text-red-900">登録結果</DialogTitle>
+              <DialogDescription>神社情報の登録結果です</DialogDescription>
+            </DialogHeader>
+            <div className="bg-white bg-opacity-70 p-4 rounded shadow-inner">{respStatus}</div>
+          </DialogContent>
+        </Dialog>
       </div>
     </>
 
