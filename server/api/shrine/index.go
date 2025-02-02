@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/match726/jinja-guide/tree/main/server/logger"
 	"github.com/match726/jinja-guide/tree/main/server/models"
 	"github.com/match726/jinja-guide/tree/main/server/trace"
 )
@@ -33,7 +34,8 @@ func FetchShrineDetails(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	shutdown, err := trace.InitTracerProvider()
 	if err != nil {
-		panic(err)
+		logger.Error(ctx, "トレーサープロバイダー作成失敗", "errmsg", err)
+		w.WriteHeader(http.StatusInternalServerError)
 	}
 	defer shutdown(ctx)
 	ctx = trace.GetContextWithTraceID(r.Context(), "FetchShrineDetails")
@@ -44,13 +46,13 @@ func FetchShrineDetails(w http.ResponseWriter, r *http.Request) {
 	var shrReq *models.Shrine
 	err = json.Unmarshal([]byte(strCustom), &shrReq)
 	if err != nil {
-		fmt.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
+		logger.Error(ctx, "リクエスト構造体変換失敗", "errmsg", err)
+		w.WriteHeader(http.StatusBadRequest)
 	}
 
 	pg, err = models.NewPool(ctx)
 	if err != nil {
-		fmt.Println(err)
+		logger.Error(ctx, "コネクションプール作成失敗", "errmsg", err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 	defer pg.ClosePool(ctx)
@@ -58,16 +60,16 @@ func FetchShrineDetails(w http.ResponseWriter, r *http.Request) {
 	var shrd models.ShrineDetails
 	shrd, err = pg.GetShrineDetails(ctx, shrReq)
 	if err != nil {
-		fmt.Printf("[Err] <GetShrinesByStdAreaCode> Err:%s\n", err)
+		logger.Error(ctx, "神社詳細情報取得失敗", "errmsg", err)
 		w.WriteHeader(http.StatusInternalServerError)
-	} else {
-		fmt.Println(shrd)
-		writejsonResp(w, shrd)
 	}
+
+	fmt.Println(shrd)
+	writeJsonResp(w, shrd)
 
 }
 
-func writejsonResp(w http.ResponseWriter, shrd models.ShrineDetails) {
+func writeJsonResp(w http.ResponseWriter, shrd models.ShrineDetails) {
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 

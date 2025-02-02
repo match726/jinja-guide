@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/match726/jinja-guide/tree/main/server/logger"
 	"github.com/match726/jinja-guide/tree/main/server/models"
 	"github.com/match726/jinja-guide/tree/main/server/trace"
 )
@@ -38,7 +39,8 @@ func FetchShrineTagList(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	shutdown, err := trace.InitTracerProvider()
 	if err != nil {
-		panic(err)
+		logger.Error(ctx, "トレーサープロバイダー作成失敗", "errmsg", err)
+		w.WriteHeader(http.StatusInternalServerError)
 	}
 	defer shutdown(ctx)
 	ctx = trace.GetContextWithTraceID(r.Context(), "FetchShrineTagList")
@@ -49,15 +51,15 @@ func FetchShrineTagList(w http.ResponseWriter, r *http.Request) {
 	var customHeader *CustomHeader
 	err = json.Unmarshal([]byte(strCustom), &customHeader)
 	if err != nil {
-		fmt.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
+		logger.Error(ctx, "リクエスト構造体変換失敗", "errmsg", err)
+		w.WriteHeader(http.StatusBadRequest)
 	}
 	tag, _ := url.QueryUnescape(customHeader.Tag)
 	fmt.Printf("customHeader.Tag: %s\n", tag)
 
 	pg, err = models.NewPool(ctx)
 	if err != nil {
-		fmt.Println(err)
+		logger.Error(ctx, "コネクションプール作成失敗", "errmsg", err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 	defer pg.ClosePool(ctx)
@@ -65,16 +67,16 @@ func FetchShrineTagList(w http.ResponseWriter, r *http.Request) {
 	var shrlrs []*models.ShrinesListResp
 	shrlrs, err = pg.GetShrinesListByTag(ctx, tag)
 	if err != nil {
-		fmt.Printf("[Err] <GetShrinesListByTag> Err:%s\n", err)
+		logger.Error(ctx, "神社一覧（タグ単位）取得失敗", "errmsg", err)
 		w.WriteHeader(http.StatusInternalServerError)
-	} else {
-		fmt.Println(shrlrs)
-		writejsonResp(w, shrlrs)
 	}
+
+	fmt.Println(shrlrs)
+	writeJsonResp(w, shrlrs)
 
 }
 
-func writejsonResp(w http.ResponseWriter, shrlrs []*models.ShrinesListResp) {
+func writeJsonResp(w http.ResponseWriter, shrlrs []*models.ShrinesListResp) {
 
 	var shrListResp []models.ShrinesListResp
 

@@ -34,14 +34,15 @@ func FetchSacRelationship(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	shutdown, err := trace.InitTracerProvider()
 	if err != nil {
-		panic(err)
+		logger.Error(ctx, "トレーサープロバイダー作成失敗", "errmsg", err)
+		w.WriteHeader(http.StatusInternalServerError)
 	}
 	defer shutdown(ctx)
 	ctx = trace.GetContextWithTraceID(r.Context(), "FetchSacRelationship")
 
 	pg, err = models.NewPool(ctx)
 	if err != nil {
-		fmt.Println(err)
+		logger.Error(ctx, "コネクションプール作成失敗", "errmsg", err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 	defer pg.ClosePool(ctx)

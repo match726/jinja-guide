@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/match726/jinja-guide/tree/main/server/logger"
 	"github.com/match726/jinja-guide/tree/main/server/models"
 	"github.com/match726/jinja-guide/tree/main/server/trace"
 )
@@ -33,7 +34,8 @@ func FetchShrineList(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	shutdown, err := trace.InitTracerProvider()
 	if err != nil {
-		panic(err)
+		logger.Error(ctx, "トレーサープロバイダー作成失敗", "errmsg", err)
+		w.WriteHeader(http.StatusInternalServerError)
 	}
 	defer shutdown(ctx)
 	ctx = trace.GetContextWithTraceID(r.Context(), "FetchShrineList")
@@ -45,13 +47,13 @@ func FetchShrineList(w http.ResponseWriter, r *http.Request) {
 	var sacr *models.SacRelationship
 	err = json.Unmarshal([]byte(strCustom), &sacr)
 	if err != nil {
-		fmt.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
+		logger.Error(ctx, "リクエスト構造体変換失敗", "errmsg", err)
+		w.WriteHeader(http.StatusBadRequest)
 	}
 
 	pg, err = models.NewPool(ctx)
 	if err != nil {
-		fmt.Println(err)
+		logger.Error(ctx, "コネクションプール作成失敗", "errmsg", err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 	defer pg.ClosePool(ctx)
@@ -59,16 +61,16 @@ func FetchShrineList(w http.ResponseWriter, r *http.Request) {
 	var shrlrs []*models.ShrinesListResp
 	shrlrs, err = pg.GetShrinesListByStdAreaCode(ctx, sacr)
 	if err != nil {
-		fmt.Printf("[Err] <GetShrinesListByStdAreaCode> Err:%s\n", err)
+		logger.Error(ctx, "神社一覧（都道府県単位）取得失敗", "errmsg", err)
 		w.WriteHeader(http.StatusInternalServerError)
-	} else {
-		fmt.Println(shrlrs)
-		writejsonResp(w, shrlrs)
 	}
+
+	fmt.Println(shrlrs)
+	writeJsonResp(w, shrlrs)
 
 }
 
-func writejsonResp(w http.ResponseWriter, shrlrs []*models.ShrinesListResp) {
+func writeJsonResp(w http.ResponseWriter, shrlrs []*models.ShrinesListResp) {
 
 	var shrListResp []models.ShrinesListResp
 
