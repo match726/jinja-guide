@@ -30,7 +30,7 @@ func (slu shrineListUsecase) GetShrineListByStdAreaCode(ctx context.Context, kin
 		query = fmt.Sprintf(`SELECT shr.name, shr.address, shr.plus_code, shr.place_id, CASE shrc.content1 WHEN 'あり' THEN true ELSE false END
 					FROM t_shrines shr
 					INNER JOIN m_stdareacode sac
-						ON sac.pref_area_code = %s
+						ON sac.pref_area_code = '%s'
 						AND shr.std_area_code = sac.std_area_code
 					LEFT JOIN t_shrine_contents shrc
 						ON shrc.id = 8
@@ -40,7 +40,7 @@ func (slu shrineListUsecase) GetShrineListByStdAreaCode(ctx context.Context, kin
 		query = fmt.Sprintf(`SELECT shr.name, shr.address, shr.plus_code, shr.place_id, CASE shrc.content1 WHEN 'あり' THEN true ELSE false END
 					FROM t_shrines shr
 					INNER JOIN m_stdareacode sac
-						ON sac.subpref_area_code = %s
+						ON sac.subpref_area_code = '%s'
 						AND shr.std_area_code = sac.std_area_code
 					LEFT JOIN t_shrine_contents shrc
 						ON shrc.id = 8
@@ -50,7 +50,7 @@ func (slu shrineListUsecase) GetShrineListByStdAreaCode(ctx context.Context, kin
 		query = fmt.Sprintf(`SELECT shr.name, shr.address, shr.plus_code, shr.place_id, CASE shrc.content1 WHEN 'あり' THEN true ELSE false END
 					FROM t_shrines shr
 					INNER JOIN m_stdareacode sac
-						ON sac.munic_area_code1 = %s
+						ON sac.munic_area_code1 = '%s'
 						AND shr.std_area_code = sac.std_area_code
 					LEFT JOIN t_shrine_contents shrc
 						ON shrc.id = 8
@@ -60,7 +60,7 @@ func (slu shrineListUsecase) GetShrineListByStdAreaCode(ctx context.Context, kin
 		query = fmt.Sprintf(`SELECT shr.name, shr.address, shr.plus_code, shr.place_id, CASE shrc.content1 WHEN 'あり' THEN true ELSE false END
 					FROM t_shrines shr
 					INNER JOIN m_stdareacode sac
-						ON sac.munic_area_code2 = %s
+						ON sac.munic_area_code2 = '%s'
 						AND shr.std_area_code = sac.std_area_code
 					LEFT JOIN t_shrine_contents shrc
 						ON shrc.id = 8
