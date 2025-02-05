@@ -27,9 +27,6 @@ func NewPrefsHandler(saclu usecase.StdAreaCodeListUsecase) PrefsHandler {
 
 func ExportedHandler(w http.ResponseWriter, r *http.Request) {
 
-	fmt.Println("PrefsHandler")
-	fmt.Println("http.Request: %s", r)
-
 	switch r.Method {
 	case http.MethodOptions:
 		w.WriteHeader(http.StatusOK)
@@ -61,8 +58,6 @@ func ExportedHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer pg.ClosePool(ctx)
-
-	return
 
 	saclp := persistence.NewStdAreaCodeListPersistence(pg)
 	saclu := usecase.NewStdAreaCodeListUsecase(saclp)
