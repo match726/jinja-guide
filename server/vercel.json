@@ -5,10 +5,6 @@
     }
   },
   "rewrites": [
-    { "source": "/api/admin/regist/details", "destination": "/api/admin/regist/details" },
-    { "source": "/api/admin/regist/shrine", "destination": "/api/admin/regist/shrine" },
-    { "source": "/api/admin/sac", "destination": "/api/admin/sac" },
-    { "source": "/api/admin/shrine", "destination": "/api/admin/shrine" },
     { "source": "/interface/handler/prefs", "destination": "/api/prefs" },
     { "source": "/interface/handler/shrines", "destination": "/api/shrines" }
   ],
