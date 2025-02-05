@@ -22,7 +22,7 @@ type Shrine = {
   hasGoshuin: boolean
 };
 
-const ShrineList = () => {
+const ShrineSacList = () => {
 
   const [shrines, setShrines] = useState<Shrine[]>([]);
   const search = useLocation().search;
@@ -137,4 +137,4 @@ const ShrineList = () => {
   )
 };
 
-export default ShrineList;
+export default ShrineSacList;
