@@ -42,7 +42,7 @@ const ShrineList = () => {
 
     const reqOptions = {
       method: "GET",
-      url: backendEndpoint + "/api/shrines/list",
+      url: backendEndpoint + "/api/shrines",
       headers: {
         "Content-Type": "application/json",
         "ShrGuide-Shrines-Authorization": JSON.stringify(payload),
