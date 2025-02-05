@@ -12,7 +12,7 @@
 
   "headers": [
     {
-      "source": "/interface/handler/(.*)",
+      "source": "/api/(.*)",
       "headers": [
         { "key": "Access-Control-Allow-Origin", "value": "https://jinja-guide-dev.vercel.app" },
         { "key": "Access-Control-Allow-Methods", "value": "GET, POST, PUT, OPTIONS" },

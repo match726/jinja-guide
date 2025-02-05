@@ -1,4 +1,4 @@
-package api
+package prefs
 
 import (
 	"encoding/json"
