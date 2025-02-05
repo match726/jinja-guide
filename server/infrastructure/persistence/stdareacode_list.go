@@ -20,13 +20,6 @@ func NewStdAreaCodeListPersistence(pg *database.Postgres) repository.StdAreaCode
 
 func (s *stdAreaCodeListPersistence) GetStdAreaCodeDataSection(ctx context.Context, query string) (sacdss []*model.StdAreaCodeDataSection, err error) {
 
-	s.pg, err = database.NewPool(ctx)
-	if err != nil {
-		return nil, err
-
-	}
-	defer s.pg.ClosePool(ctx)
-
 	rows, err := s.pg.DbPool.Query(ctx, query)
 	if err != nil {
 		return nil, fmt.Errorf("クエリ実行失敗: %w", err)
@@ -43,12 +36,6 @@ func (s *stdAreaCodeListPersistence) GetStdAreaCodeDataSection(ctx context.Conte
 }
 
 func (s *stdAreaCodeListPersistence) GetStdAreaCodeList(ctx context.Context, query string) (saclrs []*model.StdAreaCodeListResp, err error) {
-
-	s.pg, err = database.NewPool(ctx)
-	if err != nil {
-		return nil, err
-	}
-	defer s.pg.ClosePool(ctx)
 
 	rows, err := s.pg.DbPool.Query(ctx, query)
 	if err != nil {
