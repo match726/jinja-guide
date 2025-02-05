@@ -1,15 +1,14 @@
-package api
+package handler
 
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/match726/jinja-guide/tree/main/server/infrastructure/database"
 	logger "github.com/match726/jinja-guide/tree/main/server/infrastructure/log"
 	"github.com/match726/jinja-guide/tree/main/server/infrastructure/persistence"
-	"github.com/match726/jinja-guide/tree/main/server/infrastructure/trace"
+	tracer "github.com/match726/jinja-guide/tree/main/server/infrastructure/trace"
 	"github.com/match726/jinja-guide/tree/main/server/usecase"
 )
 
@@ -27,6 +26,7 @@ func NewPrefsHandler(saclu usecase.StdAreaCodeListUsecase) PrefsHandler {
 
 func ExportedHandler(w http.ResponseWriter, r *http.Request) {
 
+	// リクエストメソッド判定
 	switch r.Method {
 	case http.MethodOptions:
 		w.WriteHeader(http.StatusOK)
@@ -38,19 +38,19 @@ func ExportedHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Contextを生成
+	// Context生成、TraceID、SpanID取得
 	ctx := r.Context()
-	shutdown, err := trace.InitTracerProvider()
+	shutdown, err := tracer.InitTracerProvider()
 	if err != nil {
 		logger.Error(ctx, "トレーサープロバイダー作成失敗", "errmsg", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	defer shutdown(ctx)
-	ctx = trace.GetContextWithTraceID(r.Context(), "PrefsHandler")
+	ctx = tracer.GetContextWithTraceID(r.Context(), "PrefsHandler")
 
+	// コネクションプール作成
 	var pg *database.Postgres
-
 	pg, err = database.NewPool(ctx)
 	if err != nil {
 		logger.Error(ctx, "コネクションプール作成失敗", "errmsg", err)
@@ -59,6 +59,7 @@ func ExportedHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer pg.ClosePool(ctx)
 
+	// 依存性注入（DI）
 	saclp := persistence.NewStdAreaCodeListPersistence(pg)
 	saclu := usecase.NewStdAreaCodeListUsecase(saclp)
 	ph := NewPrefsHandler(saclu)
@@ -69,16 +70,12 @@ func ExportedHandler(w http.ResponseWriter, r *http.Request) {
 
 func (ph prefsHandler) Handler(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 
-	fmt.Println("Handler")
-
 	// 登録されている神社を元に都道府県の標準地域コード（紐付き）を取得する
 	sacrrs, err := ph.saclu.GetAllStdAreaCodeRelationshipList(ctx)
 	if err != nil {
 		logger.Error(ctx, "標準地域コード（紐付き）取得失敗", "errmsg", err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
-
-	fmt.Println(sacrrs)
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	b, err := json.Marshal(sacrrs)

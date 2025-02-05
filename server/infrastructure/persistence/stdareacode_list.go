@@ -35,7 +35,7 @@ func (s *stdAreaCodeListPersistence) GetStdAreaCodeDataSection(ctx context.Conte
 
 }
 
-func (s *stdAreaCodeListPersistence) GetStdAreaCodeList(ctx context.Context, query string) (saclrs []*model.StdAreaCodeListResp, err error) {
+func (s *stdAreaCodeListPersistence) GetStdAreaCodeList(ctx context.Context, query string) (saclrs []model.StdAreaCodeListResp, err error) {
 
 	rows, err := s.pg.DbPool.Query(ctx, query)
 	if err != nil {
@@ -43,7 +43,7 @@ func (s *stdAreaCodeListPersistence) GetStdAreaCodeList(ctx context.Context, que
 	}
 	defer rows.Close()
 
-	saclrs, err = pgx.CollectRows(rows, pgx.RowToStructByName[*model.StdAreaCodeListResp])
+	saclrs, err = pgx.CollectRows(rows, pgx.RowToStructByName[model.StdAreaCodeListResp])
 	if err != nil {
 		return nil, fmt.Errorf("コレクト失敗: %w", err)
 	}
