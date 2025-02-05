@@ -24,7 +24,7 @@ func NewStdAreaCodeListUsecase(saclr repository.StdAreaCodeListRepository) StdAr
 
 func (slu stdAreaCodeListUsecase) GetAllStdAreaCodeRelationshipList(ctx context.Context) (saclrs []*model.StdAreaCodeRelationshipResp, err error) {
 
-	var sacdss []*model.StdAreaCodeDataSection
+	var sacdss []model.StdAreaCodeDataSection
 	msh := make(map[string]model.StdAreaCodeRelationshipResp)
 
 	query := `SELECT shr.std_area_code, sac.pref_area_code, sac.subpref_area_code, sac.munic_area_code1, sac.munic_area_code2, sac.pref_name, sac.subpref_name, sac.munic_name1, sac.munic_name2
