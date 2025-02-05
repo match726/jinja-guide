@@ -16,8 +16,6 @@ func QuerySparql(endpoint string, query string) *sparql.Results {
 	resp, err := repo.Query(query)
 	if err != nil {
 		fmt.Println(err)
-	} else {
-		fmt.Printf("QuerySparql: Query成功\n")
 	}
 
 	return resp
