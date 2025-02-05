@@ -55,13 +55,14 @@ func ExportedHandler(w http.ResponseWriter, r *http.Request) {
 	var pg *database.Postgres
 
 	pg, err = database.NewPool(ctx)
-
 	if err != nil {
 		logger.Error(ctx, "コネクションプール作成失敗", "errmsg", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	defer pg.ClosePool(ctx)
+
+	return
 
 	saclp := persistence.NewStdAreaCodeListPersistence(pg)
 	saclu := usecase.NewStdAreaCodeListUsecase(saclp)
