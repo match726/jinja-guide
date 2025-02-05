@@ -80,15 +80,15 @@ func (slu shrineListUsecase) GetShrineListByStdAreaCode(ctx context.Context, kin
 func (slu shrineListUsecase) GetShrineListByTag(ctx context.Context, tag string) ([]model.ShrineListResp, error) {
 
 	query := fmt.Sprintf(`SELECT shr.name, shr.address, shr.plus_code, shr.place_id, CASE shrc2.content1 WHEN 'あり' THEN true ELSE false END
-	FROM t_shrine_contents shrc
-	INNER JOIN t_shrines shr
-		ON shrc.keyword1 = shr.plus_code
-	LEFT JOIN t_shrine_contents shrc2
-		ON shrc2.id = 8
-		AND shr.plus_code = shrc2.keyword1
-	WHERE shrc.id = 4
-		AND shrc.content1 = %s
-	ORDER BY shr.std_area_code, shr.address, shr.name`, tag)
+						FROM t_shrine_contents shrc
+						INNER JOIN t_shrines shr
+							ON shrc.keyword1 = shr.plus_code
+						LEFT JOIN t_shrine_contents shrc2
+							ON shrc2.id = 8
+							AND shr.plus_code = shrc2.keyword1
+						WHERE shrc.id = 4
+							AND shrc.content1 = %s
+						ORDER BY shr.std_area_code, shr.address, shr.name`, tag)
 
 	shrls, err := slu.slr.GetShrineList(ctx, query)
 	if err != nil {
