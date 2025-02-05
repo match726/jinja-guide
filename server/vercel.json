@@ -6,11 +6,11 @@
   },
   "rewrites": [
     { "source": "/interface/handler/prefs", "destination": "/api/prefs" },
-    { "source": "/interface/handler/shrines", "destination": "/api/shrines" },
+    { "source": "/interface/handler/shrines", "destination": "/api/shrines" }
   ],
   "headers": [
     {
-      "source": "/api/(.*)",
+      "source": "/interface/(.*)",
       "headers": [
         { "key": "Access-Control-Allow-Origin", "value": "https://jinja-guide-dev.vercel.app" },
         { "key": "Access-Control-Allow-Methods", "value": "GET, POST, PUT, OPTIONS" },
