@@ -11,18 +11,18 @@ import (
 )
 
 type PrefsHandler interface {
-	Handler(w http.ResponseWriter, r *http.Request)
+	Handler(w http.ResponseWriter, r *http.Request) error
 }
 
 type prefsHandler struct {
 	saclu usecase.StdAreaCodeListUsecase
 }
 
-// func NewPrefsHandler(saclu usecase.StdAreaCodeListUsecase) PrefsHandler {
-// 	return &prefsHandler{saclu: saclu}
-// }
+func NewPrefsHandler(saclu usecase.StdAreaCodeListUsecase) PrefsHandler {
+	return &prefsHandler{saclu: saclu}
+}
 
-func (ph prefsHandler) Handler(w http.ResponseWriter, r *http.Request) {
+func (ph prefsHandler) Handler(w http.ResponseWriter, r *http.Request) error {
 
 	fmt.Println("PrefsHandler")
 	fmt.Println("http.Request: %s", r)
@@ -30,12 +30,12 @@ func (ph prefsHandler) Handler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodOptions:
 		w.WriteHeader(http.StatusOK)
-		return
+		return nil
 	case http.MethodGet:
 		break
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
-		return
+		return nil
 	}
 
 	// Contextを生成
@@ -68,5 +68,7 @@ func (ph prefsHandler) Handler(w http.ResponseWriter, r *http.Request) {
 	if _, err := w.Write(b); err != nil {
 		logger.Error(ctx, "Body書込失敗", "errmsg", err)
 	}
+
+	return nil
 
 }
