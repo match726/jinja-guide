@@ -5,10 +5,10 @@
     }
   },
   "rewrites": [
+    { "source": "/interface/handler", "destination": "/api" },
     { "source": "/interface/handler/prefs", "destination": "/api/prefs" },
     { "source": "/interface/handler/shrines", "destination": "/api/shrines" }
   ],
-
 
   "headers": [
     {
