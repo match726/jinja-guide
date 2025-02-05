@@ -6,6 +6,7 @@ import (
 
 	"github.com/match726/jinja-guide/tree/main/server/domain/model"
 	"github.com/match726/jinja-guide/tree/main/server/domain/repository"
+	logger "github.com/match726/jinja-guide/tree/main/server/infrastructure/log"
 )
 
 type ShrineListUsecase interface {
@@ -68,6 +69,8 @@ func (slu shrineListUsecase) GetShrineListByStdAreaCode(ctx context.Context, kin
 					ORDER BY shr.std_area_code, shr.address, shr.name`, stdAreaCode)
 	}
 
+	logger.Info(ctx, "神社一覧取得用SQL", "query", query)
+
 	shrls, err := slu.slr.GetShrineList(ctx, query)
 	if err != nil {
 		return nil, err
@@ -87,7 +90,7 @@ func (slu shrineListUsecase) GetShrineListByTag(ctx context.Context, tag string)
 							ON shrc2.id = 8
 							AND shr.plus_code = shrc2.keyword1
 						WHERE shrc.id = 4
-							AND shrc.content1 = %s
+							AND shrc.content1 = '%s'
 						ORDER BY shr.std_area_code, shr.address, shr.name`, tag)
 
 	shrls, err := slu.slr.GetShrineList(ctx, query)
