@@ -83,7 +83,7 @@ func (slh shrineListHandler) Handler(ctx context.Context, w http.ResponseWriter,
 		w.WriteHeader(http.StatusBadRequest)
 	}
 
-	var slrsps []*model.ShrineListResp
+	var slrsps []model.ShrineListResp
 	if len(slreq.Kinds) != 0 && len(slreq.StdAreaCode) != 0 {
 		slrsps, err = slh.slu.GetShrineListByStdAreaCode(ctx, slreq.Kinds, slreq.StdAreaCode)
 		if err != nil {

@@ -18,13 +18,7 @@ func NewShrineListPersistence(pg *database.Postgres) repository.ShrineListReposi
 	return &shrineListPersistence{pg: pg}
 }
 
-func (s *shrineListPersistence) GetShrineList(ctx context.Context, query string) (slrsps []*model.ShrineListResp, err error) {
-
-	s.pg, err = database.NewPool(ctx)
-	if err != nil {
-		return nil, err
-	}
-	defer s.pg.ClosePool(ctx)
+func (s *shrineListPersistence) GetShrineList(ctx context.Context, query string) (slrsps []model.ShrineListResp, err error) {
 
 	rows, err := s.pg.DbPool.Query(ctx, query)
 	if err != nil {
@@ -32,7 +26,7 @@ func (s *shrineListPersistence) GetShrineList(ctx context.Context, query string)
 	}
 	defer rows.Close()
 
-	slrsps, err = pgx.CollectRows(rows, pgx.RowToStructByName[*model.ShrineListResp])
+	slrsps, err = pgx.CollectRows(rows, pgx.RowToStructByName[model.ShrineListResp])
 	if err != nil {
 		return nil, fmt.Errorf("コレクト失敗: %w", err)
 	}
