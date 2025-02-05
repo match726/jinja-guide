@@ -24,6 +24,9 @@ func NewPrefsHandler(saclu usecase.StdAreaCodeListUsecase) PrefsHandler {
 
 func (ph prefsHandler) Handler(w http.ResponseWriter, r *http.Request) {
 
+	fmt.Println("PrefsHandler")
+	fmt.Println("http.Request: %s", r)
+
 	switch r.Method {
 	case http.MethodOptions:
 		w.WriteHeader(http.StatusOK)
