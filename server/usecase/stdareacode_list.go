@@ -11,7 +11,7 @@ import (
 )
 
 type StdAreaCodeListUsecase interface {
-	GetAllStdAreaCodeRelationshipList(ctx context.Context) ([]model.StdAreaCodeRelationshipResp, error)
+	GetAllStdAreaCodeRelationshipList(ctx context.Context) ([]*model.StdAreaCodeRelationshipResp, error)
 }
 
 type stdAreaCodeListUsecase struct {
@@ -22,7 +22,7 @@ func NewStdAreaCodeListUsecase(saclr repository.StdAreaCodeListRepository) StdAr
 	return &stdAreaCodeListUsecase{saclr: saclr}
 }
 
-func (slu stdAreaCodeListUsecase) GetAllStdAreaCodeRelationshipList(ctx context.Context) (saclrs []model.StdAreaCodeRelationshipResp, err error) {
+func (slu stdAreaCodeListUsecase) GetAllStdAreaCodeRelationshipList(ctx context.Context) (saclrs []*model.StdAreaCodeRelationshipResp, err error) {
 
 	var sacdss []model.StdAreaCodeDataSection
 	msh := make(map[string]model.StdAreaCodeRelationshipResp)
@@ -195,7 +195,7 @@ func (slu stdAreaCodeListUsecase) GetAllStdAreaCodeRelationshipList(ctx context.
 	sort.Strings(keys)
 	for _, k := range keys {
 		value := msh[k]
-		saclrs = append(saclrs, value)
+		saclrs = append(saclrs, &value)
 	}
 
 	return saclrs, nil

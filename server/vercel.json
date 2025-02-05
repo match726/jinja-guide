@@ -6,8 +6,8 @@
   },
   "rewrites": [
     { "source": "/api", "destination": "/api" },
-    { "source": "/interface/handler/prefs", "destination": "/api/prefs" },
-    { "source": "/interface/handler/shrines", "destination": "/api/shrines" }
+    { "source": "/api/prefs", "destination": "/api/prefs" },
+    { "source": "/api/shrines", "destination": "/api/shrines" }
   ],
 
   "headers": [
