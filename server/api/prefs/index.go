@@ -69,6 +69,8 @@ func ExportedHandler(w http.ResponseWriter, r *http.Request) {
 
 func (ph prefsHandler) Handler(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 
+	fmt.Println("Handler")
+
 	// 登録されている神社を元に都道府県の標準地域コード（紐付き）を取得する
 	sacrrs, err := ph.saclu.GetAllStdAreaCodeRelationshipList(ctx)
 	if err != nil {
