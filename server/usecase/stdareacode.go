@@ -19,7 +19,7 @@ type stdAreaCodeUsecase struct {
 }
 
 func NewStdAreaCodeUsecase(saclr repository.StdAreaCodeListRepository) StdAreaCodeUsecase {
-	return &stdAreaCodeListUsecase{saclr: saclr}
+	return &stdAreaCodeUsecase{saclr: saclr}
 }
 
 func (slu stdAreaCodeUsecase) GetAllStdAreaCodeRelationshipList(ctx context.Context) (sacrrs []*model.StdAreaCodeRelationshipResp, err error) {
