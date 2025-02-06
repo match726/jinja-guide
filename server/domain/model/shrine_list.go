@@ -14,5 +14,5 @@ type ShrineListResp struct {
 	PlusCode        string   `json:"plusCode"`
 	PlaceID         string   `json:"placeId"`
 	ObjectOfWorship []string `json:"objectOfWorship"`
-	HasGoshuin      string   `json:"hasGoshuin"`
+	HasGoshuin      bool     `json:"hasGoshuin"`
 }
