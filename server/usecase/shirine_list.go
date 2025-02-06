@@ -68,12 +68,12 @@ func (slu shrineListUsecase) GetShrineListByStdAreaCode(ctx context.Context, kin
 					ORDER BY shr.std_area_code, shr.address, shr.name`, stdAreaCode)
 	}
 
-	shrls, err := slu.slr.GetShrineList(ctx, query)
+	slrsps, err := slu.slr.GetShrineListResps(ctx, query)
 	if err != nil {
 		return nil, err
 	}
 
-	return shrls, nil
+	return slrsps, nil
 
 }
 
@@ -90,11 +90,11 @@ func (slu shrineListUsecase) GetShrineListByTag(ctx context.Context, tag string)
 							AND shrc.content1 = '%s'
 						ORDER BY shr.std_area_code, shr.address, shr.name`, tag)
 
-	shrls, err := slu.slr.GetShrineList(ctx, query)
+	slrsps, err := slu.slr.GetShrineListResps(ctx, query)
 	if err != nil {
 		return nil, err
 	}
 
-	return shrls, nil
+	return slrsps, nil
 
 }

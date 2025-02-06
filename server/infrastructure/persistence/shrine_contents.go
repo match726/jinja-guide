@@ -10,15 +10,15 @@ import (
 	"github.com/match726/jinja-guide/tree/main/server/infrastructure/database"
 )
 
-type shrineListPersistence struct {
+type shrineContentsPersistence struct {
 	pg *database.Postgres
 }
 
-func NewShrineListPersistence(pg *database.Postgres) repository.ShrineListRepository {
-	return &shrineListPersistence{pg: pg}
+func NewShrineContentsPersistence(pg *database.Postgres) repository.ShrineContentsRepository {
+	return &shrineContentsPersistence{pg: pg}
 }
 
-func (s *shrineListPersistence) GetShrineListResps(ctx context.Context, query string) (slrsps []model.ShrineListResp, err error) {
+func (s *shrineContentsPersistence) GetShrineContents(ctx context.Context, query string) (scs []model.ShrineContents, err error) {
 
 	rows, err := s.pg.DbPool.Query(ctx, query)
 	if err != nil {
@@ -26,11 +26,11 @@ func (s *shrineListPersistence) GetShrineListResps(ctx context.Context, query st
 	}
 	defer rows.Close()
 
-	slrsps, err = pgx.CollectRows(rows, pgx.RowToStructByPos[model.ShrineListResp])
+	scs, err = pgx.CollectRows(rows, pgx.RowToStructByName[model.ShrineContents])
 	if err != nil {
 		return nil, fmt.Errorf("コレクト失敗: %w", err)
 	}
 
-	return slrsps, nil
+	return scs, nil
 
 }

@@ -1,7 +1,12 @@
 package model
 
-// 神社詳細画面のデータ定義
-type ShrineDetails struct {
+// 神社詳細画面のリクエストデータ定義
+type ShrineDetailsReq struct {
+	PlusCode string `json:"plusCode"`
+}
+
+// 神社詳細画面のレスポンスデータ定義
+type ShrineDetailsResp struct {
 	Name            string   `json:"name"`
 	Furigana        string   `json:"furigana"`
 	Image           string   `json:"image"`
