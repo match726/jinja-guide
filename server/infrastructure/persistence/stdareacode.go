@@ -18,7 +18,7 @@ func NewStdAreaCodePersistence(pg *database.Postgres) repository.StdAreaCodeList
 	return &stdAreaCodePersistence{pg: pg}
 }
 
-func (s *stdAreaCodePersistence) GetStdAreaCodes(ctx context.Context, query string) (sacs []*model.StdAreaCode, err error) {
+func (s *stdAreaCodePersistence) GetStdAreaCodes(ctx context.Context, query string) (sacs []model.StdAreaCode, err error) {
 
 	rows, err := s.pg.DbPool.Query(ctx, query)
 	if err != nil {
@@ -26,7 +26,7 @@ func (s *stdAreaCodePersistence) GetStdAreaCodes(ctx context.Context, query stri
 	}
 	defer rows.Close()
 
-	sacs, err = pgx.CollectRows(rows, pgx.RowToStructByPos[*model.StdAreaCode])
+	sacs, err = pgx.CollectRows(rows, pgx.RowToStructByPos[model.StdAreaCode])
 	if err != nil {
 		return nil, fmt.Errorf("コレクト失敗: %w", err)
 	}

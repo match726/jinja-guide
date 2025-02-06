@@ -7,5 +7,5 @@ import (
 )
 
 type StdAreaCodeListRepository interface {
-	GetStdAreaCodes(ctx context.Context, query string) ([]*model.StdAreaCode, error)
+	GetStdAreaCodes(ctx context.Context, query string) ([]model.StdAreaCode, error)
 }
