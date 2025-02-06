@@ -9,7 +9,6 @@
     { "source": "/api/prefs", "destination": "/api/prefs" },
     { "source": "/api/shrines", "destination": "/api/shrines" }
   ],
-
   "headers": [
     {
       "source": "/api/(.*)",
