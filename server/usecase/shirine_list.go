@@ -27,7 +27,7 @@ func (slu shrineListUsecase) GetShrineListByStdAreaCode(ctx context.Context, kin
 
 	switch kinds {
 	case "Pref":
-		query = fmt.Sprintf(`SELECT shr.name, shr.address, shr.plus_code, shr.place_id, "" AS object_of_worship, CASE shrc.content1 WHEN 'あり' THEN true ELSE false END AS has_goshuin
+		query = fmt.Sprintf(`SELECT shr.name, shr.address, shr.plus_code, shr.place_id, ARRAY[]::VARCHAR[] AS object_of_worship, CASE shrc.content1 WHEN 'あり' THEN true ELSE false END AS has_goshuin
 					FROM t_shrines shr
 					INNER JOIN m_stdareacode sac
 						ON sac.pref_area_code = '%s'
@@ -37,7 +37,7 @@ func (slu shrineListUsecase) GetShrineListByStdAreaCode(ctx context.Context, kin
 						AND shr.plus_code = shrc.keyword1
 					ORDER BY shr.std_area_code, shr.address, shr.name`, stdAreaCode)
 	case "SubPref":
-		query = fmt.Sprintf(`SELECT shr.name, shr.address, shr.plus_code, shr.place_id, "" AS object_of_worship, CASE shrc.content1 WHEN 'あり' THEN true ELSE false END AS has_goshuin
+		query = fmt.Sprintf(`SELECT shr.name, shr.address, shr.plus_code, shr.place_id, ARRAY[]::VARCHAR[] AS object_of_worship, CASE shrc.content1 WHEN 'あり' THEN true ELSE false END AS has_goshuin
 					FROM t_shrines shr
 					INNER JOIN m_stdareacode sac
 						ON sac.subpref_area_code = '%s'
@@ -47,7 +47,7 @@ func (slu shrineListUsecase) GetShrineListByStdAreaCode(ctx context.Context, kin
 						AND shr.plus_code = shrc.keyword1
 					ORDER BY shr.std_area_code, shr.address, shr.name`, stdAreaCode)
 	case "City", "District":
-		query = fmt.Sprintf(`SELECT shr.name, shr.address, shr.plus_code, shr.place_id, "" AS object_of_worship, CASE shrc.content1 WHEN 'あり' THEN true ELSE false END AS has_goshuin
+		query = fmt.Sprintf(`SELECT shr.name, shr.address, shr.plus_code, shr.place_id, ARRAY[]::VARCHAR[] AS object_of_worship, CASE shrc.content1 WHEN 'あり' THEN true ELSE false END AS has_goshuin
 					FROM t_shrines shr
 					INNER JOIN m_stdareacode sac
 						ON sac.munic_area_code1 = '%s'
@@ -57,7 +57,7 @@ func (slu shrineListUsecase) GetShrineListByStdAreaCode(ctx context.Context, kin
 						AND shr.plus_code = shrc.keyword1
 					ORDER BY shr.std_area_code, shr.address, shr.name`, stdAreaCode)
 	case "Town/Village", "Ward":
-		query = fmt.Sprintf(`SELECT shr.name, shr.address, shr.plus_code, shr.place_id, "" AS object_of_worship, CASE shrc.content1 WHEN 'あり' THEN true ELSE false END AS has_goshuin
+		query = fmt.Sprintf(`SELECT shr.name, shr.address, shr.plus_code, shr.place_id, ARRAY[]::VARCHAR[] AS object_of_worship, CASE shrc.content1 WHEN 'あり' THEN true ELSE false END AS has_goshuin
 					FROM t_shrines shr
 					INNER JOIN m_stdareacode sac
 						ON sac.munic_area_code2 = '%s'
@@ -79,7 +79,7 @@ func (slu shrineListUsecase) GetShrineListByStdAreaCode(ctx context.Context, kin
 
 func (slu shrineListUsecase) GetShrineListByTag(ctx context.Context, tag string) ([]model.ShrineListResp, error) {
 
-	query := fmt.Sprintf(`SELECT shr.name, shr.address, shr.plus_code, shr.place_id, CASE shrc2.content1 WHEN 'あり' THEN true ELSE false END
+	query := fmt.Sprintf(`SELECT shr.name, shr.address, shr.plus_code, shr.place_id, ARRAY[]::VARCHAR[] AS object_of_worship, CASE shrc2.content1 WHEN 'あり' THEN true ELSE false END AS has_goshuin
 						FROM t_shrine_contents shrc
 						INNER JOIN t_shrines shr
 							ON shrc.keyword1 = shr.plus_code
