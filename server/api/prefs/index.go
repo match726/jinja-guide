@@ -60,9 +60,9 @@ func ExportedHandler(w http.ResponseWriter, r *http.Request) {
 	defer pg.ClosePool(ctx)
 
 	// 依存性注入（DI）
-	saclp := persistence.NewStdAreaCodePersistence(pg)
-	saclu := usecase.NewStdAreaCodeUsecase(saclp)
-	ph := NewPrefsHandler(saclu)
+	sacp := persistence.NewStdAreaCodePersistence(pg)
+	sacu := usecase.NewStdAreaCodeUsecase(sacp)
+	ph := NewPrefsHandler(sacu)
 
 	ph.Handler(ctx, w, r)
 
