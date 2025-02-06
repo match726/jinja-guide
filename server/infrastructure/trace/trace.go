@@ -2,7 +2,6 @@ package trace
 
 import (
 	"context"
-	"log/slog"
 
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/propagation"
@@ -22,14 +21,11 @@ func InitTracerProvider() (func(context.Context) error, error) {
 
 }
 
-func SetNewSpanIDToContext(ctx context.Context, spanName string, r slog.Record) {
+func GetContextWithNewSpan(ctx context.Context, spanName string) context.Context {
 
-	_, span := otel.Tracer("shrine-guide").Start(ctx, spanName)
+	ctx, span := otel.Tracer("shrine-guide").Start(ctx, spanName)
 	defer span.End()
 
-	if span != nil && span.SpanContext().IsValid() {
-		r.AddAttrs(slog.String("traceID", span.SpanContext().TraceID().String()))
-		r.AddAttrs(slog.String("spanID", span.SpanContext().SpanID().String()))
-	}
+	return ctx
 
 }
