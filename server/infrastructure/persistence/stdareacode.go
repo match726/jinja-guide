@@ -14,7 +14,7 @@ type stdAreaCodePersistence struct {
 	pg *database.Postgres
 }
 
-func NewStdAreaCodePersistence(pg *database.Postgres) repository.StdAreaCodeListRepository {
+func NewStdAreaCodePersistence(pg *database.Postgres) repository.StdAreaCodeRepository {
 	return &stdAreaCodePersistence{pg: pg}
 }
 

@@ -17,10 +17,10 @@ type PrefsHandler interface {
 }
 
 type prefsHandler struct {
-	saclu usecase.StdAreaCodeUsecase
+	saclu usecase.StdAreaCodeRelationshipUsecase
 }
 
-func NewPrefsHandler(saclu usecase.StdAreaCodeUsecase) PrefsHandler {
+func NewPrefsHandler(saclu usecase.StdAreaCodeRelationshipUsecase) PrefsHandler {
 	return &prefsHandler{saclu: saclu}
 }
 
@@ -61,8 +61,8 @@ func ExportedHandler(w http.ResponseWriter, r *http.Request) {
 
 	// 依存性注入（DI）
 	sacp := persistence.NewStdAreaCodePersistence(pg)
-	sacu := usecase.NewStdAreaCodeUsecase(sacp)
-	ph := NewPrefsHandler(sacu)
+	sacru := usecase.NewStdAreaCodeRelationshipUsecase(sacp)
+	ph := NewPrefsHandler(sacru)
 
 	ph.Handler(ctx, w, r)
 

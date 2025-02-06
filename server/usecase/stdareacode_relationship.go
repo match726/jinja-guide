@@ -10,19 +10,19 @@ import (
 	"github.com/match726/jinja-guide/tree/main/server/domain/repository"
 )
 
-type StdAreaCodeUsecase interface {
+type StdAreaCodeRelationshipUsecase interface {
 	GetAllStdAreaCodeRelationshipList(ctx context.Context) ([]*model.StdAreaCodeRelationshipResp, error)
 }
 
-type stdAreaCodeUsecase struct {
-	saclr repository.StdAreaCodeListRepository
+type stdAreaCodeRelationshipUsecase struct {
+	sacr repository.StdAreaCodeRepository
 }
 
-func NewStdAreaCodeUsecase(saclr repository.StdAreaCodeListRepository) StdAreaCodeUsecase {
-	return &stdAreaCodeUsecase{saclr: saclr}
+func NewStdAreaCodeRelationshipUsecase(sacr repository.StdAreaCodeRepository) StdAreaCodeRelationshipUsecase {
+	return &stdAreaCodeRelationshipUsecase{sacr: sacr}
 }
 
-func (sacu stdAreaCodeUsecase) GetAllStdAreaCodeRelationshipList(ctx context.Context) (sacrrs []*model.StdAreaCodeRelationshipResp, err error) {
+func (sacru stdAreaCodeRelationshipUsecase) GetAllStdAreaCodeRelationshipList(ctx context.Context) (sacrrs []*model.StdAreaCodeRelationshipResp, err error) {
 
 	var sacs []model.StdAreaCode
 	msacrr := make(map[string]model.StdAreaCodeRelationshipResp)
@@ -34,7 +34,7 @@ func (sacu stdAreaCodeUsecase) GetAllStdAreaCodeRelationshipList(ctx context.Con
 					GROUP BY shr.std_area_code, sac.pref_area_code, sac.subpref_area_code, sac.munic_area_code1, sac.munic_area_code2, sac.pref_name, sac.subpref_name, sac.munic_name1, sac.munic_name2, sac.created_at, sac.updated_at
 					ORDER BY shr.std_area_code`
 
-	sacs, err = sacu.saclr.GetStdAreaCodes(ctx, query)
+	sacs, err = sacru.sacr.GetStdAreaCodes(ctx, query)
 	if err != nil {
 		return nil, err
 	}
