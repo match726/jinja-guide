@@ -10,22 +10,22 @@ import (
 	"github.com/match726/jinja-guide/tree/main/server/domain/repository"
 )
 
-type StdAreaCodeListUsecase interface {
+type StdAreaCodeUsecase interface {
 	GetAllStdAreaCodeRelationshipList(ctx context.Context) ([]*model.StdAreaCodeRelationshipResp, error)
 }
 
-type stdAreaCodeListUsecase struct {
+type stdAreaCodeUsecase struct {
 	saclr repository.StdAreaCodeListRepository
 }
 
-func NewStdAreaCodeListUsecase(saclr repository.StdAreaCodeListRepository) StdAreaCodeListUsecase {
+func NewStdAreaCodeUsecase(saclr repository.StdAreaCodeListRepository) StdAreaCodeUsecase {
 	return &stdAreaCodeListUsecase{saclr: saclr}
 }
 
-func (slu stdAreaCodeListUsecase) GetAllStdAreaCodeRelationshipList(ctx context.Context) (saclrs []*model.StdAreaCodeRelationshipResp, err error) {
+func (slu stdAreaCodeUsecase) GetAllStdAreaCodeRelationshipList(ctx context.Context) (sacrrs []*model.StdAreaCodeRelationshipResp, err error) {
 
 	var sacs []model.StdAreaCode
-	m := make(map[string]model.StdAreaCodeRelationshipResp)
+	msacrr := make(map[string]model.StdAreaCodeRelationshipResp)
 
 	query := `SELECT shr.std_area_code, sac.pref_area_code, sac.subpref_area_code, sac.munic_area_code1, sac.munic_area_code2, sac.pref_name, sac.subpref_name, sac.munic_name1, sac.munic_name2, sac.created_at, sac.updated_at
 					FROM t_shrines shr
@@ -47,21 +47,21 @@ func (slu stdAreaCodeListUsecase) GetAllStdAreaCodeRelationshipList(ctx context.
 		switch {
 		case prefCode == 13 && municCode >= 100 && municCode <= 199:
 			// 東京都の特別区部に属する区の場合
-			m[sac.PrefAreaCode] = model.StdAreaCodeRelationshipResp{
+			msacrr[sac.PrefAreaCode] = model.StdAreaCodeRelationshipResp{
 				StdAreaCode:    sac.PrefAreaCode,
 				Name:           sac.PrefName,
 				SupStdAreaCode: "",
 				Kinds:          "Pref",
 				HasChild:       true,
 			}
-			m[sac.SubPrefAreaCode] = model.StdAreaCodeRelationshipResp{
+			msacrr[sac.SubPrefAreaCode] = model.StdAreaCodeRelationshipResp{
 				StdAreaCode:    sac.SubPrefAreaCode,
 				Name:           sac.SubPrefName,
 				SupStdAreaCode: sac.PrefAreaCode,
 				Kinds:          "SubPref",
 				HasChild:       true,
 			}
-			m[sac.StdAreaCode] = model.StdAreaCodeRelationshipResp{
+			msacrr[sac.StdAreaCode] = model.StdAreaCodeRelationshipResp{
 				StdAreaCode:    sac.StdAreaCode,
 				Name:           sac.MunicName2,
 				SupStdAreaCode: sac.SubPrefAreaCode,
@@ -70,21 +70,21 @@ func (slu stdAreaCodeListUsecase) GetAllStdAreaCodeRelationshipList(ctx context.
 			}
 		case municCode >= 100 && municCode <= 199:
 			// 政令指定都市に属する区の場合
-			m[sac.PrefAreaCode] = model.StdAreaCodeRelationshipResp{
+			msacrr[sac.PrefAreaCode] = model.StdAreaCodeRelationshipResp{
 				StdAreaCode:    sac.PrefAreaCode,
 				Name:           sac.PrefName,
 				SupStdAreaCode: "",
 				Kinds:          "Pref",
 				HasChild:       true,
 			}
-			m[sac.MunicAreaCode1] = model.StdAreaCodeRelationshipResp{
+			msacrr[sac.MunicAreaCode1] = model.StdAreaCodeRelationshipResp{
 				StdAreaCode:    sac.MunicAreaCode1,
 				Name:           sac.MunicName1,
 				SupStdAreaCode: sac.PrefAreaCode,
 				Kinds:          "City",
 				HasChild:       true,
 			}
-			m[sac.StdAreaCode] = model.StdAreaCodeRelationshipResp{
+			msacrr[sac.StdAreaCode] = model.StdAreaCodeRelationshipResp{
 				StdAreaCode:    sac.StdAreaCode,
 				Name:           sac.MunicName2,
 				SupStdAreaCode: sac.MunicAreaCode1,
@@ -93,14 +93,14 @@ func (slu stdAreaCodeListUsecase) GetAllStdAreaCodeRelationshipList(ctx context.
 			}
 		case municCode >= 201 && municCode <= 299:
 			// 政令指定都市以外の市の場合
-			m[sac.PrefAreaCode] = model.StdAreaCodeRelationshipResp{
+			msacrr[sac.PrefAreaCode] = model.StdAreaCodeRelationshipResp{
 				StdAreaCode:    sac.PrefAreaCode,
 				Name:           sac.PrefName,
 				SupStdAreaCode: "",
 				Kinds:          "Pref",
 				HasChild:       true,
 			}
-			m[sac.StdAreaCode] = model.StdAreaCodeRelationshipResp{
+			msacrr[sac.StdAreaCode] = model.StdAreaCodeRelationshipResp{
 				StdAreaCode:    sac.StdAreaCode,
 				Name:           sac.MunicName1,
 				SupStdAreaCode: sac.PrefAreaCode,
@@ -109,28 +109,28 @@ func (slu stdAreaCodeListUsecase) GetAllStdAreaCodeRelationshipList(ctx context.
 			}
 		case prefCode == 01 && municCode >= 300:
 			// 北海道の振興局に属する町村の場合
-			m[sac.PrefAreaCode] = model.StdAreaCodeRelationshipResp{
+			msacrr[sac.PrefAreaCode] = model.StdAreaCodeRelationshipResp{
 				StdAreaCode:    sac.PrefAreaCode,
 				Name:           sac.PrefName,
 				SupStdAreaCode: "",
 				Kinds:          "Pref",
 				HasChild:       true,
 			}
-			m[sac.SubPrefAreaCode] = model.StdAreaCodeRelationshipResp{
+			msacrr[sac.SubPrefAreaCode] = model.StdAreaCodeRelationshipResp{
 				StdAreaCode:    sac.SubPrefAreaCode,
 				Name:           sac.SubPrefName,
 				SupStdAreaCode: sac.PrefAreaCode,
 				Kinds:          "SubPref",
 				HasChild:       true,
 			}
-			m[sac.MunicAreaCode1] = model.StdAreaCodeRelationshipResp{
+			msacrr[sac.MunicAreaCode1] = model.StdAreaCodeRelationshipResp{
 				StdAreaCode:    sac.MunicAreaCode1,
 				Name:           sac.MunicName1,
 				SupStdAreaCode: sac.SubPrefAreaCode,
 				Kinds:          "District",
 				HasChild:       true,
 			}
-			m[sac.StdAreaCode] = model.StdAreaCodeRelationshipResp{
+			msacrr[sac.StdAreaCode] = model.StdAreaCodeRelationshipResp{
 				StdAreaCode:    sac.StdAreaCode,
 				Name:           sac.MunicName2,
 				SupStdAreaCode: sac.MunicAreaCode1,
@@ -139,21 +139,21 @@ func (slu stdAreaCodeListUsecase) GetAllStdAreaCodeRelationshipList(ctx context.
 			}
 		case prefCode == 13 && municCode >= 360:
 			// 東京都の支庁(離島)に属する町村の場合
-			m[sac.PrefAreaCode] = model.StdAreaCodeRelationshipResp{
+			msacrr[sac.PrefAreaCode] = model.StdAreaCodeRelationshipResp{
 				StdAreaCode:    sac.PrefAreaCode,
 				Name:           sac.PrefName,
 				SupStdAreaCode: "",
 				Kinds:          "Pref",
 				HasChild:       true,
 			}
-			m[sac.SubPrefAreaCode] = model.StdAreaCodeRelationshipResp{
+			msacrr[sac.SubPrefAreaCode] = model.StdAreaCodeRelationshipResp{
 				StdAreaCode:    sac.SubPrefAreaCode,
 				Name:           sac.SubPrefName,
 				SupStdAreaCode: sac.PrefAreaCode,
 				Kinds:          "SubPref",
 				HasChild:       true,
 			}
-			m[sac.StdAreaCode] = model.StdAreaCodeRelationshipResp{
+			msacrr[sac.StdAreaCode] = model.StdAreaCodeRelationshipResp{
 				StdAreaCode:    sac.StdAreaCode,
 				Name:           sac.MunicName2,
 				SupStdAreaCode: sac.SubPrefAreaCode,
@@ -162,21 +162,21 @@ func (slu stdAreaCodeListUsecase) GetAllStdAreaCodeRelationshipList(ctx context.
 			}
 		case municCode >= 300:
 			// 北海道以外の郡に属する町村の場合
-			m[sac.PrefAreaCode] = model.StdAreaCodeRelationshipResp{
+			msacrr[sac.PrefAreaCode] = model.StdAreaCodeRelationshipResp{
 				StdAreaCode:    sac.PrefAreaCode,
 				Name:           sac.PrefName,
 				SupStdAreaCode: "",
 				Kinds:          "Pref",
 				HasChild:       true,
 			}
-			m[sac.MunicAreaCode1] = model.StdAreaCodeRelationshipResp{
+			msacrr[sac.MunicAreaCode1] = model.StdAreaCodeRelationshipResp{
 				StdAreaCode:    sac.MunicAreaCode1,
 				Name:           sac.MunicName1,
 				SupStdAreaCode: sac.PrefAreaCode,
 				Kinds:          "District",
 				HasChild:       true,
 			}
-			m[sac.StdAreaCode] = model.StdAreaCodeRelationshipResp{
+			msacrr[sac.StdAreaCode] = model.StdAreaCodeRelationshipResp{
 				StdAreaCode:    sac.StdAreaCode,
 				Name:           sac.MunicName2,
 				SupStdAreaCode: sac.MunicAreaCode1,
@@ -191,25 +191,21 @@ func (slu stdAreaCodeListUsecase) GetAllStdAreaCodeRelationshipList(ctx context.
 	}
 
 	// mapのキー(標準地域コード)を元にソートする
-	keys := getStdAreaCodeRelationshipRespKeys(m)
+	keys := getKeysSacrr(msacrr)
 	sort.Strings(keys)
 	for _, k := range keys {
-		value := m[k]
-		saclrs = append(saclrs, &value)
+		value := msacrr[k]
+		sacrrs = append(sacrrs, &value)
 	}
 
-	return saclrs, nil
+	return sacrrs, nil
 
 }
 
-func getStdAreaCodeRelationshipRespKeys(m map[string]model.StdAreaCodeRelationshipResp) []string {
-
+func getKeysSacrr(m map[string]model.StdAreaCodeRelationshipResp) []string {
 	keys := []string{}
-
 	for k := range m {
 		keys = append(keys, k)
 	}
-
 	return keys
-
 }
