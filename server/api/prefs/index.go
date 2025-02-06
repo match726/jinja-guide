@@ -47,6 +47,7 @@ func ExportedHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer shutdown(ctx)
+	ctx = tracer.GetContextWithTraceID(r.Context(), "PrefsHandler")
 
 	// コネクションプール作成
 	var pg *database.Postgres

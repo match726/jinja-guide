@@ -49,6 +49,7 @@ func ExportedHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer shutdown(ctx)
+	ctx = tracer.GetContextWithTraceID(r.Context(), "ShrineListHandler")
 
 	// コネクションプール作成
 	var pg *database.Postgres

@@ -8,7 +8,6 @@ import (
 	"sync"
 	"time"
 
-	tracer "github.com/match726/jinja-guide/tree/main/server/infrastructure/trace"
 	"go.opentelemetry.io/otel/trace"
 )
 
@@ -39,11 +38,8 @@ func NewHandler() *Handler {
 
 func (h *Handler) Handle(ctx context.Context, record slog.Record) error {
 
-	var nctx context.Context
-
 	if ctx != nil {
-		nctx = tracer.GetContextWithNewSpan(ctx, "log")
-		if span := trace.SpanFromContext(nctx); span != nil && span.SpanContext().IsValid() {
+		if span := trace.SpanFromContext(ctx); span != nil && span.SpanContext().IsValid() {
 			record.AddAttrs(slog.String("traceID", span.SpanContext().TraceID().String()))
 			record.AddAttrs(slog.String("spanID", span.SpanContext().SpanID().String()))
 		}

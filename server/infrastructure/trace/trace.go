@@ -21,7 +21,7 @@ func InitTracerProvider() (func(context.Context) error, error) {
 
 }
 
-func GetContextWithNewSpan(ctx context.Context, spanName string) context.Context {
+func GetContextWithTraceID(ctx context.Context, spanName string) context.Context {
 
 	ctx, span := otel.Tracer("shrine-guide").Start(ctx, spanName)
 	defer span.End()
