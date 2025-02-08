@@ -9,8 +9,8 @@ import (
 )
 
 type ShrineListUsecase interface {
-	GetShrineListByStdAreaCode(ctx context.Context, kinds string, stdAreaCode string) ([]model.ShrineListResp, error)
-	GetShrineListByTag(ctx context.Context, tag string) ([]model.ShrineListResp, error)
+	GetShrineListByStdAreaCode(ctx context.Context, kinds string, stdAreaCode string) ([]*model.ShrineListResp, error)
+	GetShrineListByTag(ctx context.Context, tag string) ([]*model.ShrineListResp, error)
 }
 
 type shrineListUsecase struct {
@@ -21,7 +21,7 @@ func NewShrineListUsecase(slr repository.ShrineListRepository) ShrineListUsecase
 	return &shrineListUsecase{slr: slr}
 }
 
-func (slu shrineListUsecase) GetShrineListByStdAreaCode(ctx context.Context, kinds string, stdAreaCode string) ([]model.ShrineListResp, error) {
+func (slu shrineListUsecase) GetShrineListByStdAreaCode(ctx context.Context, kinds string, stdAreaCode string) ([]*model.ShrineListResp, error) {
 
 	var query string
 
@@ -77,7 +77,7 @@ func (slu shrineListUsecase) GetShrineListByStdAreaCode(ctx context.Context, kin
 
 }
 
-func (slu shrineListUsecase) GetShrineListByTag(ctx context.Context, tag string) ([]model.ShrineListResp, error) {
+func (slu shrineListUsecase) GetShrineListByTag(ctx context.Context, tag string) ([]*model.ShrineListResp, error) {
 
 	query := fmt.Sprintf(`SELECT shr.name, shr.address, shr.plus_code, shr.place_id, ARRAY[]::VARCHAR[] AS object_of_worship, CASE shrc2.content1 WHEN 'あり' THEN true ELSE false END AS has_goshuin
 						FROM t_shrine_contents shrc
