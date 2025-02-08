@@ -7,5 +7,5 @@ import (
 )
 
 type ShrineContentsRepository interface {
-	GetShrineContents(ctx context.Context, query string) ([]model.ShrineContents, error)
+	GetShrineContents(ctx context.Context, query string) ([]*model.ShrineContents, error)
 }

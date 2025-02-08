@@ -192,7 +192,7 @@ func (sacru stdAreaCodeRelationshipUsecase) GetAllStdAreaCodeRelationshipList(ct
 	}
 
 	// mapのキー(標準地域コード)を元にソートする
-	keys := getKeysSacrr(msacrr)
+	keys := GetKeysSacrr(msacrr)
 	sort.Strings(keys)
 	for _, k := range keys {
 		value := msacrr[k]
@@ -203,7 +203,7 @@ func (sacru stdAreaCodeRelationshipUsecase) GetAllStdAreaCodeRelationshipList(ct
 
 }
 
-func getKeysSacrr(m map[string]model.StdAreaCodeRelationshipResp) []string {
+func GetKeysSacrr(m map[string]model.StdAreaCodeRelationshipResp) []string {
 
 	keys := []string{}
 

@@ -1,4 +1,4 @@
-package models
+package infrastructure
 
 import (
 	"encoding/json"
@@ -22,12 +22,12 @@ func GetShrineDetailsFromWikipedia(url string) (image string, extract string, er
 	title := url[strings.LastIndex(url, "/")+1:]
 	resp, err := http.Get("https://ja.wikipedia.org/api/rest_v1/page/summary/" + title)
 	if err != nil {
-		return "", "", fmt.Errorf("WikiMedia REST APIリクエスト失敗: %w", err)
+		return "", "", fmt.Errorf("APIリクエスト失敗: %w", err)
 	}
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return "", "", fmt.Errorf("MediaWikiAPIボディ取得失敗: %w", err)
+		return "", "", fmt.Errorf("Body取得失敗: %w", err)
 	}
 	defer resp.Body.Close()
 

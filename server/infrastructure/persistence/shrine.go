@@ -10,34 +10,33 @@ import (
 	"github.com/match726/jinja-guide/tree/main/server/infrastructure/database"
 )
 
-type shrineContentsPersistence struct {
+type shrinePersistence struct {
 	pg *database.Postgres
 }
 
-func NewShrineContentsPersistence(pg *database.Postgres) repository.ShrineContentsRepository {
-	return &shrineContentsPersistence{pg: pg}
+func NewShrinePersistence(pg *database.Postgres) repository.ShrineRepository {
+	return &shrinePersistence{pg: pg}
 }
 
-func (s *shrineContentsPersistence) GetShrineContents(ctx context.Context, query string) (pscs []*model.ShrineContents, err error) {
+func (s *shrinePersistence) GetShrines(ctx context.Context, query string) (pshrs []*model.Shrine, err error) {
 
-	var scs []model.ShrineContents
+	var shrs []model.Shrine
 
 	rows, err := s.pg.DbPool.Query(ctx, query)
 	if err != nil {
-
 		return nil, fmt.Errorf("クエリ実行失敗: %w", err)
 	}
 	defer rows.Close()
 
-	scs, err = pgx.CollectRows(rows, pgx.RowToStructByName[model.ShrineContents])
+	shrs, err = pgx.CollectRows(rows, pgx.RowToStructByName[model.Shrine])
 	if err != nil {
 		return nil, fmt.Errorf("コレクト失敗: %w", err)
 	}
 
-	for _, sc := range scs {
-		pscs = append(pscs, &sc)
+	for _, shr := range shrs {
+		pshrs = append(pshrs, &shr)
 	}
 
-	return pscs, nil
+	return pshrs, nil
 
 }

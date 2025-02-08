@@ -1,136 +1,128 @@
 package usecase
 
-// import (
-// 	"context"
-// 	"fmt"
-// 	"strconv"
+import (
+	"context"
+	"fmt"
+	"strconv"
 
-// 	"github.com/match726/jinja-guide/tree/main/server/domain/model"
-// 	"github.com/match726/jinja-guide/tree/main/server/domain/repository"
-// )
+	"github.com/match726/jinja-guide/tree/main/server/domain/model"
+	"github.com/match726/jinja-guide/tree/main/server/domain/repository"
+	wikipedia "github.com/match726/jinja-guide/tree/main/server/infrastructure/wikipedia"
+)
 
-// type ShrineDetailUsecase interface {
-// 	GetShrineDetailByPlusCode(ctx context.Context, plusCode string) ([]model.ShrineDetailsResp, error)
-// }
+type ShrineDetailUsecase interface {
+	GetShrineDetailByPlusCode(ctx context.Context, plusCode string) (*model.ShrineDetailsResp, error)
+}
 
-// type shrineDetailUsecase struct {
-// 	sdr repository.ShrineDetailRepository
-// }
+type shrineDetailUsecase struct {
+	sr  repository.ShrineRepository
+	scr repository.ShrineContentsRepository
+}
 
-// func NewShrineDetailUsecase(sdr repository.ShrineDetailRepository) ShrineDetailUsecase {
-// 	return &shrineDetailUsecase{sdr: sdr}
-// }
+func NewShrineDetailUsecase(sr repository.ShrineRepository, scr repository.ShrineContentsRepository) ShrineDetailUsecase {
+	return &shrineDetailUsecase{sr: sr, scr: scr}
+}
 
-// func (sdu shrineDetailUsecase) GetShrineDetailByPlusCode(ctx context.Context, plusCode string) (model.ShrineDetailsResp, error) {
+func (sdu shrineDetailUsecase) GetShrineDetailByPlusCode(ctx context.Context, plusCode string) (*model.ShrineDetailsResp, error) {
 
-// 	var query string
+	var shrs []*model.Shrine
+	var shrcs []*model.ShrineContents
+	var shrd *model.ShrineDetailsResp
+	var err error
 
-// 	query1 := `SELECT shr.name, shr.address, shr.place_id
-// 						FROM t_shrines shr
-// 						WHERE shr.plus_code = $1`
+	query1 := fmt.Sprintf(`SELECT shr.name, shr.address, shr.place_id
+						FROM t_shrines shr
+						WHERE shr.plus_code = '%s'`, plusCode)
 
-// 	row := pg.dbPool.QueryRow(ctx, query1, shr.PlusCode)
+	shrs, err = sdu.sr.GetShrines(ctx, query1)
+	if err != nil {
+		return nil, err
+	}
 
-// 	err = row.Scan(&shrd.Name, &shrd.Address, &shrd.PlaceID)
-// 	if err != nil {
-// 		return shrd, fmt.Errorf("スキャン１失敗： %w", err)
-// 	}
+	shrd.Name = shrs[0].Name
+	shrd.Address = shrs[0].Address
+	shrd.PlaceID = shrs[0].PlaceID
 
-// 	query2 := `SELECT shrc.id, shrc.content1, shrc.content2, shrc.content3
-//               FROM t_shrine_contents shrc
-//               WHERE shrc.keyword1 = $1
-//               ORDER BY shrc.id, shrc.seq, shrc.keyword1, shrc.keyword2`
+	query2 := fmt.Sprintf(`SELECT shrc.id, shrc.content1, shrc.content2, shrc.content3
+              FROM t_shrine_contents shrc
+              WHERE shrc.keyword1 = '%s'
+              ORDER BY shrc.id, shrc.seq, shrc.keyword1, shrc.keyword2`, plusCode)
 
-// 	rows, err := pg.dbPool.Query(ctx, query2, shr.PlusCode)
-// 	if err != nil {
-// 		return shrd, fmt.Errorf("神社詳細情報 取得失敗： %w", err)
-// 	}
-// 	defer rows.Close()
+	shrcs, err = sdu.scr.GetShrineContents(ctx, query2)
+	if err != nil {
+		return nil, err
+	}
 
-// 	for rows.Next() {
+	for _, shrc := range shrcs {
 
-// 		var shrc ShrineContents
+		switch shrc.Id {
+		case 1:
+			// 振り仮名の設定
+			shrd.Furigana = shrc.Content1
+		case 2:
+			// 別名称の設定
+			shrd.AltName = append(shrd.AltName, shrc.Content1)
+		case 3:
+			// 説明の設定
+			shrd.Description = shrc.Content1
+		case 4:
+			// 関連タグの設定
+			shrd.Tags = append(shrd.Tags, shrc.Content1)
+		case 5:
+			// 創建年の設定
+			if _, err = strconv.Atoi(shrc.Content1); err == nil {
+				shrd.FoundedYear = shrc.Content1 + "年"
+			} else {
+				shrd.FoundedYear = shrc.Content1
+			}
+		case 6:
+			// 御祭神の設定
+			shrd.ObjectOfWorship = append(shrd.ObjectOfWorship, shrc.Content1)
+		case 7:
+			// 社格の設定
+			shrd.ShrineRank = append(shrd.ShrineRank, shrc.Content1)
+		case 8:
+			//御朱印の設定
+			if shrc.Content1 == "あり" {
+				shrd.HasGoshuin = true
+			}
+		case 9:
+			// 公式サイトの設定
+			shrd.WebsiteURL = shrc.Content1
+		case 10:
+			// Wikipediaの設定
+			shrd.WikipediaURL = shrc.Content1
+		}
 
-// 		err = rows.Scan(&shrc.Id, &shrc.Content1, &shrc.Content2, &shrc.Content3)
-// 		if err != nil {
-// 			return shrd, fmt.Errorf("スキャン失敗： %w", err)
-// 		}
+	}
 
-// 		switch shrc.Id {
-// 		case 1:
-// 			// 振り仮名の設定
-// 			shrd.Furigana = shrc.Content1
-// 		case 2:
-// 			// 別名称の設定
-// 			shrd.AltName = append(shrd.AltName, shrc.Content1)
-// 		case 3:
-// 			// 説明の設定
-// 			shrd.Description = shrc.Content1
-// 		case 4:
-// 			// 関連タグの設定
-// 			shrd.Tags = append(shrd.Tags, shrc.Content1)
-// 		case 5:
-// 			// 創建年の設定
-// 			if _, err = strconv.Atoi(shrc.Content1); err == nil {
-// 				shrd.FoundedYear = shrc.Content1 + "年"
-// 			} else {
-// 				shrd.FoundedYear = shrc.Content1
-// 			}
-// 		case 6:
-// 			// 御祭神の設定
-// 			shrd.ObjectOfWorship = append(shrd.ObjectOfWorship, shrc.Content1)
-// 		case 7:
-// 			// 社格の設定
-// 			shrd.ShrineRank = append(shrd.ShrineRank, shrc.Content1)
-// 		case 8:
-// 			//御朱印の設定
-// 			if shrc.Content1 == "あり" {
-// 				shrd.HasGoshuin = true
-// 			}
-// 		case 9:
-// 			// 公式サイトの設定
-// 			shrd.WebsiteURL = shrc.Content1
-// 		case 10:
-// 			// Wikipediaの設定
-// 			shrd.WikipediaURL = shrc.Content1
-// 		}
+	// Wikipediaから情報取得
+	if len(shrd.WikipediaURL) != 0 {
+		image, extract, err := wikipedia.GetShrineDetailsFromWikipedia(shrd.WikipediaURL)
+		if err != nil {
+			return shrd, fmt.Errorf("%w", err)
+		}
 
-// 	}
+		shrd.Image = image
+		if len(shrd.Description) == 0 {
+			shrd.Description = extract
+		}
 
-// 	// Wikipediaから情報取得
-// 	if len(shrd.WikipediaURL) != 0 {
-// 		image, extract, err := GetShrineDetailsFromWikipedia(shrd.WikipediaURL)
-// 		if err != nil {
-// 			return shrd, fmt.Errorf("%w", err)
-// 		}
+	}
 
-// 		shrd.Image = image
-// 		if len(shrd.Description) == 0 {
-// 			shrd.Description = extract
-// 		}
+	if len(shrd.AltName) == 0 {
+		shrd.AltName = []string{"登録なし"}
+	}
+	if len(shrd.Tags) == 0 {
+		shrd.Tags = []string{"登録なし"}
+	}
+	if len(shrd.ObjectOfWorship) == 0 {
+		shrd.ObjectOfWorship = []string{"登録なし"}
+	}
+	if len(shrd.ShrineRank) == 0 {
+		shrd.ShrineRank = []string{"登録なし"}
+	}
 
-// 	}
+	return shrd, err
 
-// 	if len(shrd.AltName) == 0 {
-// 		shrd.AltName = []string{"登録なし"}
-// 	}
-// 	if len(shrd.Tags) == 0 {
-// 		shrd.Tags = []string{"登録なし"}
-// 	}
-// 	if len(shrd.ObjectOfWorship) == 0 {
-// 		shrd.ObjectOfWorship = []string{"登録なし"}
-// 	}
-// 	if len(shrd.ShrineRank) == 0 {
-// 		shrd.ShrineRank = []string{"登録なし"}
-// 	}
-
-// 	return shrd, err
-
-// 	sdls, err := sdu.sdr.GetShrineDetail(ctx, query)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	return shrls, nil
-
-// }
+}
