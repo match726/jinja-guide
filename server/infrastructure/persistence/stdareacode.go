@@ -30,9 +30,7 @@ func (s *stdAreaCodePersistence) GetStdAreaCodes(ctx context.Context, query stri
 	if err != nil {
 		return nil, fmt.Errorf("コレクト失敗: %w", err)
 	}
-
-	fmt.Printf("sacsの型定義: %T\n", sacs)
-
+	fmt.Println(sacs)
 	return sacs, nil
 
 }
