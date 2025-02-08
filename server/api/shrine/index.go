@@ -84,14 +84,15 @@ func (sdh shrineDetailHandler) Handler(ctx context.Context, w http.ResponseWrite
 	}
 
 	// 神社詳細画面のレスポンス用データを取得
-	shrdrsps, err := sdh.sdu.GetShrineDetailByPlusCode(ctx, sdreq.PlusCode)
+	var shrdrsp *model.ShrineDetailsResp
+	shrdrsp, err = sdh.sdu.GetShrineDetailByPlusCode(ctx, sdreq.PlusCode)
 	if err != nil {
 		logger.Error(ctx, "神社詳細情報取得失敗", "errmsg", err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	b, err := json.Marshal(shrdrsps)
+	b, err := json.Marshal(shrdrsp)
 	if err != nil {
 		logger.Error(ctx, "JSON変換失敗", "errmsg", err)
 		w.WriteHeader(http.StatusInternalServerError)
