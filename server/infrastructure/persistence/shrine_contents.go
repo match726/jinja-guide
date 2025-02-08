@@ -31,7 +31,6 @@ func (s *shrineContentsPersistence) GetShrineContents(ctx context.Context, query
 		return nil, fmt.Errorf("コレクト失敗: %w", err)
 	}
 
-	return scs,
-		nil
+	return scs, nil
 
 }
