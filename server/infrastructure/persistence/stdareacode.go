@@ -31,6 +31,8 @@ func (s *stdAreaCodePersistence) GetStdAreaCodes(ctx context.Context, query stri
 		return nil, fmt.Errorf("コレクト失敗: %w", err)
 	}
 
+	fmt.Printf("sacsの型定義: %T\n", sacs)
+
 	return sacs, nil
 
 }
