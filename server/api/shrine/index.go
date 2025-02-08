@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/match726/jinja-guide/tree/main/server/domain/model"
@@ -76,16 +77,18 @@ func (sdh shrineDetailHandler) Handler(ctx context.Context, w http.ResponseWrite
 	strCustom := r.Header.Get("ShrGuide-Shrines-Authorization")
 
 	// ShrineDetailsReq構造体へ変換
-	var sdreq model.ShrineDetailsReq
-	err := json.Unmarshal([]byte(strCustom), &sdreq)
+	var shrdreq model.ShrineDetailsReq
+	err := json.Unmarshal([]byte(strCustom), &shrdreq)
 	if err != nil {
 		logger.Error(ctx, "リクエスト構造体変換失敗", "errmsg", err)
 		w.WriteHeader(http.StatusBadRequest)
 	}
 
+	fmt.Printf("PlusCode: %s\n", shrdreq.PlusCode)
+
 	// 神社詳細画面のレスポンス用データを取得
 	var shrdrsp *model.ShrineDetailsResp
-	shrdrsp, err = sdh.sdu.GetShrineDetailByPlusCode(ctx, sdreq.PlusCode)
+	shrdrsp, err = sdh.sdu.GetShrineDetailByPlusCode(ctx, shrdreq.PlusCode)
 	if err != nil {
 		logger.Error(ctx, "神社詳細情報取得失敗", "errmsg", err)
 		w.WriteHeader(http.StatusInternalServerError)

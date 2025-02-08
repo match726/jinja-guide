@@ -33,6 +33,8 @@ func (s *shrinePersistence) GetShrines(ctx context.Context, query string) (pshrs
 		return nil, fmt.Errorf("コレクト失敗: %w", err)
 	}
 
+	fmt.Printf("shrs: %v\n", shrs)
+
 	for _, shr := range shrs {
 		pshrs = append(pshrs, &shr)
 	}

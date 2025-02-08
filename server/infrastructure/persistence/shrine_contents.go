@@ -18,26 +18,27 @@ func NewShrineContentsPersistence(pg *database.Postgres) repository.ShrineConten
 	return &shrineContentsPersistence{pg: pg}
 }
 
-func (s *shrineContentsPersistence) GetShrineContents(ctx context.Context, query string) (pscs []*model.ShrineContents, err error) {
+func (s *shrineContentsPersistence) GetShrineContents(ctx context.Context, query string) (pshrcs []*model.ShrineContents, err error) {
 
-	var scs []model.ShrineContents
+	var shrcs []model.ShrineContents
 
 	rows, err := s.pg.DbPool.Query(ctx, query)
 	if err != nil {
-
 		return nil, fmt.Errorf("クエリ実行失敗: %w", err)
 	}
 	defer rows.Close()
 
-	scs, err = pgx.CollectRows(rows, pgx.RowToStructByName[model.ShrineContents])
+	shrcs, err = pgx.CollectRows(rows, pgx.RowToStructByName[model.ShrineContents])
 	if err != nil {
 		return nil, fmt.Errorf("コレクト失敗: %w", err)
 	}
 
-	for _, sc := range scs {
-		pscs = append(pscs, &sc)
+	fmt.Printf("shrcs: %v\n", shrcs)
+
+	for _, shrc := range shrcs {
+		pshrcs = append(pshrcs, &shrc)
 	}
 
-	return pscs, nil
+	return pshrcs, nil
 
 }

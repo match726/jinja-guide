@@ -107,7 +107,6 @@ func (sdu shrineDetailUsecase) GetShrineDetailByPlusCode(ctx context.Context, pl
 		if len(shrd.Description) == 0 {
 			shrd.Description = extract
 		}
-
 	}
 
 	if len(shrd.AltName) == 0 {
