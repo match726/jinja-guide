@@ -30,7 +30,7 @@ func (sdu shrineDetailUsecase) GetShrineDetailByPlusCode(ctx context.Context, pl
 	var shrd *model.ShrineDetailsResp
 	var err error
 
-	query1 := fmt.Sprintf(`SELECT shr.name, shr.address, shr.place_id
+	query1 := fmt.Sprintf(`SELECT shr.name, shr.address, shr.std_area_code, shr.plus_code, shr.seq, shr.place_id, shr.latitude, shr.longitude, shr.created_at, shr.updated_at
 						FROM t_shrines shr
 						WHERE shr.plus_code = '%s'`, plusCode)
 
@@ -43,7 +43,7 @@ func (sdu shrineDetailUsecase) GetShrineDetailByPlusCode(ctx context.Context, pl
 	shrd.Address = shrs[0].Address
 	shrd.PlaceID = shrs[0].PlaceID
 
-	query2 := fmt.Sprintf(`SELECT shrc.id, shrc.content1, shrc.content2, shrc.content3
+	query2 := fmt.Sprintf(`SELECT shrc.id, shrc.seq, shrc.keyword1, shrc.keyword2, shrc.content1, shrc.content2, shrc.content3, shrc.created_at, shrc.updated_at
               FROM t_shrine_contents shrc
               WHERE shrc.keyword1 = '%s'
               ORDER BY shrc.id, shrc.seq, shrc.keyword1, shrc.keyword2`, plusCode)

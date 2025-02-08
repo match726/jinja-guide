@@ -3,7 +3,6 @@ package api
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/match726/jinja-guide/tree/main/server/domain/model"
@@ -83,8 +82,6 @@ func (sdh shrineDetailHandler) Handler(ctx context.Context, w http.ResponseWrite
 		logger.Error(ctx, "リクエスト構造体変換失敗", "errmsg", err)
 		w.WriteHeader(http.StatusBadRequest)
 	}
-
-	fmt.Printf("PlusCode: %s\n", shrdreq.PlusCode)
 
 	// 神社詳細画面のレスポンス用データを取得
 	var shrdrsp *model.ShrineDetailsResp
