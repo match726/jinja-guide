@@ -27,7 +27,7 @@ const ShrineTagList = () => {
   const [shrines, setShrines] = useState<Shrine[]>([]);
   const search = useLocation().search;
   const query = new URLSearchParams(search);
-  const payload = {tags: encodeURIComponent(query.get('tags') as string)};
+  const payload = {tag: encodeURIComponent(query.get('tag') as string)};
 
   // ページネーション関連
   const [currentPage, setCurrentPage] = useState(1)
@@ -67,8 +67,8 @@ const ShrineTagList = () => {
       <Header />
       <div className="container mx-auto p-4 max-w-4xl">
         <div className="bg-red-900 text-white p-4 rounded-t-lg shadow-lg">
-          <p className="font-bold text-center">関連ワード　「{query.get('tags')}」　の神社一覧</p>
-        </div>
+          <p className="font-bold text-center">関連ワード　「{query.get('tag')}」　の神社一覧</p>
+        </div>3
         <div className="overflow-x-auto">
           <Table className="w-full">
             <TableHeader>
