@@ -125,10 +125,11 @@ const ShrineInfo = () => {
                           {item}
                         </Badge>
                       : <Badge key={index} variant="secondary" className="cursor-pointer hover:bg-primary/80">
-                          <a href={frontendUrl + "/shrines?tag=" + encodeURIComponent(item)} rel="noopener noreferrer" className="flex items-center">
+                          <a href={frontendUrl + "/shrines/tag?tag=" + encodeURIComponent(item)} rel="noopener noreferrer" className="flex items-center">
                             {item}
                           </a>
                         </Badge>
+
                   ))}
                 </div>
               </div>
