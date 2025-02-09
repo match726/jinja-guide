@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 
 	"github.com/match726/jinja-guide/tree/main/server/domain/model"
 	"github.com/match726/jinja-guide/tree/main/server/infrastructure/database"
@@ -91,6 +92,7 @@ func (slh shrineListHandler) Handler(ctx context.Context, w http.ResponseWriter,
 			w.WriteHeader(http.StatusInternalServerError)
 		}
 	} else if len(slreq.Tag) != 0 {
+		slreq.Tag, _ = url.QueryUnescape(slreq.Tag)
 		slrsps, err = slh.slu.GetShrineListByTag(ctx, slreq.Tag)
 		if err != nil {
 			logger.Error(ctx, "神社一覧（タグ単位）取得失敗", "errmsg", err)
