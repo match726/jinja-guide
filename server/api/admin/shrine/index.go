@@ -113,7 +113,7 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 
-	w.WriteHeader(http.StatusCreated)
+	w.WriteHeader(http.StatusOK)
 	if _, err := w.Write(b); err != nil {
 		logger.Error(ctx, "Body書込失敗", "errmsg", err)
 	}
