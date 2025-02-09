@@ -10,34 +10,6 @@ package models
 // 	"github.com/jackc/pgx/v5"
 // )
 
-// type StdAreaCode struct {
-// 	StdAreaCode     string `json:"stdAreaCode"`
-// 	PrefAreaCode    string `json:"prefAreaCode"`
-// 	SubPrefAreaCode string `json:"subPrefAreaCode"`
-// 	MunicAreaCode1  string `json:"municAreaCode1"`
-// 	MunicAreaCode2  string `json:"municAreaCode2"`
-// 	PrefName        string `json:"prefName"`
-// 	SubPrefName     string `json:"subPrefName"`
-// 	MunicName1      string `json:"municName1"`
-// 	MunicName2      string `json:"municName2"`
-// }
-
-// // SELECT用の構造体(タイムスタンプをYYYY/MM/DD HH24:MM:SS形式で取得する)
-// type StdAreaCodeGet struct {
-// 	StdAreaCode
-// 	CreatedAt string `json:"createdAt"`
-// 	UpdatedAt string `json:"updatedAt"`
-// }
-
-// // 市区町村の関係性を示すための構造体
-// type SacRelationship struct {
-// 	StdAreaCode    string `json:"stdAreaCode"`
-// 	Name           string `json:"name"`
-// 	SupStdAreaCode string `json:"supStdAreaCode"`
-// 	Kinds          string `json:"kinds"`
-// 	HasChild       bool   `json:"hasChild"`
-// }
-
 // // 標準エリアコードの最新化
 // func (pg *Postgres) UpdateStdAreaCode(ctx context.Context) (err error) {
 

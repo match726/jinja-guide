@@ -72,12 +72,13 @@ func ExportedHandler(w http.ResponseWriter, r *http.Request) {
 
 func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 
-	// HTTPリクエストからカスタムヘッダーを取得
-	strCustom := r.Header.Get("ShrGuide-Shrines-Authorization")
+	// HTTPリクエストからボディを取得
+	body := make([]byte, r.ContentLength)
+	r.Body.Read(body)
 
 	// ShrineRegisterReq構造体へ変換
 	var shrreq model.ShrineRegisterReq
-	err := json.Unmarshal([]byte(strCustom), &shrreq)
+	err := json.Unmarshal([]byte(string(body)), &shrreq)
 	if err != nil {
 		logger.Error(ctx, "リクエスト構造体変換失敗", "errmsg", err)
 		w.WriteHeader(http.StatusBadRequest)
