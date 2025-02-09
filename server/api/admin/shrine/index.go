@@ -106,7 +106,7 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.Header().Set("Content-Type", "application/json")
 	b, err := json.Marshal(shr)
 	if err != nil {
 		logger.Error(ctx, "JSON変換失敗", "errmsg", err)
