@@ -28,7 +28,7 @@ func (s *shrineContentsPersistence) GetShrineContents(ctx context.Context, query
 	}
 	defer rows.Close()
 
-	shrcs, err = pgx.CollectRows(rows, pgx.RowToStructByName[model.ShrineContents])
+	shrcs, err = pgx.CollectRows(rows, pgx.RowToStructByPos[model.ShrineContents])
 	if err != nil {
 		return nil, fmt.Errorf("コレクト失敗: %w", err)
 	}
