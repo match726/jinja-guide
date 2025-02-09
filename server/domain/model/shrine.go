@@ -8,7 +8,7 @@ type Shrine struct {
 	Address     string    `json:"address"`
 	StdAreaCode string    `json:"stdAreaCode"`
 	PlusCode    string    `json:"plusCode"`
-	Seq         string    `json:"seq"`
+	Seq         int       `json:"seq"`
 	PlaceID     string    `json:"placeId"`
 	Latitude    float64   `json:"latitude"`
 	Longitude   float64   `json:"longitude"`

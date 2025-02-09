@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	logger "github.com/match726/jinja-guide/tree/main/server/infrastructure/log"
@@ -50,5 +51,15 @@ func (pg *Postgres) ClosePool(ctx context.Context) {
 
 	pg.DbPool.Close()
 	logger.Info(ctx, "コネクションプール切断成功", "dbname", dbname)
+
+}
+
+// 現在日時の取得
+func GetNowTime() (current time.Time) {
+
+	jstZone := time.FixedZone("Asia/Tokyo", 9*60*60)
+	current = time.Now().In(jstZone)
+
+	return current
 
 }

@@ -3,9 +3,7 @@ package api
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
-	"regexp"
 
 	"github.com/match726/jinja-guide/tree/main/server/domain/model"
 	"github.com/match726/jinja-guide/tree/main/server/infrastructure/database"
@@ -15,16 +13,16 @@ import (
 	"github.com/match726/jinja-guide/tree/main/server/usecase"
 )
 
-type ShrineListHandler interface {
+type ShrineRegisterHandler interface {
 	Handler(ctx context.Context, w http.ResponseWriter, r *http.Request)
 }
 
-type shrineListHandler struct {
-	slu usecase.ShrineListUsecase
+type shrineRegisterHandler struct {
+	sru usecase.ShrineRegisterUsecase
 }
 
-func NewShrineListHandler(slu usecase.ShrineListUsecase) ShrineListHandler {
-	return &shrineListHandler{slu: slu}
+func NewShrineRegisterHandler(sru usecase.ShrineRegisterUsecase) ShrineRegisterHandler {
+	return &shrineRegisterHandler{sru: sru}
 }
 
 func ExportedHandler(w http.ResponseWriter, r *http.Request) {
@@ -50,7 +48,7 @@ func ExportedHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer shutdown(ctx)
-	ctx = tracer.GetContextWithTraceID(r.Context(), "ShrineListHandler")
+	ctx = tracer.GetContextWithTraceID(r.Context(), "ShrineRegisterHandler")
 
 	// コネクションプール作成
 	var pg *database.Postgres
@@ -63,52 +61,59 @@ func ExportedHandler(w http.ResponseWriter, r *http.Request) {
 	defer pg.ClosePool(ctx)
 
 	// 依存性注入（DI）
-	slp := persistence.NewShrineListPersistence(pg)
-	slu := usecase.NewShrineListUsecase(slp)
-	slh := NewShrineListHandler(slu)
+	sacp := persistence.NewStdAreaCodePersistence(pg)
+	sp := persistence.NewShrinePersistence(pg)
+	sru := usecase.NewShrineRegisterUsecase(sacp, sp)
+	srh := NewShrineRegisterHandler(sru)
 
-	slh.Handler(ctx, w, r)
+	srh.Handler(ctx, w, r)
 
 }
 
-func (slh shrineListHandler) Handler(ctx context.Context, w http.ResponseWriter, r *http.Request) {
+func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 
 	// HTTPリクエストからカスタムヘッダーを取得
 	strCustom := r.Header.Get("ShrGuide-Shrines-Authorization")
 
-	// ShrineListReq構造体へ変換
-	var slreq model.ShrineListReq
-	err := json.Unmarshal([]byte(strCustom), &slreq)
+	// ShrineRegisterReq構造体へ変換
+	var shrreq model.ShrineRegisterReq
+	err := json.Unmarshal([]byte(strCustom), &shrreq)
 	if err != nil {
 		logger.Error(ctx, "リクエスト構造体変換失敗", "errmsg", err)
 		w.WriteHeader(http.StatusBadRequest)
 	}
 
-	// リクエストパラメータチェック
-	reg, _ := regexp.Compile(`Pref|SubPref|City|District|Town/Village|Ward`)
-	if reg.MatchString(slreq.Kinds) == false || len(slreq.StdAreaCode) != 5 {
-		logger.Error(ctx, "リクエストパラメータ不正検知", "errmsg", err)
-		w.WriteHeader(http.StatusBadRequest)
-	}
-
-	// 神社一覧（都道府県単位）を取得
-	var slrsps []*model.ShrineListResp
-	slrsps, err = slh.slu.GetShrineListByStdAreaCode(ctx, slreq.Kinds, slreq.StdAreaCode)
+	// リクエストされた住所から該当する標準地域コードを取得
+	var sac string
+	sac, err = srh.sru.GetStdAreaCodeByAddress(ctx, &shrreq)
 	if err != nil {
-		logger.Error(ctx, "神社一覧（都道府県単位）取得失敗", "errmsg", err)
+		logger.Error(ctx, "標準地域コード取得失敗", "errmsg", err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 
-	fmt.Println(slrsps)
+	// PlaceAPIから位置情報(PlaceID、緯度、経度)とPlusCodeを取得
+	var shr *model.Shrine
+	shr, err = srh.sru.GetLocnInfoFromPlaceAPI(ctx, &shrreq, sac)
+	if err != nil {
+		logger.Error(ctx, "PlaceAPI取得失敗", "errmsg", err)
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+
+	// 神社テーブルへ登録
+	err = srh.sru.RegisterShrine(ctx, shr)
+	if err != nil {
+		logger.Error(ctx, "神社テーブル登録失敗", "errmsg", err)
+		w.WriteHeader(http.StatusInternalServerError)
+	}
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	b, err := json.Marshal(slrsps)
+	b, err := json.Marshal(shr)
 	if err != nil {
 		logger.Error(ctx, "JSON変換失敗", "errmsg", err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusCreated)
 	if _, err := w.Write(b); err != nil {
 		logger.Error(ctx, "Body書込失敗", "errmsg", err)
 	}

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/match726/jinja-guide/tree/main/server/domain/model"
 	"github.com/match726/jinja-guide/tree/main/server/domain/repository"
@@ -100,7 +101,8 @@ func (sdu shrineDetailUsecase) GetShrineDetailByPlusCode(ctx context.Context, pl
 
 	// Wikipediaから情報取得
 	if len(shrd.WikipediaURL) != 0 {
-		image, extract, err := wikipedia.GetShrineDetailsFromWikipedia(shrd.WikipediaURL)
+		title := shrd.WikipediaURL[strings.LastIndex(shrd.WikipediaURL, "/")+1:]
+		image, extract, err := wikipedia.QueryWikipedia(title)
 		if err != nil {
 			return shrd, fmt.Errorf("%w", err)
 		}

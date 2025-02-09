@@ -84,14 +84,21 @@ func (slh shrineListHandler) Handler(ctx context.Context, w http.ResponseWriter,
 		w.WriteHeader(http.StatusBadRequest)
 	}
 
-	var slrsps []*model.ShrineListResp
+	// リクエストパラメータチェック
 	if len(slreq.Tag) != 0 {
-		slreq.Tag, _ = url.QueryUnescape(slreq.Tag)
-		slrsps, err = slh.slu.GetShrineListByTag(ctx, slreq.Tag)
-		if err != nil {
-			logger.Error(ctx, "神社一覧（タグ単位）取得失敗", "errmsg", err)
-			w.WriteHeader(http.StatusInternalServerError)
-		}
+		logger.Error(ctx, "リクエストパラメータ不正検知", "errmsg", err)
+		w.WriteHeader(http.StatusBadRequest)
+	}
+
+	// リクエストパラメータをデコード
+	slreq.Tag, _ = url.QueryUnescape(slreq.Tag)
+
+	// 神社一覧（タグ単位）を取得
+	var slrsps []*model.ShrineListResp
+	slrsps, err = slh.slu.GetShrineListByTag(ctx, slreq.Tag)
+	if err != nil {
+		logger.Error(ctx, "神社一覧（タグ単位）取得失敗", "errmsg", err)
+		w.WriteHeader(http.StatusInternalServerError)
 	}
 
 	fmt.Println(slrsps)
