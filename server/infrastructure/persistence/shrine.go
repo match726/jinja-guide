@@ -28,11 +28,12 @@ func (s *shrinePersistence) GetShrines(ctx context.Context, query string) (pshrs
 	}
 	defer rows.Close()
 
-	shrs, err = pgx.CollectRows(rows, pgx.RowToStructByName[model.Shrine])
+	shrs, err = pgx.CollectRows(rows, pgx.RowToStructByPos[model.Shrine])
 	if err != nil {
 		return nil, fmt.Errorf("コレクト失敗: %w", err)
 	}
 
+	fmt.Printf("shrs: %v\n", shrs)
 	for _, shr := range shrs {
 		pshrs = append(pshrs, &shr)
 	}
