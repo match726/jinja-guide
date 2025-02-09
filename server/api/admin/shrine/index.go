@@ -32,7 +32,7 @@ func ExportedHandler(w http.ResponseWriter, r *http.Request) {
 	case http.MethodOptions:
 		w.WriteHeader(http.StatusOK)
 		return
-	case http.MethodGet:
+	case http.MethodPost:
 		break
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
