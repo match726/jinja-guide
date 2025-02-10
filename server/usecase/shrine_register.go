@@ -82,7 +82,7 @@ func (sru shrineRegisterUsecase) GetLocnInfoFromPlaceAPI(ctx context.Context, sh
 	shr.Name = shrrreq.Name
 	shr.Address = shrrreq.Address
 	shr.StdAreaCode = sac
-	shr.PlaceID = olc.Encode(shr.Latitude, shr.Longitude, 11)
+	shr.PlusCode = olc.Encode(shr.Latitude, shr.Longitude, 11)
 	shr.Seq = 0
 	shr.PlaceID = resp.Results[0].PlaceID
 	shr.Latitude = resp.Results[0].Geometry.Location.Lat
