@@ -151,10 +151,9 @@ func (sru shrineRegisterUsecase) ExistsShrineByPlusCode(ctx context.Context, plu
 		return false
 	}
 
-	fmt.Println(len(shrs))
-	// if len(shrs) != 0 {
-	// 	return true
-	// }
+	if len(shrs) == 1 {
+		return true
+	}
 
 	return false
 

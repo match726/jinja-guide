@@ -93,6 +93,63 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 		return
 	}
 
+	if len(shrcreq.Furigana) != 0 {
+		err = srh.sru.RegisterShrineContents(ctx, 1, 1, shrcreq.PlusCode, "", shrcreq.Furigana, "", "", 0)
+		if err != nil {
+			logger.Error(ctx, "神社詳細情報[振り仮名]登録失敗", "errmsg", err)
+			w.WriteHeader(http.StatusInternalServerError)
+		}
+	}
+	if len(shrcreq.AltName) != 0 {
+		err = srh.sru.RegisterShrineContents(ctx, 2, 1, shrcreq.PlusCode, "", shrcreq.AltName, "", "", 1)
+		if err != nil {
+			logger.Error(ctx, "神社詳細情報[別名称]登録失敗", "errmsg", err)
+			w.WriteHeader(http.StatusInternalServerError)
+		}
+	}
+	if len(shrcreq.Tags) != 0 {
+		err = srh.sru.RegisterShrineContents(ctx, 4, 1, shrcreq.PlusCode, "", shrcreq.Tags, "", "", 1)
+		if err != nil {
+			logger.Error(ctx, "神社詳細情報[関連ワード]登録失敗", "errmsg", err)
+			w.WriteHeader(http.StatusInternalServerError)
+		}
+	}
+	if len(shrcreq.FoundedYear) != 0 {
+		err = srh.sru.RegisterShrineContents(ctx, 5, 1, shrcreq.PlusCode, "", shrcreq.FoundedYear, "", "", 0)
+		if err != nil {
+			logger.Error(ctx, "神社詳細情報[創建年]登録失敗", "errmsg", err)
+			w.WriteHeader(http.StatusInternalServerError)
+		}
+	}
+	if len(shrcreq.ObjectOfWorship) != 0 {
+		err = srh.sru.RegisterShrineContents(ctx, 6, 1, shrcreq.PlusCode, "", shrcreq.ObjectOfWorship, "", "", 1)
+		if err != nil {
+			logger.Error(ctx, "神社詳細情報[御祭神]登録失敗", "errmsg", err)
+			w.WriteHeader(http.StatusInternalServerError)
+		}
+	}
+	if len(shrcreq.HasGoshuin) != 0 {
+		err = srh.sru.RegisterShrineContents(ctx, 8, 1, shrcreq.PlusCode, "", shrcreq.HasGoshuin, "", "", 0)
+		if err != nil {
+			logger.Error(ctx, "神社詳細情報[御朱印]登録失敗", "errmsg", err)
+			w.WriteHeader(http.StatusInternalServerError)
+		}
+	}
+	if len(shrcreq.WebsiteURL) != 0 {
+		err = srh.sru.RegisterShrineContents(ctx, 9, 1, shrcreq.PlusCode, "", shrcreq.WebsiteURL, "", "", 0)
+		if err != nil {
+			logger.Error(ctx, "神社詳細情報[公式サイトURL]登録失敗", "errmsg", err)
+			w.WriteHeader(http.StatusInternalServerError)
+		}
+	}
+	if len(shrcreq.WikipediaURL) != 0 {
+		err = srh.sru.RegisterShrineContents(ctx, 10, 1, shrcreq.PlusCode, "", shrcreq.WikipediaURL, "", "", 0)
+		if err != nil {
+			logger.Error(ctx, "神社詳細情報[WikipediaURL]登録失敗", "errmsg", err)
+			w.WriteHeader(http.StatusInternalServerError)
+		}
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	b, err := json.Marshal(shrcreq)
 
