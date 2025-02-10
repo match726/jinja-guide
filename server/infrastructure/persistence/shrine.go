@@ -67,7 +67,7 @@ func (s *shrinePersistence) InsertShrine(ctx context.Context, shr *model.Shrine)
 
 }
 
-// 神社テーブル取得
+// 神社テーブル取得（複数行）
 func (s *shrinePersistence) GetShrines(ctx context.Context, query string) (pshrs []*model.Shrine, err error) {
 
 	var shrs []model.Shrine

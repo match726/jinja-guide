@@ -68,7 +68,7 @@ const ShrineTagList = () => {
       <div className="container mx-auto p-4 max-w-4xl">
         <div className="bg-red-900 text-white p-4 rounded-t-lg shadow-lg">
           <p className="font-bold text-center">関連ワード　「{query.get('tag')}」　の神社一覧</p>
-        </div>3
+        </div>
         <div className="overflow-x-auto">
           <Table className="w-full">
             <TableHeader>

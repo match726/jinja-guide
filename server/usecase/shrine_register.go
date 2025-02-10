@@ -17,6 +17,7 @@ type ShrineRegisterUsecase interface {
 	GetLocnInfoFromPlaceAPI(ctx context.Context, shrrreq *model.ShrineRegisterReq, sac string) (shr *model.Shrine, err error)
 	RegisterShrine(ctx context.Context, shr *model.Shrine) (err error)
 	RegisterShrineContents(ctx context.Context, id int, seq int, keyword1 string, keyword2 string, content1 string, content2 string, content3 string, seqHandler int) (err error)
+	ExistsShrineByPlusCode(ctx context.Context, plusCode string) bool
 }
 
 type shrineRegisterUsecase struct {
@@ -113,6 +114,7 @@ func (sru shrineRegisterUsecase) RegisterShrine(ctx context.Context, shr *model.
 // 神社詳細情報テーブル登録
 func (sru shrineRegisterUsecase) RegisterShrineContents(ctx context.Context, id int, seq int, keyword1 string, keyword2 string, content1 string, content2 string, content3 string, seqHandler int) (err error) {
 
+	// ShrineContents構造体を作成する
 	shrc := sru.scr.NewShrineContents(id, seq, keyword1, keyword2, content1, content2, content3)
 
 	// 登録するSEQを取得する
@@ -131,5 +133,29 @@ func (sru shrineRegisterUsecase) RegisterShrineContents(ctx context.Context, id 
 	}
 
 	return nil
+
+}
+
+// PlusCodeから神社の登録の有無を判定
+func (sru shrineRegisterUsecase) ExistsShrineByPlusCode(ctx context.Context, plusCode string) bool {
+
+	var shrs []*model.Shrine
+	var err error
+
+	query := fmt.Sprintf(`SELECT shr.name, shr.address, shr.std_area_code, shr.plus_code, shr.seq, shr.place_id, shr.latitude, shr.longitude, shr.created_at, shr.updated_at
+						FROM t_shrines shr
+						WHERE shr.plus_code = '%s'`, plusCode)
+
+	shrs, err = sru.sr.GetShrines(ctx, query)
+	if err != nil {
+		return false
+	}
+
+	fmt.Println(len(shrs))
+	// if len(shrs) != 0 {
+	// 	return true
+	// }
+
+	return false
 
 }
