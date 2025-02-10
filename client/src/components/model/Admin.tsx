@@ -14,7 +14,7 @@ const Admin: React.FC = () => {
     {
       title: "神社詳細情報登録",
       description: "PlusCodeから神社の詳細情報を新規登録します。",
-      link: "admin/regist/details"
+      link: "admin/regist/shrine-details"
     },
     {
       title: "標準地域コード管理",
