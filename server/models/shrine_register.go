@@ -66,21 +66,3 @@ package models
 // 	return nil
 
 // }
-
-// func (pg *Postgres) GetShrineContentsSeq(ctx context.Context, id int, plusCode string) (int, error) {
-
-// 	var seq int
-
-// 	query := `SELECT COALESCE(MAX(seq), 0)
-// 						FROM t_shrine_contents shrc
-// 						WHERE shrc.keyword1 = $1
-// 						AND shrc.id = $2`
-
-// 	err := pg.dbPool.QueryRow(ctx, query, plusCode, id).Scan(&seq)
-// 	if err != nil {
-// 		return 0, err
-// 	}
-
-// 	return seq + 1, nil
-
-// }

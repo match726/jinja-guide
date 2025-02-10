@@ -2,7 +2,7 @@ package model
 
 import "time"
 
-// 神社詳細テーブル定義
+// 神社詳細情報テーブル定義
 type ShrineContents struct {
 	Id        int       `json:"id"`
 	Seq       int       `json:"seq"`

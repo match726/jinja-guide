@@ -63,7 +63,8 @@ func ExportedHandler(w http.ResponseWriter, r *http.Request) {
 	// 依存性注入（DI）
 	sacp := persistence.NewStdAreaCodePersistence(pg)
 	sp := persistence.NewShrinePersistence(pg)
-	sru := usecase.NewShrineRegisterUsecase(sacp, sp)
+	scp := persistence.NewShrineContentsPersistence(pg)
+	sru := usecase.NewShrineRegisterUsecase(sacp, sp, scp)
 	srh := NewShrineRegisterHandler(sru)
 
 	srh.Handler(ctx, w, r)
@@ -105,6 +106,24 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 	if err != nil {
 		logger.Error(ctx, "神社テーブル登録失敗", "errmsg", err)
 		w.WriteHeader(http.StatusInternalServerError)
+	}
+
+	// 神社詳細テーブルへ登録
+	if len(shr.PlusCode) != 0 {
+		if len(shrreq.Furigana) != 0 {
+			err = srh.sru.RegisterShrineContents(ctx, 1, 1, shr.PlusCode, "", shrreq.Furigana, "", "", 0)
+			if err != nil {
+				logger.Error(ctx, "神社詳細情報[振り仮名]登録失敗", "errmsg", err)
+				w.WriteHeader(http.StatusInternalServerError)
+			}
+		}
+		if len(shrreq.WikipediaURL) != 0 {
+			err = srh.sru.RegisterShrineContents(ctx, 10, 1, shr.PlusCode, "", shrreq.WikipediaURL, "", "", 0)
+			if err != nil {
+				logger.Error(ctx, "神社詳細情報[WikipediaURL]登録失敗", "errmsg", err)
+				w.WriteHeader(http.StatusInternalServerError)
+			}
+		}
 	}
 
 	w.Header().Set("Content-Type", "application/json")

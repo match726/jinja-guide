@@ -16,15 +16,17 @@ type ShrineRegisterUsecase interface {
 	GetStdAreaCodeByAddress(ctx context.Context, shrrreq *model.ShrineRegisterReq) (sac string, err error)
 	GetLocnInfoFromPlaceAPI(ctx context.Context, shrrreq *model.ShrineRegisterReq, sac string) (shr *model.Shrine, err error)
 	RegisterShrine(ctx context.Context, shr *model.Shrine) (err error)
+	RegisterShrineContents(ctx context.Context, id int, seq int, keyword1 string, keyword2 string, content1 string, content2 string, content3 string, seqHandler int) (err error)
 }
 
 type shrineRegisterUsecase struct {
 	sacr repository.StdAreaCodeRepository
 	sr   repository.ShrineRepository
+	scr  repository.ShrineContentsRepository
 }
 
-func NewShrineRegisterUsecase(sacr repository.StdAreaCodeRepository, sr repository.ShrineRepository) ShrineRegisterUsecase {
-	return &shrineRegisterUsecase{sacr: sacr, sr: sr}
+func NewShrineRegisterUsecase(sacr repository.StdAreaCodeRepository, sr repository.ShrineRepository, scr repository.ShrineContentsRepository) ShrineRegisterUsecase {
+	return &shrineRegisterUsecase{sacr: sacr, sr: sr, scr: scr}
 }
 
 // 住所から該当する標準地域コードを取得
@@ -93,7 +95,37 @@ func (sru shrineRegisterUsecase) GetLocnInfoFromPlaceAPI(ctx context.Context, sh
 // 神社テーブル登録
 func (sru shrineRegisterUsecase) RegisterShrine(ctx context.Context, shr *model.Shrine) (err error) {
 
+	// 登録するSEQを取得する
+	err = sru.sr.GetShrineNextSeq(ctx, shr)
+	if err != nil {
+		return err
+	}
+
 	err = sru.sr.InsertShrine(ctx, shr)
+	if err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
+// 神社詳細情報テーブル登録
+func (sru shrineRegisterUsecase) RegisterShrineContents(ctx context.Context, id int, seq int, keyword1 string, keyword2 string, content1 string, content2 string, content3 string, seqHandler int) (err error) {
+
+	shrc := sru.scr.NewShrineContents(id, seq, keyword1, keyword2, content1, content2, content3)
+
+	// 登録するSEQを取得する
+	if seqHandler == 1 {
+		err = sru.scr.GetShrineContentsNextSeq(ctx, shrc)
+		if err != nil {
+			return err
+		}
+	} else {
+		shrc.Seq = 1
+	}
+
+	err = sru.scr.InsertShrineContents(ctx, shrc)
 	if err != nil {
 		return err
 	}
