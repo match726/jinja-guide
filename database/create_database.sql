@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS t_shrines (
   address       varchar(40) NOT NULL,
   std_area_code char(5),
   plus_code     char(12),
-  seq           char(2),
+  seq           smallint,
   place_id      char(27),
   latitude      double precision,
   longitude     double precision,
