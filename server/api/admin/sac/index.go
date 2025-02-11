@@ -15,7 +15,7 @@ import (
 
 type StdAreaCodeHandler interface {
 	GetHandler(ctx context.Context, w http.ResponseWriter, r *http.Request)
-	PostHandler(ctx context.Context, w http.ResponseWriter, r *http.Request)
+	PutHandler(ctx context.Context, w http.ResponseWriter, r *http.Request)
 }
 
 type stdAreaCodeHandler struct {
@@ -35,7 +35,7 @@ func ExportedHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	case http.MethodGet:
 		break
-	case http.MethodPost:
+	case http.MethodPut:
 		break
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
@@ -72,8 +72,8 @@ func ExportedHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 		sach.GetHandler(ctx, w, r)
-	case http.MethodPost:
-		sach.PostHandler(ctx, w, r)
+	case http.MethodPut:
+		sach.PutHandler(ctx, w, r)
 	}
 
 }
@@ -103,7 +103,7 @@ func (sach stdAreaCodeHandler) GetHandler(ctx context.Context, w http.ResponseWr
 
 }
 
-func (sach stdAreaCodeHandler) PostHandler(ctx context.Context, w http.ResponseWriter, r *http.Request) {
+func (sach stdAreaCodeHandler) PutHandler(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 
 	// 標準地域コード最新化
 	err := sach.sacu.UpdateStdAreaCode(ctx)
