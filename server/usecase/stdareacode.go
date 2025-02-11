@@ -137,29 +137,29 @@ func (sau stdAreaCodeUsecase) GetStdAreaCodesFromEstat(ctx context.Context) (sac
 	// 	FILTER ( ?adclass = sacs:District )
 	// 	}`
 
-	// // 振興局・支庁に属する、北海道の町村の抽出 (北海道の振興局)
-	// query6 := `  UNION
-	// 	{
-	// 	?s a sacs:StandardAreaCode ;
-	// 		dcterms:identifier ?areacode ;
-	// 		dcterms:isPartOf / dcterms:isPartOf / dcterms:identifier ?psac ;
-	// 		dcterms:isPartOf / dcterms:identifier ?spsac ;
-	// 		dcterms:identifier ?m2sac ;
-	// 		sacs:prefectureLabel ?pref ;
-	// 		dcterms:isPartOf ?spo ;
-	// 		sacs:districtOfSubPrefecture ?munic1 ;
-	// 		ic:表記 ?munic2 ;
-	// 		sacs:administrativeClass ?adclass1 ;
-	// 		dcterms:isPartOf / sacs:administrativeClass ?adclass2 .
-	// 	?spo ic:表記 ?subpref .
-	// 	FILTER REGEX ( ?pref, "北海道")
-	// 	FILTER ( lang(?subpref) = "ja" )
-	// 	FILTER ( lang(?munic1) = "ja" )
-	// 	FILTER ( lang(?munic2) = "ja" )
-	// 	FILTER ( ?adclass1 IN( sacs:Town, sacs:Village, sacs:Ward ) )
-	// 	FILTER ( ?adclass2 = sacs:SubPrefecture )
-	// 	MINUS { ?spo dcterms:valid ?spo2 }
-	// 	}`
+	// 振興局・支庁に属する、北海道の町村の抽出 (北海道の振興局)
+	query6 := `  UNION
+		{
+		?s a sacs:StandardAreaCode ;
+			dcterms:identifier ?areacode ;
+			dcterms:isPartOf / dcterms:isPartOf / dcterms:identifier ?psac ;
+			dcterms:isPartOf / dcterms:identifier ?spsac ;
+			dcterms:identifier ?m2sac ;
+			sacs:prefectureLabel ?pref ;
+			dcterms:isPartOf ?spo ;
+			sacs:districtOfSubPrefecture ?munic1 ;
+			ic:表記 ?munic2 ;
+			sacs:administrativeClass ?adclass1 ;
+			dcterms:isPartOf / sacs:administrativeClass ?adclass2 .
+		?spo ic:表記 ?subpref .
+		FILTER REGEX ( ?pref, "北海道")
+		FILTER ( lang(?subpref) = "ja" )
+		FILTER ( lang(?munic1) = "ja" )
+		FILTER ( lang(?munic2) = "ja" )
+		FILTER ( ?adclass1 IN( sacs:Town, sacs:Village, sacs:Ward ) )
+		FILTER ( ?adclass2 = sacs:SubPrefecture )
+		MINUS { ?spo dcterms:valid ?spo2 }
+		}`
 
 	// // 振興局・支庁に属する、東京の町村の抽出 (東京の離島)
 	// query7 := `  UNION
@@ -222,7 +222,7 @@ func (sau stdAreaCodeUsecase) GetStdAreaCodesFromEstat(ctx context.Context) (sac
 		}
 		ORDER BY ?areacode`
 
-	query := prefix + query1 + query10
+	query := prefix + query1 + query6 + query10
 
 	resp, err := sparql.QuerySparql(os.Getenv("ESTAT_ENDPOINT"), query)
 	if err != nil {
