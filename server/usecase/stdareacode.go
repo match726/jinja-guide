@@ -4,10 +4,10 @@ import (
 	"context"
 	"os"
 	"strconv"
-	"time"
 
 	"github.com/match726/jinja-guide/tree/main/server/domain/model"
 	"github.com/match726/jinja-guide/tree/main/server/domain/repository"
+	"github.com/match726/jinja-guide/tree/main/server/infrastructure/database"
 	"github.com/match726/jinja-guide/tree/main/server/infrastructure/sparql"
 )
 
@@ -62,7 +62,7 @@ func (sau stdAreaCodeUsecase) UpdateStdAreaCode(ctx context.Context) (err error)
 // e-Statの統計LODから最新の標準地域コード取得
 func (sau stdAreaCodeUsecase) GetStdAreaCodesFromEstat(ctx context.Context) (sacs []model.StdAreaCode, err error) {
 
-	currentTime := time.Now()
+	currentTime := database.GetNowTime()
 
 	prefix := `PREFIX sacs: <http://data.e-stat.go.jp/lod/terms/sacs#>
 						PREFIX dcterms: <http://purl.org/dc/terms/>
