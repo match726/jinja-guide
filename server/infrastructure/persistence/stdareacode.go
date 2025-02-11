@@ -21,7 +21,7 @@ func NewStdAreaCodePersistence(pg *database.Postgres) repository.StdAreaCodeRepo
 // 標準地域コードテーブル削除
 func (s *stdAreaCodePersistence) TruncateStdAreaCode(ctx context.Context) error {
 
-	query := `TRUNCATE TABLE m_stdareacode_test`
+	query := `TRUNCATE TABLE m_stdareacode`
 
 	_, err := s.pg.DbPool.Exec(ctx, query)
 	if err != nil {
@@ -37,7 +37,7 @@ func (s *stdAreaCodePersistence) BulkInsertStdAreaCode(ctx context.Context, rows
 
 	cnt, err = s.pg.DbPool.CopyFrom(
 		ctx,
-		pgx.Identifier{"m_stdareacode_test"},
+		pgx.Identifier{"m_stdareacode"},
 		[]string{"std_area_code", "pref_area_code", "subpref_area_code", "munic_area_code1", "munic_area_code2", "pref_name", "subpref_name", "munic_name1", "munic_name2", "created_at", "updated_at"},
 		pgx.CopyFromRows(rows),
 	)
