@@ -94,9 +94,6 @@ const AdminStdAreaCode: React.FC = () => {
                 <th className="p-3 text-left">作成日時</th>
                 <th className="p-3 text-left">更新日時</th>
               </tr>
-              <Button onSubmit={handleSubmit} className="w-full bg-red-900 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:scale-105 font-serif">
-              最新化
-              </Button>
             </thead>
             <tbody>
               {sacList.map((item, index) => (
@@ -121,6 +118,9 @@ const AdminStdAreaCode: React.FC = () => {
           <p>&copy; 2024 標準地域コード一覧. All rights reserved.</p>
         </footer>
       </div>
+      <Button onSubmit={handleSubmit} className="w-full bg-red-900 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:scale-105 font-serif">
+      最新化
+      </Button>
     </div>
   );
 
