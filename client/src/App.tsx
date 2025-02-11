@@ -23,7 +23,7 @@ function App() {
         <Route path="/shrines/tag" element={ <ShrineTagList /> } />
         <Route path="/admin" element={ <Admin /> } />
         <Route path="/admin/regist/shrine" element={ <AdminRegisterShrine /> } />
-        <Route path="/admin/regist/details" element={ <AdminRegisterShrineDetails /> } />
+        <Route path="/admin/regist/shrine-details" element={ <AdminRegisterShrineDetails /> } />
         <Route path="/admin/stdareacode" element={ <AdminStdAreaCode /> } />
       </Routes>
       </div>
