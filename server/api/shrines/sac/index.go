@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"net/url"
+	"regexp"
 
 	"github.com/match726/jinja-guide/tree/main/server/domain/model"
 	"github.com/match726/jinja-guide/tree/main/server/infrastructure/database"
@@ -85,19 +85,17 @@ func (slh shrineListHandler) Handler(ctx context.Context, w http.ResponseWriter,
 	}
 
 	// リクエストパラメータチェック
-	if len(slreq.Tag) != 0 {
+	reg, _ := regexp.Compile(`Pref|SubPref|City|District|Town/Village|Ward`)
+	if reg.MatchString(slreq.Kinds) == false || len(slreq.StdAreaCode) != 5 {
 		logger.Error(ctx, "リクエストパラメータ不正検知", "errmsg", err)
 		w.WriteHeader(http.StatusBadRequest)
 	}
 
-	// リクエストパラメータをデコード
-	slreq.Tag, _ = url.QueryUnescape(slreq.Tag)
-
-	// 神社一覧（タグ単位）を取得
+	// 神社一覧（都道府県単位）を取得
 	var slrsps []*model.ShrineListResp
-	slrsps, err = slh.slu.GetShrineListByTag(ctx, slreq.Tag)
+	slrsps, err = slh.slu.GetShrineListByStdAreaCode(ctx, slreq.Kinds, slreq.StdAreaCode)
 	if err != nil {
-		logger.Error(ctx, "神社一覧（タグ単位）取得失敗", "errmsg", err)
+		logger.Error(ctx, "神社一覧（都道府県単位）取得失敗", "errmsg", err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 

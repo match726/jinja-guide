@@ -1,76 +1,92 @@
 package api
 
 import (
+	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 
-	"github.com/match726/jinja-guide/tree/main/server/models"
-	"github.com/match726/jinja-guide/tree/main/server/trace"
+	"github.com/match726/jinja-guide/tree/main/server/infrastructure/database"
+	logger "github.com/match726/jinja-guide/tree/main/server/infrastructure/log"
+	"github.com/match726/jinja-guide/tree/main/server/infrastructure/persistence"
+	tracer "github.com/match726/jinja-guide/tree/main/server/infrastructure/trace"
+	"github.com/match726/jinja-guide/tree/main/server/usecase"
 )
 
-func PrefsHandler(w http.ResponseWriter, r *http.Request) {
+type PrefsHandler interface {
+	Handler(ctx context.Context, w http.ResponseWriter, r *http.Request)
+}
 
+type prefsHandler struct {
+	saclu usecase.StdAreaCodeRelationshipUsecase
+}
+
+func NewPrefsHandler(saclu usecase.StdAreaCodeRelationshipUsecase) PrefsHandler {
+	return &prefsHandler{saclu: saclu}
+}
+
+func ExportedHandler(w http.ResponseWriter, r *http.Request) {
+
+	// リクエストメソッド判定
 	switch r.Method {
 	case http.MethodOptions:
 		w.WriteHeader(http.StatusOK)
 		return
 	case http.MethodGet:
-		FetchSacRelationship(w, r)
+		break
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
 
-}
-
-func FetchSacRelationship(w http.ResponseWriter, r *http.Request) {
-
-	var pg *models.Postgres
-	var err error
-
-	// Contextを生成
+	// Context生成、TraceID、SpanID取得
 	ctx := r.Context()
-	shutdown, err := trace.InitTracerProvider()
+	shutdown, err := tracer.InitTracerProvider()
 	if err != nil {
-		panic(err)
+		logger.Error(ctx, "トレーサープロバイダー作成失敗", "errmsg", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 	defer shutdown(ctx)
-	ctx = trace.GetContextWithTraceID(r.Context(), "FetchSacRelationship")
+	ctx = tracer.GetContextWithTraceID(r.Context(), "PrefsHandler")
 
-	pg, err = models.NewPool(ctx)
+	// コネクションプール作成
+	var pg *database.Postgres
+	pg, err = database.NewPool(ctx)
 	if err != nil {
-		fmt.Println(err)
+		logger.Error(ctx, "コネクションプール作成失敗", "errmsg", err)
 		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 	defer pg.ClosePool(ctx)
 
-	sacr, err := pg.GetSacRelationship(ctx)
-	if err != nil {
-		fmt.Printf("[Err] <GetSacRelationship> Err:%s\n", err)
-		w.WriteHeader(http.StatusInternalServerError)
-	} else {
-		writeJsonResp(w, sacr)
-	}
+	// 依存性注入（DI）
+	sacp := persistence.NewStdAreaCodePersistence(pg)
+	sacru := usecase.NewStdAreaCodeRelationshipUsecase(sacp)
+	ph := NewPrefsHandler(sacru)
+
+	ph.Handler(ctx, w, r)
 
 }
 
-func writeJsonResp(w http.ResponseWriter, sacr []models.SacRelationship) {
+func (ph prefsHandler) Handler(ctx context.Context, w http.ResponseWriter, r *http.Request) {
+
+	// 登録されている神社を元に都道府県の標準地域コード（紐付き）を取得する
+	sacrrs, err := ph.saclu.GetAllStdAreaCodeRelationshipList(ctx)
+	if err != nil {
+		logger.Error(ctx, "標準地域コード（紐付き）取得失敗", "errmsg", err)
+		w.WriteHeader(http.StatusInternalServerError)
+	}
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	b, err := json.Marshal(sacr)
+	b, err := json.Marshal(sacrrs)
 	if err != nil {
-		fmt.Println(err)
+		logger.Error(ctx, "JSON変換失敗", "errmsg", err)
 		w.WriteHeader(http.StatusInternalServerError)
-		s := `{"status":"500 Internal Server Error"}`
-		if _, err := w.Write([]byte(s)); err != nil {
-			fmt.Println(err)
-		}
-		return
 	}
+
 	w.WriteHeader(http.StatusOK)
 	if _, err := w.Write(b); err != nil {
-		fmt.Println(err)
+		logger.Error(ctx, "Body書込失敗", "errmsg", err)
 	}
 
 }

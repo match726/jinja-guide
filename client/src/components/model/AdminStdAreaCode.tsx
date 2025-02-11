@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 import { Header } from '@/components/ui/header';
+import { Button } from '@/components/ui/button';
 
 const backendEndpoint = import.meta.env.VITE_BACKEND_ENDPOINT
 
@@ -48,24 +49,24 @@ const AdminStdAreaCode: React.FC = () => {
 
   }, []);
 
-  // const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
  
-  //   // ページ遷移を防ぐ（デフォルトでは、フォーム送信ボタンを押すとページが遷移してしまう）
-  //   e.preventDefault();
+    // ページ遷移を防ぐ（デフォルトでは、フォーム送信ボタンを押すとページが遷移してしまう）
+    e.preventDefault();
 
-  //   const options2 = {
-  //     method: "PUT",
-  //     url: BACKEND_ENDPOINT + "/api/admin/sac",
-  //     headers: {
-  //       "Content-Type": "application/json"
-  //     }
-  //   };
+    const options2 = {
+      method: "PUT",
+      url: backendEndpoint + "/api/admin/sac",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    };
 
-  //   axios(options2)
-  //     .then((resp) => console.log('PUTリクエストが成功しました', resp.data))
-  //     .catch((err) => console.error("PUTリクエスト失敗", err));
+    axios(options2)
+      .then((resp) => console.log('PUTリクエストが成功しました', resp.data))
+      .catch((err) => console.error("PUTリクエスト失敗", err));
 
-  // };
+  };
 
   return (
     <div>
@@ -117,6 +118,9 @@ const AdminStdAreaCode: React.FC = () => {
           <p>&copy; 2024 標準地域コード一覧. All rights reserved.</p>
         </footer>
       </div>
+      <Button onClick={handleClick} className="w-full bg-red-900 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:scale-105 font-serif">
+      最新化
+      </Button>
     </div>
   );
 
