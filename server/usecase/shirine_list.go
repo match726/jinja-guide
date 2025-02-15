@@ -21,6 +21,7 @@ func NewShrineListUsecase(slr repository.ShrineListRepository) ShrineListUsecase
 	return &shrineListUsecase{slr: slr}
 }
 
+// 標準地域コードから神社一覧画面のレスポンスデータ一覧取得
 func (slu shrineListUsecase) GetShrineListByStdAreaCode(ctx context.Context, kinds string, stdAreaCode string) ([]*model.ShrineListResp, error) {
 
 	var query string
@@ -77,6 +78,7 @@ func (slu shrineListUsecase) GetShrineListByStdAreaCode(ctx context.Context, kin
 
 }
 
+// 関連タグから神社一覧画面のレスポンスデータ一覧取得
 func (slu shrineListUsecase) GetShrineListByTag(ctx context.Context, tag string) ([]*model.ShrineListResp, error) {
 
 	query := fmt.Sprintf(`SELECT shr.name, shr.address, shr.plus_code, shr.place_id, ARRAY[]::VARCHAR[] AS object_of_worship, CASE shrc2.content1 WHEN 'あり' THEN true ELSE false END AS has_goshuin

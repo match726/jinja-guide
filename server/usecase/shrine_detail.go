@@ -30,6 +30,7 @@ func (sdu shrineDetailUsecase) GetShrineDetailByPlusCode(ctx context.Context, pl
 	var shrcs []*model.ShrineContents
 	var err error
 
+	// 神社テーブルから基本情報を取得
 	query1 := fmt.Sprintf(`SELECT shr.name, shr.address, shr.std_area_code, shr.plus_code, shr.seq, shr.place_id, shr.latitude, shr.longitude, shr.created_at, shr.updated_at
 							FROM t_shrines shr
 							WHERE shr.plus_code = '%s'`, plusCode)
@@ -39,6 +40,7 @@ func (sdu shrineDetailUsecase) GetShrineDetailByPlusCode(ctx context.Context, pl
 		return nil, err
 	}
 
+	// 神社詳細情報テーブルから詳細情報を取得
 	query2 := fmt.Sprintf(`SELECT shrc.id, shrc.seq, shrc.keyword1, COALESCE(shrc.keyword2, '') AS keyword2, shrc.content1, COALESCE(shrc.content2, '') AS content2, COALESCE(shrc.content3, '') AS content3, shrc.created_at, shrc.updated_at
               FROM t_shrine_contents shrc
               WHERE shrc.keyword1 = '%s'
@@ -49,13 +51,15 @@ func (sdu shrineDetailUsecase) GetShrineDetailByPlusCode(ctx context.Context, pl
 		return nil, err
 	}
 
-	// shrdを初期化
+	// ShrineDetailsResp構造体を初期化
 	shrd := &model.ShrineDetailsResp{}
 
+	// 神社テーブルからShrineDetailsResp構造体に項目設定
 	shrd.Name = shrs[0].Name
 	shrd.Address = shrs[0].Address
 	shrd.PlaceID = shrs[0].PlaceID
 
+	// 神社詳細情報テーブルからShrineDetailsResp構造体に項目設定
 	for _, shrc := range shrcs {
 
 		switch shrc.Id {
@@ -99,7 +103,7 @@ func (sdu shrineDetailUsecase) GetShrineDetailByPlusCode(ctx context.Context, pl
 
 	}
 
-	// Wikipediaから情報取得
+	// Wikipediaから情報取得し、ShrineDetailsResp構造体に設定
 	if len(shrd.WikipediaURL) != 0 {
 		title := shrd.WikipediaURL[strings.LastIndex(shrd.WikipediaURL, "/")+1:]
 		image, extract, err := wikipedia.QueryWikipedia(title)

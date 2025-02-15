@@ -22,6 +22,7 @@ func NewStdAreaCodeRelationshipUsecase(sacr repository.StdAreaCodeRepository) St
 	return &stdAreaCodeRelationshipUsecase{sacr: sacr}
 }
 
+// 全国の標準地域コード（紐づき）を取得
 func (sacru stdAreaCodeRelationshipUsecase) GetAllStdAreaCodeRelationshipList(ctx context.Context) (sacrrs []*model.StdAreaCodeRelationshipResp, err error) {
 
 	var sacs []*model.StdAreaCode
@@ -203,6 +204,7 @@ func (sacru stdAreaCodeRelationshipUsecase) GetAllStdAreaCodeRelationshipList(ct
 
 }
 
+// StdAreaCodeRelationshipResp構造体のキーを取得
 func GetKeysSacrr(m map[string]model.StdAreaCodeRelationshipResp) []string {
 
 	keys := []string{}

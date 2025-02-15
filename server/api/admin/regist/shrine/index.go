@@ -73,6 +73,8 @@ func ExportedHandler(w http.ResponseWriter, r *http.Request) {
 
 func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 
+	//procTime := time.Now().Format("2006/01/02 15:04:05")
+
 	// HTTPリクエストからボディを取得
 	body := make([]byte, r.ContentLength)
 	r.Body.Read(body)

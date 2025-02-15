@@ -89,6 +89,8 @@ func (sru shrineRegisterUsecase) GetLocnInfoFromPlaceAPI(ctx context.Context, sh
 	shr.Latitude = resp.Results[0].Geometry.Location.Lat
 	shr.Longitude = resp.Results[0].Geometry.Location.Lng
 
+	fmt.Println(resp.Results[0].Types)
+
 	return shr, nil
 
 }
@@ -158,3 +160,7 @@ func (sru shrineRegisterUsecase) ExistsShrineByPlusCode(ctx context.Context, plu
 	return false
 
 }
+
+// func SendErrMessageToDiscord(srem model.ShrineRegisterErrMessage) error {
+
+// }
