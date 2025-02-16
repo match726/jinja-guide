@@ -87,11 +87,11 @@ func (sru shrineRegisterUsecase) GetLocnInfoFromPlaceAPI(ctx context.Context, sh
 	shr.Name = shrrreq.Name
 	shr.Address = shrrreq.Address
 	shr.StdAreaCode = sac
-	shr.PlusCode = olc.Encode(shr.Latitude, shr.Longitude, 11)
 	shr.Seq = 0
 	shr.PlaceID = resp.Results[0].PlaceID
 	shr.Latitude = resp.Results[0].Geometry.Location.Lat
 	shr.Longitude = resp.Results[0].Geometry.Location.Lng
+	shr.PlusCode = olc.Encode(shr.Latitude, shr.Longitude, 11)
 
 	if !slices.Contains(resp.Results[0].Types, "place_of_worship") {
 		return shr, "プレイスタイプに「place_of_worship」なし", nil
