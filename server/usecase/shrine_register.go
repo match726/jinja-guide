@@ -18,6 +18,7 @@ type ShrineRegisterUsecase interface {
 	RegisterShrine(ctx context.Context, shr *model.Shrine) (err error)
 	RegisterShrineContents(ctx context.Context, id int, seq int, keyword1 string, keyword2 string, content1 string, content2 string, content3 string, seqHandler int) (err error)
 	ExistsShrineByPlusCode(ctx context.Context, plusCode string) bool
+	SendErrMessageToDiscord(errmsg string, shrreq *model.ShrineRegisterReq, shr *model.Shrine) error
 }
 
 type shrineRegisterUsecase struct {
@@ -161,6 +162,11 @@ func (sru shrineRegisterUsecase) ExistsShrineByPlusCode(ctx context.Context, plu
 
 }
 
-// func SendErrMessageToDiscord(srem model.ShrineRegisterErrMessage) error {
+func (sru shrineRegisterUsecase) SendErrMessageToDiscord(errmsg string, shrreq *model.ShrineRegisterReq, shr *model.Shrine) error {
 
-// }
+	// エラーメッセージ設定
+	content := fmt.Sprintf(`<<エラー概要>>\n　%s\n<<神社情報>>\n　神社名称：%s\n　住所　　：%s\n　PlaceID：%s\n　GoogleMapLink\nhttps://www.google.com/maps/search/?api=1&query=%s&query_place_id=%s`, errmsg, shrreq.Name, shrreq.Address, shr.PlaceID, shrreq.Name, shr.PlusCode)
+	fmt.Println(content)
+
+	return nil
+}

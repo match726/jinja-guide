@@ -2,31 +2,40 @@ package discord
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
+
+	"github.com/match726/jinja-guide/tree/main/server/domain/model"
 )
 
 func SendMessage(url string, token string, content string) error {
 
-	// メッセージ本文の設定
-	contentJson := fmt.Sprintf(`{"content":"%s"}`, content)
+	// リクエストボディの設定
+	reqBody := model.ShrineRegisterErrMessage{
+		Content: content,
+	}
+	reqBodyJson, _ := json.Marshal(reqBody)
 
 	// リクエスト作成
 	req, err := http.NewRequest(
-		"POST",
+		http.MethodPost,
 		url,
-		bytes.NewBuffer([]byte(contentJson)),
+		bytes.NewBuffer(reqBodyJson),
 	)
 	if err != nil {
 		return fmt.Errorf("[リクエスト作成失敗]: %w", err)
 	}
 
-	// Content-Type 設定
-	req.Header.Set("Authorization", "Bot "+token)
-	req.Header.Set("Content-Type", "application/json")
+	// リクエストヘッダー設定
+	req.Header.Add("Authorization", "Bot "+token)
+	req.Header.Add("Content-Type", "application/json")
 
 	// POST実行
-	client := &http.Client{}
+	client := &http.Client{
+		Timeout: 5 * time.Second,
+	}
 	resp, err := client.Do(req)
 	if err != nil {
 		return fmt.Errorf("[POSTリクエスト失敗]: %w", err)
