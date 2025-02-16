@@ -103,7 +103,8 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 
 	// PlaceAPIから位置情報(PlaceID、緯度、経度)とPlusCodeを取得
 	var shr *model.Shrine
-	shr, err = srh.sru.GetLocnInfoFromPlaceAPI(ctx, &shrreq, sac)
+	var caution string
+	shr, caution, err = srh.sru.GetLocnInfoFromPlaceAPI(ctx, &shrreq, sac)
 	if err != nil {
 		logger.Error(ctx, "PlaceAPI取得失敗", "errmsg", err)
 		err = srh.sru.SendErrMessageToDiscord("PlaceAPI取得失敗", &shrreq, shr)
@@ -111,6 +112,13 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 			logger.Error(ctx, "Discord連携失敗", "errmsg", err)
 		}
 		w.WriteHeader(http.StatusInternalServerError)
+	}
+
+	if caution != "" {
+		err = srh.sru.SendErrMessageToDiscord(caution, &shrreq, shr)
+		if err != nil {
+			logger.Error(ctx, "Discord連携失敗", "errmsg", err)
+		}
 	}
 
 	if len(shr.PlusCode) == 0 {

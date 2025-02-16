@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"regexp"
+	"slices"
 	"strings"
 
 	olc "github.com/google/open-location-code/go"
@@ -16,7 +17,7 @@ import (
 
 type ShrineRegisterUsecase interface {
 	GetStdAreaCodeByAddress(ctx context.Context, shrrreq *model.ShrineRegisterReq) (sac string, err error)
-	GetLocnInfoFromPlaceAPI(ctx context.Context, shrrreq *model.ShrineRegisterReq, sac string) (shr *model.Shrine, err error)
+	GetLocnInfoFromPlaceAPI(ctx context.Context, shrrreq *model.ShrineRegisterReq, sac string) (shr *model.Shrine, caution string, err error)
 	RegisterShrine(ctx context.Context, shr *model.Shrine) (err error)
 	RegisterShrineContents(ctx context.Context, id int, seq int, keyword1 string, keyword2 string, content1 string, content2 string, content3 string, seqHandler int) (err error)
 	ExistsShrineByPlusCode(ctx context.Context, plusCode string) bool
@@ -71,12 +72,12 @@ func (sru shrineRegisterUsecase) GetStdAreaCodeByAddress(ctx context.Context, sh
 
 // PlaceAPIから位置情報(PlaceID、緯度、経度)とPlusCodeを取得
 // ⇒Shrine構造体の形式で返す
-func (sru shrineRegisterUsecase) GetLocnInfoFromPlaceAPI(ctx context.Context, shrrreq *model.ShrineRegisterReq, sac string) (shr *model.Shrine, err error) {
+func (sru shrineRegisterUsecase) GetLocnInfoFromPlaceAPI(ctx context.Context, shrrreq *model.ShrineRegisterReq, sac string) (shr *model.Shrine, caution string, err error) {
 
 	// PlaceAPIから位置情報(PlaceID、緯度、経度)、及び取得した緯度経度からPlusCodeを取得
 	resp, err := placeapi.QueryPlaceAPI(ctx, shrrreq.Name, shrrreq.Address)
 	if err != nil {
-		return nil, err
+		return nil, "", err
 	}
 
 	// shrを初期化
@@ -92,9 +93,11 @@ func (sru shrineRegisterUsecase) GetLocnInfoFromPlaceAPI(ctx context.Context, sh
 	shr.Latitude = resp.Results[0].Geometry.Location.Lat
 	shr.Longitude = resp.Results[0].Geometry.Location.Lng
 
-	fmt.Println(resp.Results[0].Types)
+	if !slices.Contains(resp.Results[0].Types, "place_of_worship") {
+		return shr, "プレイスタイプに「place_of_worship」なし", nil
+	}
 
-	return shr, nil
+	return shr, "", nil
 
 }
 
@@ -167,7 +170,7 @@ func (sru shrineRegisterUsecase) ExistsShrineByPlusCode(ctx context.Context, plu
 func (sru shrineRegisterUsecase) SendErrMessageToDiscord(errmsg string, shrreq *model.ShrineRegisterReq, shr *model.Shrine) error {
 
 	// エラーメッセージ設定
-	content := "<<エラー概要>>\n　" + errmsg + "\n<<神社情報>>\n　神社名称：" + shrreq.Name + "\n　住所　　：" + shrreq.Address + "\n　PlusCode：" + shr.PlusCode + "\n　GoogleMapLink\nhttps://www.google.com/maps/search/?api=1&query=" + shrreq.Name + "&query_place_id=" + shr.PlaceID
+	content := "<<エラー概要>>\n　" + errmsg + "\n<<神社情報>>\n　神社名称：" + shrreq.Name + "\n　住所　　：" + shrreq.Address + "\n　PlusCode：" + shr.PlusCode + "\n<<GoogleMapLink>>\nhttps://www.google.com/maps/search/?api=1&query=" + shrreq.Name + "&query_place_id=" + shr.PlaceID
 
 	err := discord.SendMessage(os.Getenv("DISCORD_ADMIN_WEBHOOK_URL"), os.Getenv("DISCORD_BOT_TOKEN"), content)
 	if err != nil {
