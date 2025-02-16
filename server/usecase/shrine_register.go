@@ -3,12 +3,14 @@ package usecase
 import (
 	"context"
 	"fmt"
+	"os"
 	"regexp"
 	"strings"
 
 	olc "github.com/google/open-location-code/go"
 	"github.com/match726/jinja-guide/tree/main/server/domain/model"
 	"github.com/match726/jinja-guide/tree/main/server/domain/repository"
+	"github.com/match726/jinja-guide/tree/main/server/infrastructure/discord"
 	"github.com/match726/jinja-guide/tree/main/server/infrastructure/placeapi"
 )
 
@@ -165,8 +167,12 @@ func (sru shrineRegisterUsecase) ExistsShrineByPlusCode(ctx context.Context, plu
 func (sru shrineRegisterUsecase) SendErrMessageToDiscord(errmsg string, shrreq *model.ShrineRegisterReq, shr *model.Shrine) error {
 
 	// エラーメッセージ設定
-	content := fmt.Sprintf(`<<エラー概要>>\n　%s\n<<神社情報>>\n　神社名称：%s\n　住所　　：%s\n　PlaceID：%s\n　GoogleMapLink\nhttps://www.google.com/maps/search/?api=1&query=%s&query_place_id=%s`, errmsg, shrreq.Name, shrreq.Address, shr.PlaceID, shrreq.Name, shr.PlusCode)
-	fmt.Println(content)
+	content := fmt.Sprintf(`<<エラー概要>>\n　%s\n<<神社情報>>\n　神社名称：%s\n　住所　　：%s\n　PlaceID：%s\n　GoogleMapLink\nhttps://www.google.com/maps/search/?api=1&query=%s&query_place_id=%s`, errmsg, shrreq.Name, shrreq.Address, shr.PlusCode, shrreq.Name, shr.PlaceID)
+
+	err := discord.SendMessage(os.Getenv("DISCORD_ADMIN_WEBHOOK_URL"), os.Getenv("DISCORD_BOT_TOKEN"), content)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
