@@ -167,7 +167,7 @@ func (sru shrineRegisterUsecase) ExistsShrineByPlusCode(ctx context.Context, plu
 func (sru shrineRegisterUsecase) SendErrMessageToDiscord(errmsg string, shrreq *model.ShrineRegisterReq, shr *model.Shrine) error {
 
 	// エラーメッセージ設定
-	content := fmt.Sprintf(`<<エラー概要>>\n　%s\n<<神社情報>>\n　神社名称：%s\n　住所　　：%s\n　PlaceID：%s\n　GoogleMapLink\nhttps://www.google.com/maps/search/?api=1&query=%s&query_place_id=%s`, errmsg, shrreq.Name, shrreq.Address, shr.PlusCode, shrreq.Name, shr.PlaceID)
+	content := "<<エラー概要>>\n　" + errmsg + "\n<<神社情報>>\n　神社名称：" + shrreq.Name + "\n　住所　　：" + shrreq.Address + "\n　PlusCode：" + shr.PlusCode + "\n　GoogleMapLink\nhttps://www.google.com/maps/search/?api=1&query=" + shrreq.Name + "&query_place_id=" + shr.PlaceID
 
 	err := discord.SendMessage(os.Getenv("DISCORD_ADMIN_WEBHOOK_URL"), os.Getenv("DISCORD_BOT_TOKEN"), content)
 	if err != nil {
