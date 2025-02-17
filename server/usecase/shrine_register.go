@@ -188,11 +188,10 @@ func (sru shrineRegisterUsecase) ConvertSQLErrorMessage(err error) (errmsg strin
 	var sqlstate string
 
 	s := string([]rune(err.Error())[14:])
-	fmt.Println(s)
 	mark := strings.Index(s, "SQLSTATE")
 
 	if mark != -1 {
-		sqlstate = err.Error()[mark+len("SQLSTATE ") : 5]
+		sqlstate = s[mark+len("SQLSTATE ") : 5]
 	}
 
 	switch sqlstate {
