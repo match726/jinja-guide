@@ -94,8 +94,10 @@ func (sru shrineRegisterUsecase) GetLocnInfoFromPlaceAPI(ctx context.Context, sh
 	shr.Longitude = resp.Results[0].Geometry.Location.Lng
 	shr.PlusCode = olc.Encode(shr.Latitude, shr.Longitude, 11)
 
+	fmt.Println(resp.Results[0])
+
 	if !slices.Contains(resp.Results[0].Types, "place_of_worship") {
-		return shr, "プレイスタイプに「place_of_worship」なし", nil
+		return shr, "住所タイプに「place_of_worship」なし", nil
 	}
 
 	return shr, "", nil
@@ -185,16 +187,20 @@ func (sru shrineRegisterUsecase) SendErrMessageToDiscord(errmsg string, shrreq *
 
 func (sru shrineRegisterUsecase) ConvertSQLErrorMessage(err error) (errmsg string) {
 
-	var sqlstate string
+	var sqlcode string
 
 	s := string([]rune(err.Error())[14:])
-	mark := strings.Index(s, "SQLSTATE")
+	// 「SQLSTATE」の開始位置を取得
+	posSqlstateSta := strings.Index(s, "SQLSTATE")
+	// PostgreSQLエラーコードの開始位置を取得
+	posSqlcodeSta := posSqlstateSta + len("SQLSTATE ")
 
-	if mark != -1 {
-		sqlstate = s[mark+len("SQLSTATE ") : mark+len("SQLSTATE ")+5]
+	// 「SQLSTATE」を含む場合エラーコードを取得
+	if posSqlstateSta != -1 {
+		sqlcode = s[posSqlcodeSta : posSqlcodeSta+5]
 	}
 
-	switch sqlstate {
+	switch sqlcode {
 	case "23505":
 		errmsg = "既に登録のある神社です"
 	default:
