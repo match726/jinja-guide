@@ -185,8 +185,9 @@ func (sru shrineRegisterUsecase) SendErrMessageToDiscord(errmsg string, shrreq *
 func (sru shrineRegisterUsecase) ConvertSQLErrorMessage(err error) (errmsg string) {
 
 	var sqlstate string
-
+	fmt.Println(err.Error())
 	mark := strings.Index(err.Error(), "SQLSTATE")
+	fmt.Println(mark)
 	if mark != -1 {
 		sqlstate = err.Error()[mark+len("SQLSTATE") : 5]
 	}
