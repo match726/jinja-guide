@@ -133,7 +133,7 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 	err = srh.sru.RegisterShrine(ctx, shr)
 	if err != nil {
 		logger.Error(ctx, "神社テーブル登録失敗", "errmsg", err)
-		err = srh.sru.SendErrMessageToDiscord("神社テーブル登録失敗", &shrreq, shr)
+		err = srh.sru.SendErrMessageToDiscord(srh.sru.ConvertSQLErrorMessage(err), &shrreq, shr)
 		if err != nil {
 			logger.Error(ctx, "Discord連携失敗", "errmsg", err)
 		}

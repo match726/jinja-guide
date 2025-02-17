@@ -22,6 +22,7 @@ type ShrineRegisterUsecase interface {
 	RegisterShrineContents(ctx context.Context, id int, seq int, keyword1 string, keyword2 string, content1 string, content2 string, content3 string, seqHandler int) (err error)
 	ExistsShrineByPlusCode(ctx context.Context, plusCode string) bool
 	SendErrMessageToDiscord(errmsg string, shrreq *model.ShrineRegisterReq, shr *model.Shrine) error
+	ConvertSQLErrorMessage(err error) (errmsg string)
 }
 
 type shrineRegisterUsecase struct {
@@ -167,6 +168,7 @@ func (sru shrineRegisterUsecase) ExistsShrineByPlusCode(ctx context.Context, plu
 
 }
 
+// エラー／確認点発生時にDiscordへメッセージ送信
 func (sru shrineRegisterUsecase) SendErrMessageToDiscord(errmsg string, shrreq *model.ShrineRegisterReq, shr *model.Shrine) error {
 
 	// エラーメッセージ設定
@@ -178,4 +180,24 @@ func (sru shrineRegisterUsecase) SendErrMessageToDiscord(errmsg string, shrreq *
 	}
 
 	return nil
+}
+
+func (sru shrineRegisterUsecase) ConvertSQLErrorMessage(err error) (errmsg string) {
+
+	var sqlstate string
+
+	mark := strings.Index(err.Error(), "SQLSTATE")
+	if mark != -1 {
+		sqlstate = err.Error()[mark+len("SQLSTATE") : 5]
+	}
+
+	switch sqlstate {
+	case "23505":
+		errmsg = "既に登録のある神社です"
+	default:
+		errmsg = "神社テーブル登録失敗"
+	}
+
+	return errmsg
+
 }
