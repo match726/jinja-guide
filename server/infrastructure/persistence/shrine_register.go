@@ -40,3 +40,14 @@ func (r *shrineRegisterPersistence) GetRegisterShrines(ctx context.Context, quer
 	return pshrrreqs, nil
 
 }
+
+func (r *shrineRegisterPersistence) DeleteRegisterShrine(ctx context.Context, query string) (err error) {
+
+	_, err = r.pg.DbPool.Exec(ctx, query)
+	if err != nil {
+		return fmt.Errorf("[クエリ実行失敗]: %w", err)
+	}
+
+	return nil
+
+}

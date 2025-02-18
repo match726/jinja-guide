@@ -207,6 +207,13 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 			}
 		}
 
+		// 登録完了レコードを削除
+		err = srh.sru.DeleteRegisteredShrine(ctx, shrreq)
+		if err != nil {
+			logger.Error(ctx, "神社一括登録テーブル削除失敗", "errmsg", err)
+			w.WriteHeader(http.StatusInternalServerError)
+		}
+
 	}
 
 	w.Header().Set("Content-Type", "application/json")

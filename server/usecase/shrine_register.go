@@ -17,6 +17,7 @@ import (
 
 type ShrineRegisterUsecase interface {
 	GetAllRegisterShrines(ctx context.Context) (rshrs []*model.ShrineRegisterReq, err error)
+	DeleteRegisteredShrine(ctx context.Context, rshr *model.ShrineRegisterReq) (err error)
 	GetStdAreaCodeByAddress(ctx context.Context, shrrreq *model.ShrineRegisterReq) (sac string, err error)
 	GetLocnInfoFromPlaceAPI(ctx context.Context, shrrreq *model.ShrineRegisterReq, sac string) (shr *model.Shrine, caution string, err error)
 	RegisterShrine(ctx context.Context, shr *model.Shrine) (err error)
@@ -37,17 +38,34 @@ func NewShrineRegisterUsecase(sacr repository.StdAreaCodeRepository, sr reposito
 	return &shrineRegisterUsecase{sacr: sacr, sr: sr, scr: scr, srr: srr}
 }
 
-func (sru shrineRegisterUsecase) GetAllRegisterShrines(ctx context.Context) (shrrreqs []*model.ShrineRegisterReq, err error) {
+func (sru shrineRegisterUsecase) GetAllRegisterShrines(ctx context.Context) (shrreqs []*model.ShrineRegisterReq, err error) {
 
 	query := `SELECT rshr.name, rshr.address, rshr.furigana, rshr.alt_name, rshr.tags, rshr.founded_year, rshr.object_of_worship, rshr.has_goshuin, rshr.website_url, rshr.wikipedia_url
 						FROM m_register_shrine rshr`
 
-	shrrreqs, err = sru.srr.GetRegisterShrines(ctx, query)
+	shrreqs, err = sru.srr.GetRegisterShrines(ctx, query)
 	if err != nil {
 		return nil, err
 	}
 
-	return shrrreqs, nil
+	return shrreqs, nil
+
+}
+
+// 登録済のレコードを神社一括登録テーブルから削除
+func (sru shrineRegisterUsecase) DeleteRegisteredShrine(ctx context.Context, shrreq *model.ShrineRegisterReq) (err error) {
+
+	// 登録済のレコードを神社一括登録テーブルから削除
+	query := fmt.Sprintf(`DELETE FROM m_register_shrine rshr
+						WHERE rshr.name = '%s'
+						AND rshr.address = '%s'`, shrreq.Name, shrreq.Address)
+
+	err = sru.srr.DeleteRegisterShrine(ctx, query)
+	if err != nil {
+		return err
+	}
+
+	return nil
 
 }
 
