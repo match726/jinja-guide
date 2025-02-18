@@ -151,7 +151,7 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 		}
 		fmt.Println(len(shrreq.AltName))
 		if len(shrreq.AltName) != 0 {
-			for i := 0; i <= len(shrreq.AltName); i++ {
+			for i := 0; i < len(shrreq.AltName); i++ {
 				fmt.Println(shrreq.AltName[i])
 				err = srh.sru.RegisterShrineContents(ctx, 2, 1, shr.PlusCode, "", shrreq.AltName[i], "", "", 1)
 				if err != nil {
@@ -161,7 +161,7 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 			}
 		}
 		if len(shrreq.Tags) != 0 {
-			for i := 0; i <= len(shrreq.Tags); i++ {
+			for i := 0; i < len(shrreq.Tags); i++ {
 				err = srh.sru.RegisterShrineContents(ctx, 4, 1, shr.PlusCode, "", shrreq.Tags[i], "", "", 1)
 				if err != nil {
 					logger.Error(ctx, "神社詳細情報[関連ワード]登録失敗", "errmsg", err)
@@ -177,7 +177,7 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 			}
 		}
 		if len(shrreq.ObjectOfWorship) != 0 {
-			for i := 0; i <= len(shrreq.ObjectOfWorship); i++ {
+			for i := 0; i < len(shrreq.ObjectOfWorship); i++ {
 				err = srh.sru.RegisterShrineContents(ctx, 6, 1, shr.PlusCode, "", shrreq.ObjectOfWorship[i], "", "", 1)
 				if err != nil {
 					logger.Error(ctx, "神社詳細情報[御祭神]登録失敗", "errmsg", err)
