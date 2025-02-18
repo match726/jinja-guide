@@ -40,7 +40,7 @@ const AdminRegisterShrine = () => {
 
   }, [payload]);
 
-  const handleFromSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 
     // ページ遷移を防ぐ（デフォルトでは、フォーム送信ボタンを押すとページが遷移してしまう）
     e.preventDefault();
@@ -70,7 +70,7 @@ const AdminRegisterShrine = () => {
           <div className="bg-red-900 p-4 flex items-center justify-center">
             <h2 className="text-2xl font-bold text-white ml-2 font-serif">神社登録</h2>
           </div>
-          <form onSubmit={handleFromSubmit} className="p-6 space-y-6">
+          <form onSubmit={handleFormSubmit} className="p-6 space-y-6">
             <div className="space-y-2">
               <Label htmlFor="shrineName" className="text-lg font-medium text-gray-700 font-serif">
                 神社名称

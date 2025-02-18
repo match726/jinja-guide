@@ -12,6 +12,11 @@ const Admin: React.FC = () => {
       link: "admin/regist/shrine"
     },
     {
+      title: "神社一括登録",
+      description: "神社一括登録テーブルから一括登録します。",
+      link: "admin/bulk-regist/shrine"
+    },
+    {
       title: "神社詳細情報登録",
       description: "PlusCodeから神社の詳細情報を新規登録します。",
       link: "admin/regist/shrine-details"
