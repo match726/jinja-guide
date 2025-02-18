@@ -16,6 +16,7 @@ import (
 )
 
 type ShrineRegisterUsecase interface {
+	GetAllRegisterShrines(ctx context.Context) (rshrs []*model.ShrineRegisterReq, err error)
 	GetStdAreaCodeByAddress(ctx context.Context, shrrreq *model.ShrineRegisterReq) (sac string, err error)
 	GetLocnInfoFromPlaceAPI(ctx context.Context, shrrreq *model.ShrineRegisterReq, sac string) (shr *model.Shrine, caution string, err error)
 	RegisterShrine(ctx context.Context, shr *model.Shrine) (err error)
@@ -29,10 +30,25 @@ type shrineRegisterUsecase struct {
 	sacr repository.StdAreaCodeRepository
 	sr   repository.ShrineRepository
 	scr  repository.ShrineContentsRepository
+	srr  repository.ShrineRegisterRepository
 }
 
-func NewShrineRegisterUsecase(sacr repository.StdAreaCodeRepository, sr repository.ShrineRepository, scr repository.ShrineContentsRepository) ShrineRegisterUsecase {
-	return &shrineRegisterUsecase{sacr: sacr, sr: sr, scr: scr}
+func NewShrineRegisterUsecase(sacr repository.StdAreaCodeRepository, sr repository.ShrineRepository, scr repository.ShrineContentsRepository, srr repository.ShrineRegisterRepository) ShrineRegisterUsecase {
+	return &shrineRegisterUsecase{sacr: sacr, sr: sr, scr: scr, srr: srr}
+}
+
+func (sru shrineRegisterUsecase) GetAllRegisterShrines(ctx context.Context) (shrrreqs []*model.ShrineRegisterReq, err error) {
+
+	query := `SELECT rshr.name, rshr.address, rshr.furigana, rshr.alt_name, rshr.tags, rshr.founded_year, rshr.object_of_worship, rshr.has_goshuin, rshr.website_url, rshr.wikipedia_url
+						FROM m_register_shrine rshr`
+
+	shrrreqs, err = sru.srr.GetRegisterShrines(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+
+	return shrrreqs, nil
+
 }
 
 // 住所から該当する標準地域コードを取得

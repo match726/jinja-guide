@@ -64,7 +64,8 @@ func ExportedHandler(w http.ResponseWriter, r *http.Request) {
 	sacp := persistence.NewStdAreaCodePersistence(pg)
 	sp := persistence.NewShrinePersistence(pg)
 	scp := persistence.NewShrineContentsPersistence(pg)
-	sru := usecase.NewShrineRegisterUsecase(sacp, sp, scp)
+	srp := persistence.NewShrineRegisterPersistence(pg)
+	sru := usecase.NewShrineRegisterUsecase(sacp, sp, scp, srp)
 	srh := NewShrineRegisterHandler(sru)
 
 	srh.Handler(ctx, w, r)
