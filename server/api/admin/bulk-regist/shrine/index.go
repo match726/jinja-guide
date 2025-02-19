@@ -3,8 +3,8 @@ package api
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/match726/jinja-guide/tree/main/server/domain/model"
 	"github.com/match726/jinja-guide/tree/main/server/infrastructure/database"
@@ -149,14 +149,14 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 				w.WriteHeader(http.StatusInternalServerError)
 			}
 		}
-		fmt.Println(len(shrreq.AltName))
 		if len(shrreq.AltName) != 0 {
 			for i := 0; i < len(shrreq.AltName); i++ {
-				fmt.Println(shrreq.AltName[i])
-				err = srh.sru.RegisterShrineContents(ctx, 2, 1, shr.PlusCode, "", shrreq.AltName[i], "", "", 1)
-				if err != nil {
-					logger.Error(ctx, "神社詳細情報[別名称]登録失敗", "errmsg", err)
-					w.WriteHeader(http.StatusInternalServerError)
+				if len(strings.TrimSpace(shrreq.AltName[i])) != 0 {
+					err = srh.sru.RegisterShrineContents(ctx, 2, 1, shr.PlusCode, "", shrreq.AltName[i], "", "", 1)
+					if err != nil {
+						logger.Error(ctx, "神社詳細情報[別名称]登録失敗", "errmsg", err)
+						w.WriteHeader(http.StatusInternalServerError)
+					}
 				}
 			}
 		}
