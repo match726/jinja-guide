@@ -80,7 +80,7 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 	shrreqs, err := srh.sru.GetAllRegisterShrines(ctx)
 	if err != nil {
 		logger.Error(ctx, "神社一括登録テーブル取得失敗", "errmsg", err)
-		err = srh.sru.SendErrMessageToDiscord("神社一括登録テーブル取得失敗", nil, nil)
+		err = srh.sru.SendErrMessageToDiscord([]string{"神社一括登録テーブル取得失敗"}, nil, nil)
 		if err != nil {
 			logger.Error(ctx, "Discord連携失敗", "errmsg", err)
 		}
@@ -89,7 +89,7 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 
 	var sac string
 	var shr *model.Shrine
-	var caution string
+	var caution []string
 
 	for _, shrreq := range shrreqs {
 
@@ -97,7 +97,7 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 		sac, err = srh.sru.GetStdAreaCodeByAddress(ctx, shrreq)
 		if err != nil {
 			logger.Error(ctx, "標準地域コード取得失敗", "errmsg", err)
-			err = srh.sru.SendErrMessageToDiscord("標準地域コード取得失敗", shrreq, nil)
+			err = srh.sru.SendErrMessageToDiscord([]string{"標準地域コード取得失敗"}, shrreq, nil)
 			if err != nil {
 				logger.Error(ctx, "Discord連携失敗", "errmsg", err)
 			}
@@ -108,14 +108,14 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 		shr, caution, err = srh.sru.GetLocnInfoFromPlaceAPI(ctx, shrreq, sac)
 		if err != nil {
 			logger.Error(ctx, "PlaceAPI取得失敗", "errmsg", err)
-			err = srh.sru.SendErrMessageToDiscord("PlaceAPI取得失敗", shrreq, shr)
+			err = srh.sru.SendErrMessageToDiscord([]string{"PlaceAPI取得失敗"}, shrreq, shr)
 			if err != nil {
 				logger.Error(ctx, "Discord連携失敗", "errmsg", err)
 			}
 			w.WriteHeader(http.StatusInternalServerError)
 		}
 
-		if caution != "" {
+		if len(caution) != 0 {
 			err = srh.sru.SendErrMessageToDiscord(caution, shrreq, shr)
 			if err != nil {
 				logger.Error(ctx, "Discord連携失敗", "errmsg", err)
@@ -123,7 +123,7 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 		}
 
 		if len(shr.PlusCode) == 0 {
-			err = srh.sru.SendErrMessageToDiscord("PlusCode取得失敗", shrreq, shr)
+			err = srh.sru.SendErrMessageToDiscord([]string{"PlusCode取得失敗"}, shrreq, shr)
 			if err != nil {
 				logger.Error(ctx, "Discord連携失敗", "errmsg", err)
 			}
@@ -134,7 +134,7 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 		err = srh.sru.RegisterShrine(ctx, shr)
 		if err != nil {
 			logger.Error(ctx, "神社テーブル登録失敗", "errmsg", err)
-			err = srh.sru.SendErrMessageToDiscord(srh.sru.ConvertSQLErrorMessage(err), shrreq, shr)
+			err = srh.sru.SendErrMessageToDiscord([]string{srh.sru.ConvertSQLErrorMessage(err)}, shrreq, shr)
 			if err != nil {
 				logger.Error(ctx, "Discord連携失敗", "errmsg", err)
 			}
