@@ -25,8 +25,9 @@ const Header: React.FC = () => {
               />
             </svg>
             <a href="/" className="text-2xl font-semibold">神社ガイド</a>
-            if ({import.meta.env.VITE_ENV_KEY} === "DEVELOP" ) {
-              <p>開発環境</p>
+            {import.meta.env.VITE_ENV_KEY === "DEVELOP"
+              ? ( <p>開発環境</p> )
+              : null
             }
           </div>
           <DropdownMenu>
