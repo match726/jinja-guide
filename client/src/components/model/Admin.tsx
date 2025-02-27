@@ -1,5 +1,5 @@
 import { Header } from '@/components/ui/header';
-import { ShrineCard } from '@/components/ui/shrine-card';
+import { AdminCard } from '@/components/ui/card/admin-card';
 
 import '@/styles/global.css';
 
@@ -37,7 +37,7 @@ const Admin: React.FC = () => {
         </h1>
         <section className="container flex grid grid-cols-2 gap-10 xl:grid-cols-3">
           {cardData.map((data) => (
-            <ShrineCard
+            <AdminCard
               cardTitle={data.title}
               cardDescription={data.description}
               cardLink={data.link}
