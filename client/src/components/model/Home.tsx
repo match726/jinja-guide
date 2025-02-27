@@ -52,6 +52,8 @@ const Home: React.FC = () => {
 
   }, []);
 
+  console.log(contents)
+
   return (
     <div>
       <Header />
