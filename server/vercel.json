@@ -10,6 +10,7 @@
     { "source": "/api/admin/regist/shrine-details", "destination": "/api/admin/regist/shrine-details" },
     { "source": "/api/admin/bulk-regist/shrine", "destination": "/api/admin/bulk-regist/shrine" },
     { "source": "/api/admin/sac", "destination": "/api/admin/sac" },
+    { "source": "/api/home", "destination": "/api/home" },
     { "source": "/api/prefs", "destination": "/api/prefs" },
     { "source": "/api/shrine", "destination": "/api/shrine" },
     { "source": "/api/shrines/tag", "destination": "/api/shrines/tag" },
