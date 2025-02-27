@@ -52,7 +52,7 @@ const Home: React.FC = () => {
 
   }, []);
 
-  console.log(contents)
+  console.log(contents.shrines)
 
   return (
     <div>
