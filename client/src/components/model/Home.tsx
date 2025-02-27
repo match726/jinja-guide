@@ -38,7 +38,7 @@ const Home: React.FC = () => {
       try {
         const resp = await axios(reqOptions);
         console.log("HTTPレスポンス: ", resp.data)
-        setShrines(resp.data.RandomShrine);
+        setShrines(resp.data.randomShrine);
       } catch (error) {
         console.error("GETリクエスト失敗", error);
       }
