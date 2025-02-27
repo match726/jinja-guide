@@ -9,16 +9,16 @@ import '@/styles/global.css';
 const backendEndpoint = import.meta.env.VITE_BACKEND_ENDPOINT;
 
 interface randomShrines {
-  name: string
-  furigana: string
-  address: string
-  plusCode: string
-  placeId: string
-  objectOfWorship: string[]
-  description: string
+  name: string;
+  furigana: string;
+  address: string;
+  plusCode: string;
+  placeId: string;
+  objectOfWorship: string[];
+  description: string;
 }
 
-type homeContents = {
+interface homeContents {
   shrines: randomShrines[],
 }
 
