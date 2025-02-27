@@ -8,25 +8,25 @@ import '@/styles/global.css';
 
 const backendEndpoint = import.meta.env.VITE_BACKEND_ENDPOINT;
 
-interface randomShrines {
-  name: string;
-  furigana: string;
-  address: string;
-  plusCode: string;
-  placeId: string;
-  objectOfWorship: string[];
-  description: string;
+interface RandomShrines {
+  name: string
+  furigana: string
+  address: string
+  plusCode: string
+  placeId: string
+  objectOfWorship: string[]
+  description: string
 }
 
-interface homeContents {
-  shrines: randomShrines[],
+interface HomeContents {
+  shrines: RandomShrines[]
 }
 
 const frontendUrl = import.meta.env.VITE_FRONTEND_URL;
 
 const Home: React.FC = () => {
 
-  const [contents, setContents] = useState<homeContents>({shrines: []});
+  const [contents, setContents] = useState<HomeContents>({shrines: []});
 
   useEffect(() => {
 
@@ -42,7 +42,9 @@ const Home: React.FC = () => {
       try {
         const resp = await axios(reqOptions);
         console.log("HTTPレスポンス: ", resp.data)
-        setContents(resp.data);
+        setContents((prevContents) => ({
+          ...prevContents, shrines: [resp.data.RandomShrine]
+        }));
       } catch (error) {
         console.error("GETリクエスト失敗", error);
       }
@@ -68,7 +70,7 @@ const Home: React.FC = () => {
               cardTitleRuby={data.furigana}
               cardDescription={data.description}
               cardLink={frontendUrl + "/shrine?code=" + data.plusCode}
-            />
+            />         
           ))}
         </section>
       </div>
