@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 
 type Props = {
   cardTitle: string,
+  cardTitleRuby: string,
   cardDescription: string,
   cardLink:  string
 };
@@ -34,7 +35,10 @@ const AdminCard: React.FC<Props> = (props) => {
                 </div>
               </div>
             </div>
-            <p className="text-xl font-semibold text-gray-800 dark:text-gray-200">{props.cardTitle}</p>
+            <ruby className="text-xl font-semibold text-gray-800 dark:text-gray-200">
+              {props.cardTitle}
+              <rt>{props.cardTitleRuby}</rt>
+            </ruby>
           </div>
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">{props.cardDescription}</p>
         </CardContent>

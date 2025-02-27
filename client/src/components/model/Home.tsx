@@ -63,6 +63,7 @@ const Home: React.FC = () => {
           {contents.shrines.map((data) => (
             <AdminCard
               cardTitle={data.name}
+              cardTitleRuby={data.furigana}
               cardDescription={data.description}
               cardLink={frontendUrl + "/shrine?code=" + data.plusCode}
             />
