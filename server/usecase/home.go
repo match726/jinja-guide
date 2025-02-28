@@ -103,7 +103,7 @@ func (hcu homeContentsUsecase) GetRandomShrines(ctx context.Context) (*model.Hom
 		}
 
 		hcr.Shrines = append(hcr.Shrines, &rshr)
-
+		fmt.Println(hcr.Shrines)
 	}
 
 	return hcr, err
