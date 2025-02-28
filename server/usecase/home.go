@@ -42,7 +42,6 @@ func (hcu homeContentsUsecase) GetRandomShrines(ctx context.Context) (*model.Hom
 
 	for _, shr := range shrs {
 
-		var hcr model.HomeContentsResp
 		var shrcs []*model.ShrineContents
 		var wikipediaURL string
 
