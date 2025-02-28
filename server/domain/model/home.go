@@ -2,7 +2,7 @@ package model
 
 // ホーム画面のレスポンスデータ定義
 type HomeContentsResp struct {
-	Shrines []RandomShrines `json:"shrines"`
+	Shrines []*RandomShrines `json:"shrines"`
 }
 
 // ホーム画面の神社一覧表示用レスポンスデータ定義

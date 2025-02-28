@@ -72,14 +72,14 @@ func ExportedHandler(w http.ResponseWriter, r *http.Request) {
 func (hh homeHandler) Handler(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 
 	// ホーム画面レスポンス取得（ランダム3件）
-	hcrsps, err := hh.hcu.GetRandomShrines(ctx)
+	hcrsp, err := hh.hcu.GetRandomShrines(ctx)
 	if err != nil {
 		logger.Error(ctx, "ホーム画面レスポンス取得失敗", "errmsg", err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	b, err := json.Marshal(hcrsps)
+	b, err := json.Marshal(hcrsp)
 	if err != nil {
 		logger.Error(ctx, "JSON変換失敗", "errmsg", err)
 		w.WriteHeader(http.StatusInternalServerError)

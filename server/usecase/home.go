@@ -11,7 +11,7 @@ import (
 )
 
 type HomeContentsUsecase interface {
-	GetRandomShrines(ctx context.Context) ([]*model.HomeContentsResp, error)
+	GetRandomShrines(ctx context.Context) (*model.HomeContentsResp, error)
 }
 
 type homeContentsUsecase struct {
@@ -23,10 +23,10 @@ func NewHomeContentsUsecase(sr repository.ShrineRepository, scr repository.Shrin
 	return &homeContentsUsecase{sr: sr, scr: scr}
 }
 
-func (hcu homeContentsUsecase) GetRandomShrines(ctx context.Context) ([]*model.HomeContentsResp, error) {
+func (hcu homeContentsUsecase) GetRandomShrines(ctx context.Context) (*model.HomeContentsResp, error) {
 
 	var shrs []*model.Shrine
-	var hcrs []*model.HomeContentsResp
+	var hcr *model.HomeContentsResp
 	var err error
 
 	// 神社テーブル取得（ランダム3件）
@@ -38,7 +38,7 @@ func (hcu homeContentsUsecase) GetRandomShrines(ctx context.Context) ([]*model.H
 		return nil, err
 	}
 
-	var cnt int = 0
+	var rshr model.RandomShrines
 
 	for _, shr := range shrs {
 
@@ -46,17 +46,17 @@ func (hcu homeContentsUsecase) GetRandomShrines(ctx context.Context) ([]*model.H
 		var shrcs []*model.ShrineContents
 		var wikipediaURL string
 
-		hcr.Shrines[cnt].Name = shr.Name
-		hcr.Shrines[cnt].Address = shr.Address
-		hcr.Shrines[cnt].PlusCode = shr.PlusCode
-		hcr.Shrines[cnt].PlaceId = shr.PlaceID
+		rshr.Name = shr.Name
+		rshr.Address = shr.Address
+		rshr.PlusCode = shr.PlusCode
+		rshr.PlaceId = shr.PlaceID
 
 		// 神社詳細情報テーブルから詳細情報を取得
 		query2 := fmt.Sprintf(`SELECT shrc.id, shrc.seq, shrc.keyword1, COALESCE(shrc.keyword2, '') AS keyword2, shrc.content1, COALESCE(shrc.content2, '') AS content2, COALESCE(shrc.content3, '') AS content3, shrc.created_at, shrc.updated_at
 								FROM t_shrine_contents shrc
 								WHERE shrc.id IN (1, 3, 6)
 								AND shrc.keyword1 = '%s'
-								ORDER BY shrc.id, shrc.seq, shrc.keyword1, shrc.keyword2`, hcr.Shrines[cnt].PlusCode)
+								ORDER BY shrc.id, shrc.seq, shrc.keyword1, shrc.keyword2`, rshr.PlusCode)
 
 		shrcs, err = hcu.scr.GetShrineContents(ctx, query2)
 		if err != nil {
@@ -68,13 +68,13 @@ func (hcu homeContentsUsecase) GetRandomShrines(ctx context.Context) ([]*model.H
 			switch shrc.Id {
 			case 1:
 				// 振り仮名の設定
-				hcr.Shrines[cnt].Furigana = shrc.Content1
+				rshr.Furigana = shrc.Content1
 			case 3:
 				// 説明の設定
-				hcr.Shrines[cnt].Description = shrc.Content1
+				rshr.Description = shrc.Content1
 			case 6:
 				// 御祭神の設定
-				hcr.Shrines[cnt].ObjectOfWorship = append(hcr.Shrines[cnt].ObjectOfWorship, shrc.Content1)
+				rshr.ObjectOfWorship = append(rshr.ObjectOfWorship, shrc.Content1)
 			case 10:
 				// Wikipediaの設定
 				wikipediaURL = shrc.Content1
@@ -90,21 +90,21 @@ func (hcu homeContentsUsecase) GetRandomShrines(ctx context.Context) ([]*model.H
 				return nil, fmt.Errorf("%w", err)
 			}
 
-			if len(hcr.Shrines[cnt].Description) == 0 {
-				hcr.Shrines[cnt].Description = extract
+			if len(rshr.Description) == 0 {
+				rshr.Description = extract
 			}
 		}
 
-		if len(hcr.Shrines[cnt].ObjectOfWorship) == 0 {
-			hcr.Shrines[cnt].ObjectOfWorship = []string{"登録なし"}
+		if len(rshr.ObjectOfWorship) == 0 {
+			rshr.ObjectOfWorship = []string{"登録なし"}
 		}
-		if len(hcr.Shrines[cnt].Description) == 0 {
-			hcr.Shrines[cnt].Description = "説明文なし"
+		if len(rshr.Description) == 0 {
+			rshr.Description = "説明文なし"
 		}
 
-		hcrs = append(hcrs, &hcr)
+		hcr.Shrines = append(hcr.Shrines, &rshr)
 
 	}
 
-	return hcrs, err
+	return hcr, err
 }
