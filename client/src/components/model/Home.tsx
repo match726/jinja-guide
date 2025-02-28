@@ -22,7 +22,7 @@ const frontendUrl = import.meta.env.VITE_FRONTEND_URL;
 
 const Home: React.FC = () => {
 
-  const [shrines, setShrines] = useState<RandomShrines[]>();
+  const [shrines, setShrines] = useState<RandomShrines[] | null>(null);
 
   useEffect(() => {
 
