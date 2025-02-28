@@ -107,4 +107,5 @@ func (hcu homeContentsUsecase) GetRandomShrines(ctx context.Context) (*model.Hom
 	}
 
 	return hcr, err
+
 }

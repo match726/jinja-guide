@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/match726/jinja-guide/tree/main/server/infrastructure/database"
@@ -77,6 +78,8 @@ func (hh homeHandler) Handler(ctx context.Context, w http.ResponseWriter, r *htt
 		logger.Error(ctx, "ホーム画面レスポンス取得失敗", "errmsg", err)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
+
+	fmt.Println(hcrsp)
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	b, err := json.Marshal(hcrsp)

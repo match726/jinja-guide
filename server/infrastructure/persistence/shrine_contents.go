@@ -95,7 +95,7 @@ func (s *shrineContentsPersistence) GetShrineContents(ctx context.Context, query
 		return nil, fmt.Errorf("[コレクト失敗]: %w", err)
 	}
 
-	fmt.Printf("shrcs: %v\n", shrcs)
+	//fmt.Printf("shrcs: %v\n", shrcs)
 
 	for _, shrc := range shrcs {
 		pshrcs = append(pshrcs, &shrc)
