@@ -26,7 +26,7 @@ func NewHomeContentsUsecase(sr repository.ShrineRepository, scr repository.Shrin
 func (hcu homeContentsUsecase) GetRandomShrines(ctx context.Context) (*model.HomeContentsResp, error) {
 
 	var shrs []*model.Shrine
-	var hcr *model.HomeContentsResp
+	var hcr model.HomeContentsResp
 	var err error
 
 	// 神社テーブル取得（ランダム3件）
@@ -46,6 +46,8 @@ func (hcu homeContentsUsecase) GetRandomShrines(ctx context.Context) (*model.Hom
 		var shrcs []*model.ShrineContents
 		var wikipediaURL string
 
+		rshr = model.RandomShrines{}
+
 		rshr.Name = shr.Name
 		rshr.Address = shr.Address
 		rshr.PlusCode = shr.PlusCode
@@ -54,7 +56,7 @@ func (hcu homeContentsUsecase) GetRandomShrines(ctx context.Context) (*model.Hom
 		// 神社詳細情報テーブルから詳細情報を取得
 		query2 := fmt.Sprintf(`SELECT shrc.id, shrc.seq, shrc.keyword1, COALESCE(shrc.keyword2, '') AS keyword2, shrc.content1, COALESCE(shrc.content2, '') AS content2, COALESCE(shrc.content3, '') AS content3, shrc.created_at, shrc.updated_at
 								FROM t_shrine_contents shrc
-								WHERE shrc.id IN (1, 3, 6)
+								WHERE shrc.id IN (1, 3, 6, 10)
 								AND shrc.keyword1 = '%s'
 								ORDER BY shrc.id, shrc.seq, shrc.keyword1, shrc.keyword2`, rshr.PlusCode)
 
@@ -103,10 +105,10 @@ func (hcu homeContentsUsecase) GetRandomShrines(ctx context.Context) (*model.Hom
 		}
 
 		fmt.Println(rshr)
-		hcr.Shrines = append(hcr.Shrines, &rshr)
+		hcr.Shrines = append(hcr.Shrines, rshr)
 		fmt.Println(hcr)
 	}
 
-	return hcr, err
+	return &hcr, err
 
 }
