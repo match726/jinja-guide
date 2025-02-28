@@ -29,6 +29,8 @@ func (hcu homeContentsUsecase) GetRandomShrines(ctx context.Context) (*model.Hom
 	var hcr model.HomeContentsResp
 	var err error
 
+	hcr = model.HomeContentsResp{}
+
 	// 神社テーブル取得（ランダム3件）
 	query1 := `SELECT * FROM t_shrines
 						ORDER BY RANDOM() LIMIT 3`
