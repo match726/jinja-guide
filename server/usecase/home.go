@@ -102,8 +102,9 @@ func (hcu homeContentsUsecase) GetRandomShrines(ctx context.Context) (*model.Hom
 			rshr.Description = "説明文なし"
 		}
 
+		fmt.Println(rshr)
 		hcr.Shrines = append(hcr.Shrines, &rshr)
-		fmt.Println(hcr.Shrines)
+		fmt.Println(hcr)
 	}
 
 	return hcr, err
