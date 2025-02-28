@@ -38,23 +38,25 @@ func (hcu homeContentsUsecase) GetRandomShrines(ctx context.Context) ([]*model.H
 		return nil, err
 	}
 
+	var cnt int = 0
+
 	for _, shr := range shrs {
 
 		var hcr model.HomeContentsResp
 		var shrcs []*model.ShrineContents
 		var wikipediaURL string
 
-		hcr.RandomShrines.Name = shr.Name
-		hcr.RandomShrines.Address = shr.Address
-		hcr.RandomShrines.PlusCode = shr.PlusCode
-		hcr.RandomShrines.PlaceId = shr.PlaceID
+		hcr.Shrines[cnt].Name = shr.Name
+		hcr.Shrines[cnt].Address = shr.Address
+		hcr.Shrines[cnt].PlusCode = shr.PlusCode
+		hcr.Shrines[cnt].PlaceId = shr.PlaceID
 
 		// 神社詳細情報テーブルから詳細情報を取得
 		query2 := fmt.Sprintf(`SELECT shrc.id, shrc.seq, shrc.keyword1, COALESCE(shrc.keyword2, '') AS keyword2, shrc.content1, COALESCE(shrc.content2, '') AS content2, COALESCE(shrc.content3, '') AS content3, shrc.created_at, shrc.updated_at
 								FROM t_shrine_contents shrc
 								WHERE shrc.id IN (1, 3, 6)
 								AND shrc.keyword1 = '%s'
-								ORDER BY shrc.id, shrc.seq, shrc.keyword1, shrc.keyword2`, hcr.RandomShrines.PlusCode)
+								ORDER BY shrc.id, shrc.seq, shrc.keyword1, shrc.keyword2`, hcr.Shrines[cnt].PlusCode)
 
 		shrcs, err = hcu.scr.GetShrineContents(ctx, query2)
 		if err != nil {
@@ -66,13 +68,13 @@ func (hcu homeContentsUsecase) GetRandomShrines(ctx context.Context) ([]*model.H
 			switch shrc.Id {
 			case 1:
 				// 振り仮名の設定
-				hcr.RandomShrines.Furigana = shrc.Content1
+				hcr.Shrines[cnt].Furigana = shrc.Content1
 			case 3:
 				// 説明の設定
-				hcr.RandomShrines.Description = shrc.Content1
+				hcr.Shrines[cnt].Description = shrc.Content1
 			case 6:
 				// 御祭神の設定
-				hcr.RandomShrines.ObjectOfWorship = append(hcr.RandomShrines.ObjectOfWorship, shrc.Content1)
+				hcr.Shrines[cnt].ObjectOfWorship = append(hcr.Shrines[cnt].ObjectOfWorship, shrc.Content1)
 			case 10:
 				// Wikipediaの設定
 				wikipediaURL = shrc.Content1
@@ -88,16 +90,16 @@ func (hcu homeContentsUsecase) GetRandomShrines(ctx context.Context) ([]*model.H
 				return nil, fmt.Errorf("%w", err)
 			}
 
-			if len(hcr.RandomShrines.Description) == 0 {
-				hcr.RandomShrines.Description = extract
+			if len(hcr.Shrines[cnt].Description) == 0 {
+				hcr.Shrines[cnt].Description = extract
 			}
 		}
 
-		if len(hcr.RandomShrines.ObjectOfWorship) == 0 {
-			hcr.RandomShrines.ObjectOfWorship = []string{"登録なし"}
+		if len(hcr.Shrines[cnt].ObjectOfWorship) == 0 {
+			hcr.Shrines[cnt].ObjectOfWorship = []string{"登録なし"}
 		}
-		if len(hcr.RandomShrines.Description) == 0 {
-			hcr.RandomShrines.Description = "説明文なし"
+		if len(hcr.Shrines[cnt].Description) == 0 {
+			hcr.Shrines[cnt].Description = "説明文なし"
 		}
 
 		hcrs = append(hcrs, &hcr)
