@@ -62,10 +62,10 @@ const Home: React.FC = () => {
     <div>
       <Header />
       <div className="bg-gradient-to-b from-red-50 to-white">
+        <p className="text-[min(4vw,30px)] flex py-4 items-center justify-center">
+          神社（ランダム表示）
+        </p>
         <section className="container flex grid grid-cols-2 gap-10 xl:grid-cols-3">
-          <p className="text-[min(4vw,30px)] flex py-4 items-center justify-center">
-            神社（ランダム表示）
-          </p>
           {contents && contents.shrines.map((data) => (
             <ShrineCard
               cardTitle={data.name}
@@ -77,12 +77,11 @@ const Home: React.FC = () => {
             />         
           ))}
         </section>
+        <p className="text-[min(4vw,30px)] flex py-4 items-center justify-center">
+          関連ワード一覧
+        </p>
         <section className="container flex grid grid-cols-2 gap-10 xl:grid-cols-3">
-          <p className="text-[min(4vw,30px)] flex py-4 items-center justify-center">
-            関連ワード一覧
-          </p>
-        </section>
-        <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2">
           {contents && contents.tags.map((item, index) => (
             <Badge key={index} variant="secondary" className="cursor-pointer hover:bg-primary/80">
               <a href={frontendUrl + "/shrines/tag?tag=" + encodeURIComponent(item.name)} rel="noopener noreferrer" className="flex items-center">
@@ -91,6 +90,7 @@ const Home: React.FC = () => {
             </Badge>
           ))}
         </div>
+        </section>
       </div>
     </div>
   );
