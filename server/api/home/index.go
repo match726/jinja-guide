@@ -72,8 +72,8 @@ func ExportedHandler(w http.ResponseWriter, r *http.Request) {
 
 func (hh homeHandler) Handler(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 
-	// ホーム画面レスポンス取得（ランダム3件）
-	hcrsp, err := hh.hcu.GetRandomShrines(ctx)
+	// ホーム画面レスポンス取得
+	hcrsp, err := hh.hcu.GetHomeContents(ctx)
 	if err != nil {
 		logger.Error(ctx, "ホーム画面レスポンス取得失敗", "errmsg", err)
 		w.WriteHeader(http.StatusInternalServerError)

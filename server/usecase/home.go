@@ -11,7 +11,9 @@ import (
 )
 
 type HomeContentsUsecase interface {
-	GetRandomShrines(ctx context.Context) (*model.HomeContentsResp, error)
+	GetHomeContents(ctx context.Context) (*model.HomeContentsResp, error)
+	GetRandomShrines(ctx context.Context) ([]*model.RandomShrines, error)
+	GetAllTags(ctx context.Context) ([]*model.AllTags, error)
 }
 
 type homeContentsUsecase struct {
@@ -23,13 +25,34 @@ func NewHomeContentsUsecase(sr repository.ShrineRepository, scr repository.Shrin
 	return &homeContentsUsecase{sr: sr, scr: scr}
 }
 
-func (hcu homeContentsUsecase) GetRandomShrines(ctx context.Context) (*model.HomeContentsResp, error) {
+func (hcu homeContentsUsecase) GetHomeContents(ctx context.Context) (*model.HomeContentsResp, error) {
 
-	var shrs []*model.Shrine
 	var hcr model.HomeContentsResp
 	var err error
 
 	hcr = model.HomeContentsResp{}
+
+	hcr.Shrines, err = hcu.GetRandomShrines(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	hcr.Tags, err = hcu.GetAllTags(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &hcr, err
+
+}
+
+func (hcu homeContentsUsecase) GetRandomShrines(ctx context.Context) ([]*model.RandomShrines, error) {
+
+	var shrs []*model.Shrine
+	var rshrs []*model.RandomShrines
+	var err error
+
+	rshrs = []*model.RandomShrines{}
 
 	// 神社テーブル取得（ランダム3件）
 	query1 := `SELECT * FROM t_shrines
@@ -105,11 +128,42 @@ func (hcu homeContentsUsecase) GetRandomShrines(ctx context.Context) (*model.Hom
 			rshr.Description = "説明文なし"
 		}
 
-		fmt.Println(rshr)
-		hcr.Shrines = append(hcr.Shrines, rshr)
-		fmt.Println(hcr)
+		rshrs = append(rshrs, &rshr)
+
 	}
 
-	return &hcr, err
+	return rshrs, err
+
+}
+
+func (hcu homeContentsUsecase) GetAllTags(ctx context.Context) ([]*model.AllTags, error) {
+
+	var tags []*model.AllTags
+	var shrcs []*model.ShrineContents
+	var err error
+
+	// 神社詳細テーブル取得（関連ワード一覧取得）
+	query := `SELECT shrc.id, 0 AS seq, '' AS keyword1, '' AS keyword2, shrc.content1, '' AS content2, '' AS content3, LOCALTIMESTAMP AS created_at, LOCALTIMESTAMP AS updated_at
+ 						FROM t_shrine_contents shrc
+ 						WHERE shrc.id = 4
+ 						GROUP BY shrc.id, shrc.content1
+ 						ORDER BY shrc.content1`
+
+	shrcs, err = hcu.scr.GetShrineContents(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, shrc := range shrcs {
+
+		var tag model.AllTags
+
+		tag.Name = shrc.Content1
+
+		tags = append(tags, &tag)
+
+	}
+
+	return tags, err
 
 }

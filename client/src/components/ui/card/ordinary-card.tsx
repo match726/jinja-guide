@@ -10,7 +10,7 @@ type Props = {
   cardLink:  string
 };
 
-const AdminCard: React.FC<Props> = (props) => {
+const OrdinaryCard: React.FC<Props> = (props) => {
   return (
     <Link href={props.cardLink} passHref>
       <Card className="w-full max-w-md mx-auto bg-white dark:bg-gray-800 overflow-hidden">
@@ -47,4 +47,4 @@ const AdminCard: React.FC<Props> = (props) => {
   );
 };
 
-export {AdminCard};
+export {OrdinaryCard};

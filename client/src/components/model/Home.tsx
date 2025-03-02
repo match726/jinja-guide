@@ -18,15 +18,20 @@ interface RandomShrines {
   description: string
 }
 
+interface AllTags {
+  name: string
+}
+
 type HomeContents = {
-  shrines: RandomShrines[]
+  shrines: RandomShrines[],
+  tags: AllTags[]
 }
 
 const frontendUrl = import.meta.env.VITE_FRONTEND_URL;
 
 const Home: React.FC = () => {
 
-  const [contents, setContents] = useState<HomeContents>({shrines: []});
+  const [contents, setContents] = useState<HomeContents>({shrines: [], tags: []});
 
   useEffect(() => {
 
@@ -56,9 +61,9 @@ const Home: React.FC = () => {
     <div>
       <Header />
       <div className="bg-gradient-to-b from-red-50 to-white">
-        <h1 className="text-[min(4vw,30px)] flex py-4 items-center justify-center">
+        <p className="text-[min(4vw,30px)] flex py-4 items-center justify-center">
           神社（ランダム表示）
-        </h1>
+        </p>
         <section className="container flex grid grid-cols-2 gap-10 xl:grid-cols-3">
           {contents && contents.shrines.map((data) => (
             <ShrineCard
@@ -71,6 +76,9 @@ const Home: React.FC = () => {
             />         
           ))}
         </section>
+        <p className="text-[min(4vw,30px)] flex py-4 items-center justify-center">
+          関連ワード一覧
+        </p>
       </div>
     </div>
   );
