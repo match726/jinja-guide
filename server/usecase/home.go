@@ -28,18 +28,28 @@ func NewHomeContentsUsecase(sr repository.ShrineRepository, scr repository.Shrin
 func (hcu homeContentsUsecase) GetHomeContents(ctx context.Context) (*model.HomeContentsResp, error) {
 
 	var hcr model.HomeContentsResp
+	var rshrs []*model.RandomShrines
+	var tags []*model.AllTags
 	var err error
 
 	hcr = model.HomeContentsResp{}
 
-	hcr.Shrines, err = hcu.GetRandomShrines(ctx)
+	rshrs, err = hcu.GetRandomShrines(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	hcr.Tags, err = hcu.GetAllTags(ctx)
+	for _, rshr := range rshrs {
+		hcr.Shrines = append(hcr.Shrines, rshr)
+	}
+
+	tags, err = hcu.GetAllTags(ctx)
 	if err != nil {
 		return nil, err
+	}
+
+	for _, tag := range tags {
+		hcr.Tags = append(hcr.Tags, tag)
 	}
 
 	return &hcr, err

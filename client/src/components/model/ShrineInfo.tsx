@@ -129,7 +129,6 @@ const ShrineInfo = () => {
                             {item}
                           </a>
                         </Badge>
-
                   ))}
                 </div>
               </div>
