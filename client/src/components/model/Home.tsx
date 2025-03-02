@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 import { Header } from '@/components/ui/header';
-import { AdminCard } from '@/components/ui/card/admin-card';
+import { ShrineCard } from '@/components/ui/card/shrine-card';
 
 import '@/styles/global.css';
 
@@ -61,9 +61,11 @@ const Home: React.FC = () => {
         </h1>
         <section className="container flex grid grid-cols-2 gap-10 xl:grid-cols-3">
           {contents && contents.shrines.map((data) => (
-            <AdminCard
+            <ShrineCard
               cardTitle={data.name}
               cardTitleRuby={data.furigana}
+              cardAddress={data.address}
+              cardObjectOfWorship={data.objectOfWorship}
               cardDescription={data.description}
               cardLink={frontendUrl + "/shrine?code=" + data.plusCode}
             />         
