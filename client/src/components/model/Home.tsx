@@ -80,7 +80,7 @@ const Home: React.FC = () => {
         <p className="text-[min(4vw,30px)] flex py-4 items-center justify-center">
           関連ワード一覧
         </p>
-        <section className="container flex grid grid-cols-2 gap-10 items-center justify-center">
+        <section className="container flex max-w-md gap-10 items-center justify-center">
           <div className="flex flex-wrap gap-2">
           {contents && contents.tags.map((item, index) => (
             <Badge key={index} variant="secondary" className="cursor-pointer hover:bg-primary/80">
