@@ -73,14 +73,11 @@ func (hcu homeContentsUsecase) GetRandomShrines(ctx context.Context) ([]*model.R
 		return nil, err
 	}
 
-	var rshr model.RandomShrines
-
 	for _, shr := range shrs {
 
+		var rshr model.RandomShrines
 		var shrcs []*model.ShrineContents
 		var wikipediaURL string
-
-		rshr = model.RandomShrines{}
 
 		rshr.Name = shr.Name
 		rshr.Address = shr.Address
@@ -139,7 +136,7 @@ func (hcu homeContentsUsecase) GetRandomShrines(ctx context.Context) ([]*model.R
 		}
 
 		rshrs = append(rshrs, &rshr)
-
+		fmt.Println(rshrs)
 	}
 
 	return rshrs, err
