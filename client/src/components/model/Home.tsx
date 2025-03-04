@@ -64,7 +64,7 @@ const Home: React.FC = () => {
     <div>
       <Header />
       <div className="bg-gradient-to-b from-red-50 to-white">
-        <p className="text-[min(4vw,30px)] flex py-4 items-center justify-center">
+        <p className="text-[min(2vw,24px)] flex py-4 items-center justify-center">
           神社（ランダム表示）
         </p>
         <section className="container flex grid grid-cols-2 gap-10 xl:grid-cols-3">
@@ -79,9 +79,9 @@ const Home: React.FC = () => {
             />         
           ))}
         </section>
-        <Card className="max-w-3/5 flex items-center justify-center">
+        <Card className="w-full max-w-3/5">
           <CardHeader>
-            <CardTitle className="text-[min(4vw,30px)]">
+            <CardTitle className="text-[min(2vw,24px)]">
               関連ワード一覧
             </CardTitle>
           </CardHeader>
