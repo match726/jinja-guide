@@ -19,5 +19,6 @@ type RandomShrines struct {
 
 // ホーム画面の関連ワード表示用レスポンスデータ定義
 type AllTags struct {
-	Name string `json:"name"`
+	Name  string `json:"name"`
+	Count int    `json:"count"`
 }

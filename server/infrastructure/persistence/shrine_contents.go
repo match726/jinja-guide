@@ -126,3 +126,33 @@ func (s *shrineContentsPersistence) GetShrineContentsNextSeq(ctx context.Context
 	return nil
 
 }
+
+// 神社詳細情報テーブルから関連ワードの一覧と件数を取得
+func (s *shrineContentsPersistence) GetTagsWithCount(ctx context.Context) (pats []*model.AllTags, err error) {
+
+	var ats []model.AllTags
+
+	query := `SELECT shrc.content1, COUNT(*)
+						FROM t_shrine_contents shrc
+						WHERE shrc.id = 4
+						GROUP BY shrc.content1
+						ORDER BY shrc.content1`
+
+	rows, err := s.pg.DbPool.Query(ctx, query)
+	if err != nil {
+		return nil, fmt.Errorf("[クエリ実行失敗]: %w", err)
+	}
+	defer rows.Close()
+
+	ats, err = pgx.CollectRows(rows, pgx.RowToStructByPos[model.AllTags])
+	if err != nil {
+		return nil, fmt.Errorf("[コレクト失敗]: %w", err)
+	}
+
+	for _, at := range ats {
+		pats = append(pats, &at)
+	}
+
+	return pats, nil
+
+}

@@ -39,18 +39,14 @@ func (hcu homeContentsUsecase) GetHomeContents(ctx context.Context) (*model.Home
 		return nil, err
 	}
 
-	for _, rshr := range rshrs {
-		hcr.Shrines = append(hcr.Shrines, rshr)
-	}
+	hcr.Shrines = append(hcr.Shrines, rshrs...)
 
 	tags, err = hcu.GetAllTags(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	for _, tag := range tags {
-		hcr.Tags = append(hcr.Tags, tag)
-	}
+	hcr.Tags = append(hcr.Tags, tags...)
 
 	return &hcr, err
 
@@ -146,29 +142,12 @@ func (hcu homeContentsUsecase) GetRandomShrines(ctx context.Context) ([]*model.R
 func (hcu homeContentsUsecase) GetAllTags(ctx context.Context) ([]*model.AllTags, error) {
 
 	var tags []*model.AllTags
-	var shrcs []*model.ShrineContents
 	var err error
 
 	// 神社詳細テーブル取得（関連ワード一覧取得）
-	query := `SELECT shrc.id, 0 AS seq, '' AS keyword1, '' AS keyword2, shrc.content1, '' AS content2, '' AS content3, LOCALTIMESTAMP AS created_at, LOCALTIMESTAMP AS updated_at
- 						FROM t_shrine_contents shrc
- 						WHERE shrc.id = 4
- 						GROUP BY shrc.id, shrc.content1
- 						ORDER BY shrc.content1`
-
-	shrcs, err = hcu.scr.GetShrineContents(ctx, query)
+	tags, err = hcu.scr.GetTagsWithCount(ctx)
 	if err != nil {
 		return nil, err
-	}
-
-	for _, shrc := range shrcs {
-
-		var tag model.AllTags
-
-		tag.Name = shrc.Content1
-
-		tags = append(tags, &tag)
-
 	}
 
 	return tags, err

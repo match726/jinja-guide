@@ -21,6 +21,7 @@ interface RandomShrines {
 
 interface AllTags {
   name: string
+  count: number
 }
 
 type HomeContents = {
@@ -85,7 +86,7 @@ const Home: React.FC = () => {
           {contents && contents.tags.map((item, index) => (
             <Badge key={index} variant="secondary" className="cursor-pointer hover: hover:bg-red-200">
               <a href={frontendUrl + "/shrines/tag?tag=" + encodeURIComponent(item.name)} rel="noopener noreferrer" className="flex items-center">
-                {item.name}
+                {item.name}({item.count})
               </a>
             </Badge>
           ))}
