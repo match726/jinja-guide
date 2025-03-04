@@ -79,7 +79,7 @@ const Home: React.FC = () => {
             />         
           ))}
         </section>
-        <Card className="w-full max-w-3/5">
+        <Card className="max-w-3/5">
           <CardHeader>
             <CardTitle className="text-[min(2vw,24px)]">
               関連ワード一覧
