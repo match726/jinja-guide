@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Header } from '@/components/ui/header';
 import { ShrineCard } from '@/components/ui/card/shrine-card';
 import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import '@/styles/global.css';
 
@@ -78,11 +79,13 @@ const Home: React.FC = () => {
             />         
           ))}
         </section>
-        <p className="text-[min(4vw,30px)] flex py-4 items-center justify-center">
-          関連ワード一覧
-        </p>
-        <section className="container flex max-w-3/5 gap-10 items-center justify-center">
-          <div className="flex flex-wrap gap-2">
+        <Card className="max-w-3/5 flex items-center justify-center">
+          <CardHeader>
+            <CardTitle className="text-[min(4vw,30px)]">
+              関連ワード一覧
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
           {contents && contents.tags.map((item, index) => (
             <Badge key={index} variant="secondary" className="cursor-pointer hover: hover:bg-red-200">
               <a href={frontendUrl + "/shrines/tag?tag=" + encodeURIComponent(item.name)} rel="noopener noreferrer" className="flex items-center">
@@ -90,8 +93,8 @@ const Home: React.FC = () => {
               </a>
             </Badge>
           ))}
-        </div>
-        </section>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
