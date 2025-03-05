@@ -15,7 +15,7 @@ type Props = {
 const ShrineCard: React.FC<Props> = (props) => {
   return (
     <Link href={props.cardLink} passHref>
-      <Card className="w-full max-w-md mx-auto bg-white dark:bg-gray-800 overflow-hidden hover:bg-red-200">
+      <Card className="w-full max-w-md mx-auto bg-white dark:bg-gray-800 hover:bg-red-100 hover:border-color-red-900 overflow-hidden group">
         <CardContent className="p-6">
           <div className="flex items-center mb-4">
             <div className="relative w-20 h-20 mr-4 bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden flex-shrink-0">
@@ -25,7 +25,7 @@ const ShrineCard: React.FC<Props> = (props) => {
                   <div className="absolute bottom-0 left-0 w-full h-3/4 bg-gray-300 dark:bg-gray-600" style={{ clipPath: 'polygon(15% 100%, 50% 0%, 85% 100%)' }}></div>
                   {/* Torii */}
                   <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/5 h-3/5">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-red-700 dark:bg-gray-200"></div>
+                    <div className="absolute top-0 left-0 w-full h-1 bg-red-700 dark:bg-gray-200 group-hover:bg-red-900"></div>
                   </div>
                   <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-7/12 h-3/5">
                     <div className="absolute top-2 left-0 w-full h-1 bg-red-700 dark:bg-gray-200"></div>
