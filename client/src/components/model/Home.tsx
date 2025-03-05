@@ -63,7 +63,7 @@ const Home: React.FC = () => {
   return (
     <div>
       <Header />
-      <div className="container mx-auto px-5 py-10 bg-gradient-to-b from-red-50 to-white">
+      <div className="container mx-auto px-6 py-6 bg-gradient-to-b from-red-50 to-white">
         <p className="text-[min(2vw,24px)] flex py-4 items-center justify-center">
           神社（ランダム表示）
         </p>
@@ -79,7 +79,6 @@ const Home: React.FC = () => {
             />         
           ))}
         </section>
-        <section className="container flex grid grid-cols-2 gap-10 xl:grid-cols-3"></section>
         <Card className="max-w-3/5">
           <CardHeader>
             <CardTitle className="text-[min(2vw,24px)]">
@@ -89,7 +88,7 @@ const Home: React.FC = () => {
           <CardContent>
             <div className="flex flex-wrap gap-2">
               {contents && contents.tags.map((item, index) => (
-                <Badge key={index} variant="secondary" className="cursor-pointer hover: hover:bg-red-200">
+                <Badge key={index} variant="secondary" className="cursor-pointer hover:text-red-900 hover:bg-red-200">
                   <a href={frontendUrl + "/shrines/tag?tag=" + encodeURIComponent(item.name)} rel="noopener noreferrer" className="flex items-center">
                     {item.name}({item.count})
                   </a>
