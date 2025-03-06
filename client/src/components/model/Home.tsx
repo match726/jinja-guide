@@ -74,37 +74,45 @@ const Home: React.FC = () => {
             backgroundPosition: "center",
           }}
         />
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="border-b">
-          <TabsList className="flex">
-            <TabsTrigger value="0" className="flex-1 py-3 text-center transition-colors duration-300 hover:bg-muted/50">
-              神社検索
-            </TabsTrigger>
-            <TabsTrigger value="1" className="flex-1 py-3 text-center transition-colors duration-300 hover:bg-muted/50">
-              ランダム神社
-            </TabsTrigger>
-            <TabsTrigger value="2" className="flex-1 py-3 text-center transition-colors duration-300 hover:bg-muted/50">
-              関連ワード
-            </TabsTrigger>
-          </TabsList>
-          <TabsContent value="0" className="py-6">
-          </TabsContent>
-          <TabsContent value="1" className="py-6">
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium">Tab 2 Content</h3>
-              <p className="text-muted-foreground">
-                This is the content for Tab 2. It can contain any kind of information or components you need.
-              </p>
-            </div>
-          </TabsContent>
-          <TabsContent value="2" className="py-6">
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium">Tab 3 Content</h3>
-              <p className="text-muted-foreground">
-                This is the content for Tab 3. It can contain any kind of information or components you need.
-              </p>
-            </div>
-          </TabsContent>
-        </Tabs>
+        <div className="max-w-md mx-auto">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="border-b">
+            <TabsList className="flex">
+              <TabsTrigger value="0" className="flex-1 py-3 text-center transition-colors duration-300 hover:bg-muted/50">
+                神社検索
+              </TabsTrigger>
+              <TabsTrigger value="1" className="flex-1 py-3 text-center transition-colors duration-300 hover:bg-muted/50">
+                ランダム神社
+              </TabsTrigger>
+              <TabsTrigger value="2" className="flex-1 py-3 text-center transition-colors duration-300 hover:bg-muted/50">
+                関連ワード
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="0" className="py-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-medium">Tab 2 Content</h3>
+                <p className="text-muted-foreground">
+                  This is the content for Tab 2. It can contain any kind of information or components you need.
+                </p>
+              </div>
+            </TabsContent>
+            <TabsContent value="1" className="py-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-medium">Tab 2 Content</h3>
+                <p className="text-muted-foreground">
+                  This is the content for Tab 2. It can contain any kind of information or components you need.
+                </p>
+              </div>
+            </TabsContent>
+            <TabsContent value="2" className="py-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-medium">Tab 3 Content</h3>
+                <p className="text-muted-foreground">
+                  This is the content for Tab 3. It can contain any kind of information or components you need.
+                </p>
+              </div>
+            </TabsContent>
+          </Tabs>
+        </div>
       </div>
     </div>
   );
