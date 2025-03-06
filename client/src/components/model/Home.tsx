@@ -74,7 +74,7 @@ const Home: React.FC = () => {
             backgroundPosition: "center",
           }}
         />
-        <div className="max-w-md mx-auto">
+        <div className="relative max-w-md mx-auto bg-white bg-opacity-80 p-6">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="border-b">
             <TabsList className="flex">
               <TabsTrigger value="0" className="flex-1 py-3 text-center transition-colors duration-300 hover:bg-muted/50">
@@ -89,9 +89,9 @@ const Home: React.FC = () => {
             </TabsList>
             <TabsContent value="0" className="py-6">
               <div className="space-y-4">
-                <h3 className="text-lg font-medium">Tab 2 Content</h3>
+                <h3 className="text-lg font-medium">Tab 1 Content</h3>
                 <p className="text-muted-foreground">
-                  This is the content for Tab 2. It can contain any kind of information or components you need.
+                  This is the content for Tab 1. It can contain any kind of information or components you need.
                 </p>
               </div>
             </TabsContent>
