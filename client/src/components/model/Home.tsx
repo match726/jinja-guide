@@ -63,8 +63,10 @@ const Home: React.FC = () => {
   return (
     <div>
       <Header />
-      <div className="container mx-auto px-6 py-6 bg-gradient-to-b from-red-50 to-white flex items-center justify-center">
-      <img src="https://nhrje5lnk6nkethb.public.blob.vercel-storage.com/top.jpg" alt="Top Image" />
+      <div className="bg-[url('https://nhrje5lnk6nkethb.public.blob.vercel-storage.com/top.jpg')]">
+        <p>ここにテキスト</p>
+      </div>
+      <div className="container mx-auto px-6 py-6 bg-gradient-to-b from-red-50 to-white">
         <p className="text-[min(2vw,24px)] flex py-4 items-center justify-center">
           神社（ランダム表示）
         </p>
