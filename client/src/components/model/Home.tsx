@@ -75,8 +75,8 @@ const Home: React.FC = () => {
           }}
         />
         <div className="bg-white bg-opacity-0 p-6">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="relative max-w-md mx-auto border-b">
-            <TabsList className="flex">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="border-b">
+            <TabsList className="relative max-w-md mx-auto flex">
               <TabsTrigger value="0" className="flex-1 py-3 text-center transition-colors duration-300 hover:bg-muted/50">
                 神社検索
               </TabsTrigger>
