@@ -11,7 +11,6 @@ import '@/styles/global.css';
 
 //const frontendUrl = import.meta.env.VITE_FRONTEND_URL;
 const backendEndpoint = import.meta.env.VITE_BACKEND_ENDPOINT;
-const backgroundImage = "https://nhrje5lnk6nkethb.public.blob.vercel-storage.com/top.jpg";
 
 interface RandomShrines {
   name: string
@@ -67,7 +66,14 @@ const Home: React.FC = () => {
   return (
     <div>
       <Header />
-      <div className="w-full max-w-md mx-auto">
+      <div className="relative h-screen w-full">
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: "url('https://nhrje5lnk6nkethb.public.blob.vercel-storage.com/top.jpg'})",
+            backgroundPosition: "center",
+          }}
+        />
         <Tabs value={activeTab} onValueChange={setActiveTab} className="border-b">
           <TabsList className="flex">
             <TabsTrigger value="0" className="flex-1 py-3 text-center transition-colors duration-300 hover:bg-muted/50">
@@ -81,16 +87,6 @@ const Home: React.FC = () => {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="0" className="py-6">
-          <div className="relative h-screen w-full">
-            <div
-              className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-              style={{
-                backgroundImage: "url('" + {backgroundImage} + "'})",
-                backgroundPosition: "center",
-              }}
-            />
-              <p>コンテンツ</p>
-            </div>
           </TabsContent>
           <TabsContent value="1" className="py-6">
             <div className="space-y-4">
