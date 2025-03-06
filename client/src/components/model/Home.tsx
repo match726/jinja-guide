@@ -74,8 +74,8 @@ const Home: React.FC = () => {
             backgroundPosition: "center",
           }}
         />
-        <div className="relative max-w-md mx-auto bg-white bg-opacity-80 p-6">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="border-b">
+        <div className="relative mx-auto bg-white bg-opacity-0 p-6">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="max-w-md border-b">
             <TabsList className="flex">
               <TabsTrigger value="0" className="flex-1 py-3 text-center transition-colors duration-300 hover:bg-muted/50">
                 神社検索
