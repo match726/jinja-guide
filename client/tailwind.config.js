@@ -71,9 +71,6 @@ module.exports = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
-      backgroundImage: {
-        top: "url('https://nhrje5lnk6nkethb.public.blob.vercel-storage.com/top.jpg')",
-      },
     },
   },
   plugins: [require("tailwindcss-animate")],

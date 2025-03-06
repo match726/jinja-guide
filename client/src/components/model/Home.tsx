@@ -2,13 +2,16 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 import { Header } from '@/components/ui/header';
-import { ShrineCard } from '@/components/ui/card/shrine-card';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+//import { ShrineCard } from '@/components/ui/card/shrine-card';
+//import { Badge } from '@/components/ui/badge';
+//import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 import '@/styles/global.css';
 
+//const frontendUrl = import.meta.env.VITE_FRONTEND_URL;
 const backendEndpoint = import.meta.env.VITE_BACKEND_ENDPOINT;
+const backgroundImage = "https://nhrje5lnk6nkethb.public.blob.vercel-storage.com/top.jpg";
 
 interface RandomShrines {
   name: string
@@ -30,10 +33,9 @@ type HomeContents = {
   tags: AllTags[]
 }
 
-const frontendUrl = import.meta.env.VITE_FRONTEND_URL;
-
 const Home: React.FC = () => {
 
+  const [activeTab, setActiveTab] = useState<string>("0")
   const [contents, setContents] = useState<HomeContents>({shrines: [], tags: []});
 
   useEffect(() => {
@@ -60,53 +62,53 @@ const Home: React.FC = () => {
 
   }, []);
 
+  console.log(contents)
+
   return (
     <div>
       <Header />
-      <div className="relative h-screen w-full">
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: "url('https://nhrje5lnk6nkethb.public.blob.vercel-storage.com/top.jpg')",
-            backgroundPosition: "center",
-          }}
-        />
-        <p>コンテンツ</p>
-      </div>
-      <div className="container mx-auto px-6 py-6 bg-gradient-to-b from-red-50 to-white">
-        <p className="text-[min(2vw,24px)] flex py-4 items-center justify-center">
-          神社（ランダム表示）
-        </p>
-        <section className="container flex grid grid-cols-2 gap-10 xl:grid-cols-3">
-          {contents && contents.shrines.map((data) => (
-            <ShrineCard
-              cardTitle={data.name}
-              cardTitleRuby={data.furigana}
-              cardAddress={data.address}
-              cardObjectOfWorship={data.objectOfWorship}
-              cardDescription={data.description}
-              cardLink={frontendUrl + "/shrine?code=" + data.plusCode}
-            />         
-          ))}
-        </section>
-        <Card className="max-w-3/5">
-          <CardHeader>
-            <CardTitle className="text-[min(2vw,24px)]">
-              関連ワード一覧
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-wrap gap-2">
-              {contents && contents.tags.map((item, index) => (
-                <Badge key={index} variant="secondary" className="cursor-pointer hover:text-red-900 hover:bg-red-100">
-                  <a href={frontendUrl + "/shrines/tag?tag=" + encodeURIComponent(item.name)} rel="noopener noreferrer" className="flex items-center">
-                    {item.name}({item.count})
-                  </a>
-                </Badge>
-              ))}
+      <div className="w-full max-w-md mx-auto">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="border-b">
+          <TabsList className="flex">
+            <TabsTrigger value="0" className="flex-1 py-3 text-center transition-colors duration-300 hover:bg-muted/50">
+              神社検索
+            </TabsTrigger>
+            <TabsTrigger value="1" className="flex-1 py-3 text-center transition-colors duration-300 hover:bg-muted/50">
+              ランダム神社
+            </TabsTrigger>
+            <TabsTrigger value="2" className="flex-1 py-3 text-center transition-colors duration-300 hover:bg-muted/50">
+              関連ワード
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="0" className="py-6">
+          <div className="relative h-screen w-full">
+            <div
+              className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+              style={{
+                backgroundImage: "url('" + {backgroundImage} + "'})",
+                backgroundPosition: "center",
+              }}
+            />
+              <p>コンテンツ</p>
             </div>
-          </CardContent>
-        </Card>
+          </TabsContent>
+          <TabsContent value="1" className="py-6">
+            <div className="space-y-4">
+              <h3 className="text-lg font-medium">Tab 2 Content</h3>
+              <p className="text-muted-foreground">
+                This is the content for Tab 2. It can contain any kind of information or components you need.
+              </p>
+            </div>
+          </TabsContent>
+          <TabsContent value="2" className="py-6">
+            <div className="space-y-4">
+              <h3 className="text-lg font-medium">Tab 3 Content</h3>
+              <p className="text-muted-foreground">
+                This is the content for Tab 3. It can contain any kind of information or components you need.
+              </p>
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
