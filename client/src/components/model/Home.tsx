@@ -63,8 +63,15 @@ const Home: React.FC = () => {
   return (
     <div>
       <Header />
-      <div className="bg-[url('https://nhrje5lnk6nkethb.public.blob.vercel-storage.com/top.jpg')]">
-        <p>ここにテキスト</p>
+      <div className="relative h-screen w-full">
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: "url('https://nhrje5lnk6nkethb.public.blob.vercel-storage.com/top.jpg')",
+            backgroundPosition: "center",
+          }}
+        />
+        <p>コンテンツ</p>
       </div>
       <div className="container mx-auto px-6 py-6 bg-gradient-to-b from-red-50 to-white">
         <p className="text-[min(2vw,24px)] flex py-4 items-center justify-center">
