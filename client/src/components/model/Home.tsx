@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 import { Header } from '@/components/ui/header';
-//import { ShrineCard } from '@/components/ui/card/shrine-card';
 //import { Badge } from '@/components/ui/badge';
 //import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+//import { ShrineCard } from '@/components/ui/card/shrine-card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+
 
 import '@/styles/global.css';
 
@@ -74,7 +76,7 @@ const Home: React.FC = () => {
             backgroundPosition: "center",
           }}
         />
-        <div className="bg-white bg-opacity-0 p-6">
+        <div className="bg-white bg-opacity-0 px-6 py-4">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="border-b">
             <TabsList className="relative max-w-md mx-auto flex">
               <TabsTrigger value="0" className="flex-1 py-3 text-center transition-colors duration-300 hover:bg-muted/50">
@@ -88,11 +90,17 @@ const Home: React.FC = () => {
               </TabsTrigger>
             </TabsList>
             <TabsContent value="0" className="py-6">
-              <div className="space-y-4">
-                <h3 className="text-lg font-medium">Tab 1 Content</h3>
-                <p className="text-muted-foreground">
-                  This is the content for Tab 1. It can contain any kind of information or components you need.
-                </p>
+              <div className="flex justify-center">
+                <div className="relative w-full max-w-md">
+                  <Input
+                    type="search"
+                    placeholder="Search..."
+                    className="w-full rounded-full bg-background pl-4 pr-12 py-2 text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                  />
+                  <div className="absolute inset-y-0 right-0 flex items-center pr-4">
+                    <SearchIcon className="h-5 w-5 text-muted-foreground" />
+                  </div>
+                </div>
               </div>
             </TabsContent>
             <TabsContent value="1" className="py-6">
@@ -117,5 +125,25 @@ const Home: React.FC = () => {
     </div>
   );
 };
+
+function SearchIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="11" cy="11" r="8" />
+      <path d="m21 21-4.3-4.3" />
+    </svg>
+  )
+}
 
 export default Home;
