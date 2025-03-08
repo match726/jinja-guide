@@ -90,11 +90,11 @@ const Home: React.FC = () => {
               </TabsTrigger>
             </TabsList>
             <TabsContent value="0" className="py-6">
-              <div className="flex justify-center">
+              <div className="flex justify-center items-end">
                 <div className="relative w-full max-w-md">
                   <Input
                     type="search"
-                    placeholder="Search..."
+                    placeholder="神社検索"
                     className="w-full rounded-full bg-background pl-4 pr-12 py-2 text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
                   />
                   <div className="absolute inset-y-0 right-0 flex items-center pr-4">
