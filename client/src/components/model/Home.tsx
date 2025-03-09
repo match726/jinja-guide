@@ -3,7 +3,8 @@ import axios from 'axios';
 
 import { Header } from '@/components/ui/header';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+//import { Input } from '@/components/ui/input';
 import { ShrineCard } from '@/components/ui/card/shrine-card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
@@ -88,7 +89,10 @@ const Home: React.FC = () => {
               </TabsTrigger>
             </TabsList>
             <TabsContent value="0" className="py-6 flex justify-center">
-              <div className="absolute w-full max-w-md bottom-1/3">
+              <Button className="absolute w-full max-w-sm bg-white text-red-900 font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:scale-105 font-serif">
+                登録
+              </Button>
+              {/* <div className="absolute w-full max-w-md bottom-1/3">
                 <div className="relative w-full max-w-md">
                   <Input
                     type="search"
@@ -99,7 +103,7 @@ const Home: React.FC = () => {
                     <SearchIcon className="h-5 w-5 text-muted-foreground" />
                   </div>
                 </div>
-              </div>
+              </div> */}
             </TabsContent>
             <TabsContent value="1" className="py-6 flex justify-center">
               <div className="absolute container flex grid grid-cols-2 gap-10 xl:grid-cols-3">
