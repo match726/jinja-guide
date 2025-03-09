@@ -5,13 +5,13 @@ import { Header } from '@/components/ui/header';
 //import { Badge } from '@/components/ui/badge';
 //import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-//import { ShrineCard } from '@/components/ui/card/shrine-card';
+import { ShrineCard } from '@/components/ui/card/shrine-card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 
 import '@/styles/global.css';
 
-//const frontendUrl = import.meta.env.VITE_FRONTEND_URL;
+const frontendUrl = import.meta.env.VITE_FRONTEND_URL;
 const backendEndpoint = import.meta.env.VITE_BACKEND_ENDPOINT;
 
 interface RandomShrines {
@@ -103,13 +103,19 @@ const Home: React.FC = () => {
                 </div>
               </div>
             </TabsContent>
-            <TabsContent value="1" className="py-6">
-              <div className="space-y-4">
-                <h3 className="text-lg font-medium">Tab 2 Content</h3>
-                <p className="text-muted-foreground">
-                  This is the content for Tab 2. It can contain any kind of information or components you need.
-                </p>
-              </div>
+            <TabsContent value="1" className="py-6 flex justify-center">
+            <section className="container flex grid grid-cols-2 gap-10 xl:grid-cols-3">
+              {contents && contents.shrines.map((data) => (
+                <ShrineCard
+                  cardTitle={data.name}
+                  cardTitleRuby={data.furigana}
+                  cardAddress={data.address}
+                  cardObjectOfWorship={data.objectOfWorship}
+                  cardDescription={data.description}
+                  cardLink={frontendUrl + "/shrine?code=" + data.plusCode}
+                />
+              ))}
+            </section>
             </TabsContent>
             <TabsContent value="2" className="py-6">
               <div className="space-y-4">
