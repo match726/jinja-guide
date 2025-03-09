@@ -103,7 +103,7 @@ const Home: React.FC = () => {
               </div>
             </TabsContent>
             <TabsContent value="1" className="py-6 flex justify-center">
-              <div className="container flex grid grid-cols-2 gap-10 xl:grid-cols-3">
+              <div className="flex grid grid-cols-2 gap-10 xl:grid-cols-3">
                 {contents && contents.shrines.map((data) => (
                   <ShrineCard
                     cardTitle={data.name}
