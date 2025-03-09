@@ -68,13 +68,13 @@ const Home: React.FC = () => {
     <div>
       <Header />
       <div className="relative h-screen w-full">
-        {/* <div
+        <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
             backgroundImage: "url('https://nhrje5lnk6nkethb.public.blob.vercel-storage.com/top.jpg')",
             backgroundPosition: "center",
           }}
-        /> */}
+        />
         <div className="bg-white bg-opacity-0 px-6 py-4">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="border-b">
             <TabsList className="relative max-w-md mx-auto flex">
