@@ -89,9 +89,9 @@ const Home: React.FC = () => {
                 関連ワード
               </TabsTrigger>
             </TabsList>
-            <TabsContent value="0" className="py-6 flex justify-center">
-              <Link href={frontendUrl + "/prefs"} target="_blank">
-                <Button className="absolute w-full max-w-sm top-1/2 text-black bg-white py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:bg-gray-200 hover:scale-105 font-bold font-serif flex justify-center">
+            <TabsContent value="0" className="py-6">
+              <Link href={frontendUrl + "/prefs"} target="_blank" className="flex justify-center">
+                <Button className="absolute w-full max-w-sm top-1/2 text-black bg-white py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:bg-gray-200 hover:scale-105 font-bold font-serif">
                   都道府県検索
                 </Button>
               </Link>
