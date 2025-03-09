@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import Link from "next/link";
 
 import { Header } from '@/components/ui/header';
 import { Badge } from '@/components/ui/badge';
@@ -89,9 +90,11 @@ const Home: React.FC = () => {
               </TabsTrigger>
             </TabsList>
             <TabsContent value="0" className="py-6 flex justify-center">
-              <Button className="absolute w-full max-w-sm top-1/2 bg-white py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:bg-black-100 hover:scale-105 font-bold font-serif">
-                都道府県検索
-              </Button>
+              <Link href={frontendUrl + "/prefs"} passHref>
+                <Button className="absolute w-full max-w-sm top-1/2 text-black bg-white py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:bg-gray-200 hover:scale-105 font-bold font-serif">
+                  都道府県検索
+                </Button>
+              </Link>
               {/* <div className="absolute w-full max-w-md bottom-1/3">
                 <div className="relative w-full max-w-md">
                   <Input
