@@ -8,6 +8,7 @@ import ShrineTagList from '@/components/model/ShrineTagList';
 import Admin from '@/components/model/Admin';
 import AdminRegisterShrine from '@/components/model/AdminRegisterShrine';
 import AdminRegisterShrineDetails from '@/components/model/AdminRegisterShrineDetails';
+import AdminBulkRegisterShrine from '@/components/model/AdminBulkRegisterShrine';
 import AdminStdAreaCode from '@/components/model/AdminStdAreaCode';
 
 import '@/styles/global.css';
@@ -24,6 +25,7 @@ function App() {
         <Route path="/admin" element={ <Admin /> } />
         <Route path="/admin/regist/shrine" element={ <AdminRegisterShrine /> } />
         <Route path="/admin/regist/shrine-details" element={ <AdminRegisterShrineDetails /> } />
+        <Route path="/admin/bulk-regist/shrine" element={ <AdminBulkRegisterShrine /> } />
         <Route path="/admin/stdareacode" element={ <AdminStdAreaCode /> } />
       </Routes>
       </div>

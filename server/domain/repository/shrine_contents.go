@@ -11,4 +11,5 @@ type ShrineContentsRepository interface {
 	InsertShrineContents(ctx context.Context, shrc *model.ShrineContents) error
 	GetShrineContents(ctx context.Context, query string) ([]*model.ShrineContents, error)
 	GetShrineContentsNextSeq(ctx context.Context, shrc *model.ShrineContents) error
+	GetTagsWithCount(ctx context.Context) ([]*model.AllTags, error)
 }

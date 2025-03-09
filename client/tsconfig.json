@@ -10,6 +10,8 @@
       "@/*": [
         "./src/*"
       ]
-    }
+    },
+    "moduleResolution": "node",
+    "jsx": "react"
   }
 }

@@ -38,3 +38,17 @@ CREATE TABLE IF NOT EXISTS t_shrine_contents (
   updated_at timestamp,
   PRIMARY KEY (id, seq, keyword1, keyword2)
 )
+
+CREATE TABLE IF NOT EXISTS m_register_shrine (
+  name              varchar(20) NOT NULL,
+  address           varchar(40) NOT NULL,
+  furigana          text,
+  alt_name          text[],
+  tags              text[],
+  founded_year      text,
+  object_of_worship text[],
+  has_goshuin       varchar(2),
+  website_url       text,
+  wikipedia_url     text,
+  PRIMARY KEY (name, address)
+)
