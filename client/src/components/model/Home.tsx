@@ -89,8 +89,8 @@ const Home: React.FC = () => {
               </TabsTrigger>
             </TabsList>
             <TabsContent value="0" className="py-6 flex justify-center">
-              <Button className="absolute w-full max-w-sm top-1/2 bg-white text-red-900 font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:scale-105 font-serif">
-                登録
+              <Button className="absolute w-full max-w-sm top-1/2 bg-white py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:bg-black-100 hover:scale-105 font-bold font-serif">
+                都道府県検索
               </Button>
               {/* <div className="absolute w-full max-w-md bottom-1/3">
                 <div className="relative w-full max-w-md">
