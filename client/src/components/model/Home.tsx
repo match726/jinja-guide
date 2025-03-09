@@ -76,7 +76,7 @@ const Home: React.FC = () => {
             backgroundPosition: "center",
           }}
         />
-        <div className="bg-white bg-opacity-0 px-6 py-4">
+        <div className="relative h-screen w-full bg-white bg-opacity-0 px-6 py-4">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="border-b">
             <TabsList className="relative max-w-md mx-auto flex">
               <TabsTrigger value="0" className="flex-1 py-3 text-center transition-colors duration-300 hover:bg-muted/50">
