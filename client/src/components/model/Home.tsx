@@ -68,13 +68,13 @@ const Home: React.FC = () => {
     <div>
       <Header />
       <div className="relative h-screen w-full">
-        <div
+        {/* <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
             backgroundImage: "url('https://nhrje5lnk6nkethb.public.blob.vercel-storage.com/top.jpg')",
             backgroundPosition: "center",
           }}
-        />
+        /> */}
         <div className="bg-white bg-opacity-0 px-6 py-4">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="border-b">
             <TabsList className="relative max-w-md mx-auto flex">
@@ -103,18 +103,18 @@ const Home: React.FC = () => {
               </div>
             </TabsContent>
             <TabsContent value="1" className="py-6 flex justify-center">
-            <section className="container flex grid grid-cols-2 gap-10 xl:grid-cols-3">
-              {contents && contents.shrines.map((data) => (
-                <ShrineCard
-                  cardTitle={data.name}
-                  cardTitleRuby={data.furigana}
-                  cardAddress={data.address}
-                  cardObjectOfWorship={data.objectOfWorship}
-                  cardDescription={data.description}
-                  cardLink={frontendUrl + "/shrine?code=" + data.plusCode}
-                />
-              ))}
-            </section>
+              <div className="container flex grid grid-cols-2 gap-10 xl:grid-cols-3">
+                {contents && contents.shrines.map((data) => (
+                  <ShrineCard
+                    cardTitle={data.name}
+                    cardTitleRuby={data.furigana}
+                    cardAddress={data.address}
+                    cardObjectOfWorship={data.objectOfWorship}
+                    cardDescription={data.description}
+                    cardLink={frontendUrl + "/shrine?code=" + data.plusCode}
+                  />
+                ))}
+              </div>
             </TabsContent>
             <TabsContent value="2" className="py-6">
               <div className="space-y-4">
