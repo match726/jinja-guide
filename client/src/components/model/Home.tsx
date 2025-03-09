@@ -76,7 +76,7 @@ const Home: React.FC = () => {
             backgroundPosition: "center",
           }}
         />
-        <div className="relative h-screen w-full bg-white bg-opacity-0 px-6 py-4">
+        <div className="bg-white bg-opacity-0 px-6 py-4">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="border-b">
             <TabsList className="relative max-w-md mx-auto flex">
               <TabsTrigger value="0" className="flex-1 py-3 text-center transition-colors duration-300 hover:bg-muted/50">
@@ -89,8 +89,8 @@ const Home: React.FC = () => {
                 関連ワード
               </TabsTrigger>
             </TabsList>
-            <TabsContent value="0" className="py-6">
-              <div className="flex justify-center items-end">
+            <TabsContent value="0" className="py-6 flex justify-center">
+              <div className="absolute bottom-0">
                 <div className="relative w-full max-w-md">
                   <Input
                     type="search"
