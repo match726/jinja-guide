@@ -3,7 +3,6 @@ import axios from 'axios';
 
 import { Header } from '@/components/ui/header';
 import { Badge } from '@/components/ui/badge';
-//import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { ShrineCard } from '@/components/ui/card/shrine-card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
@@ -117,7 +116,7 @@ const Home: React.FC = () => {
               </div>
             </TabsContent>
             <TabsContent value="2" className="py-6 flex justify-center">
-              <div className="absolute w-full max-w-md flex flex-wrap gap-2">
+              <div className="absolute w-full max-w-lg flex flex-wrap gap-2">
                 {contents && contents.tags.map((item, index) => (
                   <Badge key={index} variant="secondary" className="cursor-pointer hover:text-red-900 hover:bg-red-100">
                     <a href={frontendUrl + "/shrines/tag?tag=" + encodeURIComponent(item.name)} rel="noopener noreferrer" className="flex items-center">
