@@ -126,7 +126,7 @@ const Home: React.FC = () => {
               <div className="absolute w-full max-w-lg flex flex-wrap gap-2 justify-center">
                 {contents && contents.tags.map((item, index) => (
                   <Badge key={index} variant="secondary" className="cursor-pointer hover:text-red-900 hover:bg-red-100">
-                    <a href={frontendUrl + "/shrines/tag?tag=" + encodeURIComponent(item.name)} rel="noopener noreferrer" className="flex items-center">
+                    <a href={frontendUrl + "/shrines/tag?tag=" + encodeURIComponent(item.name)} rel="noopener noreferrer" target="_blank" className="flex items-center">
                       {item.name}({item.count})
                     </a>
                   </Badge>

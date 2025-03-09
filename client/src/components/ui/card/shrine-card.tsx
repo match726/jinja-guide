@@ -14,7 +14,7 @@ type Props = {
 
 const ShrineCard: React.FC<Props> = (props) => {
   return (
-    <Link href={props.cardLink} passHref>
+    <Link href={props.cardLink} target="_blank" passHref>
       <Card className="w-full max-w-md mx-auto bg-white dark:bg-gray-800 hover:bg-red-100 hover:border-red-900 overflow-hidden group">
         <CardContent className="p-6">
           <div className="flex items-center mb-4">
