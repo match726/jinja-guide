@@ -8,7 +8,6 @@ import { Input } from '@/components/ui/input';
 import { ShrineCard } from '@/components/ui/card/shrine-card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
-
 import '@/styles/global.css';
 
 const frontendUrl = import.meta.env.VITE_FRONTEND_URL;
