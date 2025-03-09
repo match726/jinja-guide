@@ -90,7 +90,7 @@ const Home: React.FC = () => {
               </TabsTrigger>
             </TabsList>
             <TabsContent value="0" className="py-6 flex justify-center">
-              <div className="absolute bottom-0">
+              <div className="relative w-full max-w-md bottom-0">
                 <div className="relative w-full max-w-md">
                   <Input
                     type="search"
