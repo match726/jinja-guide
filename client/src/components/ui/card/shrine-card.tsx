@@ -15,12 +15,12 @@ type Props = {
 const ShrineCard: React.FC<Props> = (props) => {
   return (
     <Link href={props.cardLink} passHref>
-      <Card className="w-full max-w-md mx-auto bg-white border-red-700 dark:bg-gray-800 hover:bg-red-100 hover:border-red-900 overflow-hidden group">
+      <Card className="w-full max-w-md mx-auto bg-white dark:bg-gray-800 hover:bg-red-100 hover:border-red-900 overflow-hidden group">
         <CardContent className="p-6">
           <div className="flex items-center mb-4">
             <div className="relative w-20 h-20 mr-4 bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden flex-shrink-0">
               <div className="absolute inset-0 flex items-end justify-center">
-                <div className="w-full h-3/4 relative">
+                <div className="relative w-full h-3/4">
                   {/* Mountain */}
                   <div className="absolute bottom-0 left-0 w-full h-3/4 bg-gray-300 dark:bg-gray-600" style={{ clipPath: 'polygon(15% 100%, 50% 0%, 85% 100%)' }}></div>
                   {/* Torii */}
@@ -42,11 +42,15 @@ const ShrineCard: React.FC<Props> = (props) => {
               <rt>{props.cardTitleRuby}</rt>
             </ruby>
           </div>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">住所：{props.cardAddress}</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+            住所：{props.cardAddress}
+          </p>
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
             御祭神：{props.cardObjectOfWorship.join("、")}
           </p>
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">説明：{props.cardDescription}</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+            説明：{props.cardDescription}
+          </p>
         </CardContent>
       </Card>
     </Link>

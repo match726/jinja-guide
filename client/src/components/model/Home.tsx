@@ -69,7 +69,7 @@ const Home: React.FC = () => {
       <Header />
       <div className="relative h-screen w-full">
         <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          className="inset-0 bg-cover bg-center bg-no-repeat"
           style={{
             backgroundImage: "url('https://nhrje5lnk6nkethb.public.blob.vercel-storage.com/top.jpg')",
             backgroundPosition: "center",
@@ -103,7 +103,7 @@ const Home: React.FC = () => {
               </div>
             </TabsContent>
             <TabsContent value="1" className="py-6 flex justify-center">
-              <div className="flex grid grid-cols-2 gap-10 xl:grid-cols-3">
+              <div className="container flex grid grid-cols-2 gap-10 xl:grid-cols-3">
                 {contents && contents.shrines.map((data) => (
                   <ShrineCard
                     cardTitle={data.name}
