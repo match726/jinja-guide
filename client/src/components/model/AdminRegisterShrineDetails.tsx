@@ -191,6 +191,7 @@ const AdminRegisterShrineDetails = () => {
             value={field.value}
             onChange={(e) => handleInputChange(section.id, field.id, e.target.value)}
             placeholder={section.placeHolder}
+            className="w-full border-2 border-red-800 rounded-md p-2 font-serif"
           />
         )
       case "select":
@@ -219,12 +220,14 @@ const AdminRegisterShrineDetails = () => {
       <div className="bg-gradient-to-b from-red-50 to-white flex items-top justify-center p-8">
         <div className="w-full max-w-lg bg-white rounded-lg shadow-xl overflow-hidden">
           <div className="bg-red-900 p-4 flex items-center justify-center">
-            <h2 className="text-2xl font-bold text-white ml-2 font-serif">神社詳細情報登録</h2>
+            <h2 className="text-2xl font-bold text-white ml-2 font-serif">
+              神社詳細情報登録
+            </h2>
           </div>
-          <form onSubmit={handleSubmit} className="space-y-8">
+          <form onSubmit={handleSubmit} className="p-6 space-y-6">
             {formSections.map((section) => (
               <div key={section.id}>
-                <Label htmlFor={section.id} className="mb-2 block">
+                <Label htmlFor={section.id} className="text-lg font-medium text-gray-700 font-serif">
                   {section.title}
                 </Label>
                 {section.fields.map((field) => (
