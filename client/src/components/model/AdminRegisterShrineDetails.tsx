@@ -194,7 +194,7 @@ const AdminRegisterShrineDetails = () => {
               placeholder={section.placeHolder}
               className="w-full border-2 border-red-800 rounded-md p-2 font-serif"
             />
-            <PlusIcon onClick={() => handleAddField(section.id)} className="h-4 w-4" />
+            <PlusIcon onClick={() => handleAddField(section.id)} className="h-5 w-5 text-muted-foreground" />
             <PlusIcon onClick={() => handleRemoveField(section.id, field.id)} className="h-4 w-4" />
           </div>
         )
@@ -202,7 +202,7 @@ const AdminRegisterShrineDetails = () => {
         return (
           <div>
             <Select value={field.value} onValueChange={(value) => handleInputChange(section.id, field.id, value)}>
-              <SelectTrigger className="w-max-md border-2 border-red-800 rounded-md p-2 font-serif">
+              <SelectTrigger className="w-full w-max-md border-2 border-red-800 rounded-md p-2 font-serif">
                 <SelectValue placeholder={`${section.title}を選択`} />
               </SelectTrigger>
               <SelectContent>
