@@ -15,7 +15,7 @@ import '@/styles/global.css';
 type Field = {
   id: number
   value: string
-  type: "text" | "select"
+  type: "text" | "select + text"
   options?: string[]
 }
 
@@ -74,7 +74,7 @@ const AdminRegisterShrineDetails = () => {
       id: "shrineRank",
       title: "社格",
       placeHolder: "例：式内社",
-      fields: [{ id: 1, value: "", type: "select", options: ["1：延喜式内社", "2：国史見在社", "3：二十二社制度", "4：一宮制度", "5：総社（惣社）", "6：近代社格制度", "7：別表神社"] }],
+      fields: [{ id: 1, value: "", type: "select + text", options: ["1: 延喜式内社", "2: 国史見在社", "3: 二十二社制度", "4: 一宮制度", "5: 総社（惣社）", "6: 近代社格制度", "7: 別表神社"] }],
     },
     {
       id: "hasGoshuin",
@@ -194,10 +194,10 @@ const AdminRegisterShrineDetails = () => {
             className="w-full border-2 border-red-800 rounded-md p-2 font-serif"
           />
         )
-      case "select":
+      case "select + text":
         return (
           <Select value={field.value} onValueChange={(value) => handleInputChange(section.id, field.id, value)}>
-            <SelectTrigger>
+            <SelectTrigger className="w-max-md border-2 border-red-800 rounded-md p-2 font-serif">
               <SelectValue placeholder={`${section.title}を選択`} />
             </SelectTrigger>
             <SelectContent>
@@ -244,7 +244,7 @@ const AdminRegisterShrineDetails = () => {
             <Button className="w-full bg-red-900 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:scale-105 font-serif">
               登録
             </Button>
-            </form>
+          </form>
         </div>
       </div>
     </>
@@ -257,8 +257,8 @@ function PlusIcon(props: React.SVGProps<SVGSVGElement>) {
     <svg
       {...props}
       xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
+      width="100"
+      height="100"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
