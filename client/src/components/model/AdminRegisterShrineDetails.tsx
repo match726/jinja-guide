@@ -187,7 +187,7 @@ const AdminRegisterShrineDetails = () => {
     switch (field.type) {
       case "text":
         return (
-          <div>
+          <div className="flex justify-center items-center">
             <Input
               id={`${section.id}-${field.id}`}
               value={field.value}
@@ -195,13 +195,13 @@ const AdminRegisterShrineDetails = () => {
               placeholder={section.placeHolder}
               className="w-full border-2 border-red-800 rounded-md p-2 font-serif flex"
             />
-            <SlPlus onClick={() => handleAddField(section.id)} className="h-12 w-12 flex" />
-            <SlMinus onClick={() => handleRemoveField(section.id, field.id)} className="h-12 w-12 flex" />
+            <SlPlus onClick={() => handleAddField(section.id)} className="h-10 w-10 flex" />
+            <SlMinus onClick={() => handleRemoveField(section.id, field.id)} className="h-10 w-10 flex" />
           </div>
         )
       case "select + text":
         return (
-          <div>
+          <div className="flex justify-center items-center">
             <Select value={field.value} onValueChange={(value) => handleInputChange(section.id, field.id, value)}>
               <SelectTrigger className="w-full w-max-md border-2 border-red-800 rounded-md p-2 font-serif">
                 <SelectValue placeholder={`${section.title}を選択`} />
@@ -214,8 +214,8 @@ const AdminRegisterShrineDetails = () => {
                 ))}
               </SelectContent>
             </Select>
-            <SlPlus onClick={() => handleAddField(section.id)} className="h-12 w-12" />
-            <SlMinus onClick={() => handleRemoveField(section.id, field.id)} className="h-4 w-4" />
+            <SlPlus onClick={() => handleAddField(section.id)} className="h-10 w-10" />
+            <SlMinus onClick={() => handleRemoveField(section.id, field.id)} className="h-10 w-10" />
           </div>
         )
       default:
