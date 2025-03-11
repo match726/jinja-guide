@@ -187,21 +187,21 @@ const AdminRegisterShrineDetails = () => {
     switch (field.type) {
       case "text":
         return (
-          <div className="flex justify-center items-center">
+          <div className="flex justify-center items-center gap-2">
             <Input
               id={`${section.id}-${field.id}`}
               value={field.value}
               onChange={(e) => handleInputChange(section.id, field.id, e.target.value)}
               placeholder={section.placeHolder}
-              className="w-full border-2 border-red-800 rounded-md p-2 font-serif flex"
+              className="w-full border-2 border-red-800 rounded-md p-2 font-serif"
             />
-            <SlPlus onClick={() => handleAddField(section.id)} className="h-10 w-10 flex" />
-            <SlMinus onClick={() => handleRemoveField(section.id, field.id)} className="h-10 w-10 flex" />
+            <SlPlus onClick={() => handleAddField(section.id)} className="h-8 w-8" />
+            <SlMinus onClick={() => handleRemoveField(section.id, field.id)} className="h-8 w-8" />
           </div>
         )
       case "select + text":
         return (
-          <div className="flex justify-center items-center">
+          <div className="flex justify-center items-center gap-2">
             <Select value={field.value} onValueChange={(value) => handleInputChange(section.id, field.id, value)}>
               <SelectTrigger className="w-full w-max-md border-2 border-red-800 rounded-md p-2 font-serif">
                 <SelectValue placeholder={`${section.title}を選択`} />
@@ -214,8 +214,8 @@ const AdminRegisterShrineDetails = () => {
                 ))}
               </SelectContent>
             </Select>
-            <SlPlus onClick={() => handleAddField(section.id)} className="h-10 w-10" />
-            <SlMinus onClick={() => handleRemoveField(section.id, field.id)} className="h-10 w-10" />
+            <SlPlus onClick={() => handleAddField(section.id)} className="h-8 w-8" />
+            <SlMinus onClick={() => handleRemoveField(section.id, field.id)} className="h-8 w-8" />
           </div>
         )
       default:
