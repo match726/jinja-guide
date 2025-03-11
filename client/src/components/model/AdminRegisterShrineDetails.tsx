@@ -25,6 +25,7 @@ type FormSection = {
   id: string
   title: string
   placeHolder: string
+  isMultiple: boolean
   fields: Field[]
 }
 
@@ -39,60 +40,70 @@ const AdminRegisterShrineDetails = () => {
       id: "plusCode",
       title: "PlusCode",
       placeHolder: "例：8Q6RFP4G+255",
+      isMultiple: false,
       fields: [{ id: 1, value: "", type: "text" }],
     },
     {
       id: "furigana",
       title: "神社名称（振り仮名）",
       placeHolder: "例：いせじんぐう ないくう（こうたいじんぐう）",
+      isMultiple: false,
       fields: [{ id: 1, value: "", type: "text" }],
     },
     {
       id: "altName",
       title: "別名称",
       placeHolder: "例：伊勢神宮",
+      isMultiple: true,
       fields: [{ id: 1, value: "", type: "text" }],
     },
     {
       id: "tag",
       title: "関連ワード",
       placeHolder: "例：お伊勢参り",
+      isMultiple: true,
       fields: [{ id: 1, value: "", type: "text" }],
     },
     {
       id: "foundedYear",
       title: "創建年",
       placeHolder: "例：垂仁天皇26年",
+      isMultiple: false,
       fields: [{ id: 1, value: "", type: "text" }],
     },
     {
       id: "objectOfWorship",
       title: "御祭神",
       placeHolder: "例：天照坐皇大御神",
+      isMultiple: true,
       fields: [{ id: 1, value: "", type: "text" }],
     },
     {
       id: "shrineRank",
       title: "社格",
       placeHolder: "例：式内社",
+      isMultiple: true,
       fields: [{ id: 1, value: "", type: "select + text", options: ["1: 延喜式内社", "2: 国史見在社", "3: 二十二社制度", "4: 一宮制度", "5: 総社（惣社）", "6: 近代社格制度", "7: 別表神社"] }],
     },
     {
       id: "hasGoshuin",
       title: "御朱印",
       placeHolder: "例：あり",
+      isMultiple: false,
       fields: [{ id: 1, value: "", type: "text" }],
     },
     {
       id: "websiteUrl",
       title: "公式サイトURL",
       placeHolder: "例：https://www.isejingu.or.jp/",
+      isMultiple: false,
       fields: [{ id: 1, value: "", type: "text" }],
     },
     {
       id: "wikipediaUrl",
       title: "WikipediaURL",
       placeHolder: "例：https://ja.wikipedia.org/wiki/伊勢神宮",
+      isMultiple: false,
       fields: [{ id: 1, value: "", type: "text" }],
     }
   ])
@@ -195,8 +206,13 @@ const AdminRegisterShrineDetails = () => {
               placeholder={section.placeHolder}
               className="w-full border-2 border-red-800 rounded-md p-2 font-serif"
             />
-            <SlPlus onClick={() => handleAddField(section.id)} className="h-8 w-8" />
-            <SlMinus onClick={() => handleRemoveField(section.id, field.id)} className="h-8 w-8" />
+            {section.isMultiple == true
+              ? <div>
+                  <SlPlus onClick={() => handleAddField(section.id)} className="h-6 w-6" />
+                  <SlMinus onClick={() => handleRemoveField(section.id, field.id)} className="h-6 w-6" />
+                </div>
+              : null
+            }
           </div>
         )
       case "select + text":
@@ -214,8 +230,13 @@ const AdminRegisterShrineDetails = () => {
                 ))}
               </SelectContent>
             </Select>
-            <SlPlus onClick={() => handleAddField(section.id)} className="h-8 w-8" />
-            <SlMinus onClick={() => handleRemoveField(section.id, field.id)} className="h-8 w-8" />
+            {section.isMultiple == true
+              ? <div>
+                  <SlPlus onClick={() => handleAddField(section.id)} className="h-6 w-6" />
+                  <SlMinus onClick={() => handleRemoveField(section.id, field.id)} className="h-6 w-6" />
+                </div>
+              : null
+            }
           </div>
         )
       default:
