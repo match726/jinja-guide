@@ -181,33 +181,41 @@ const AdminRegisterShrineDetails = () => {
     // ここでバックエンドにデータを送信する処理を行う
   }
 
-    // フィールドのレンダリング関数
+  // フィールドのレンダリング関数
   const renderField = (section: FormSection, field: Field) => {
     switch (field.type) {
       case "text":
         return (
-          <Input
-            id={`${section.id}-${field.id}`}
-            value={field.value}
-            onChange={(e) => handleInputChange(section.id, field.id, e.target.value)}
-            placeholder={section.placeHolder}
-            className="w-full border-2 border-red-800 rounded-md p-2 font-serif"
-          />
+          <div>
+            <Input
+              id={`${section.id}-${field.id}`}
+              value={field.value}
+              onChange={(e) => handleInputChange(section.id, field.id, e.target.value)}
+              placeholder={section.placeHolder}
+              className="w-full border-2 border-red-800 rounded-md p-2 font-serif"
+            />
+            <PlusIcon onClick={() => handleAddField(section.id)} className="h-4 w-4" />
+            <PlusIcon onClick={() => handleRemoveField(section.id, field.id)} className="h-4 w-4" />
+          </div>
         )
       case "select + text":
         return (
-          <Select value={field.value} onValueChange={(value) => handleInputChange(section.id, field.id, value)}>
-            <SelectTrigger className="w-max-md border-2 border-red-800 rounded-md p-2 font-serif">
-              <SelectValue placeholder={`${section.title}を選択`} />
-            </SelectTrigger>
-            <SelectContent>
-              {field.options?.map((option) => (
-                <SelectItem key={option} value={option}>
-                  {option}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div>
+            <Select value={field.value} onValueChange={(value) => handleInputChange(section.id, field.id, value)}>
+              <SelectTrigger className="w-max-md border-2 border-red-800 rounded-md p-2 font-serif">
+                <SelectValue placeholder={`${section.title}を選択`} />
+              </SelectTrigger>
+              <SelectContent>
+                {field.options?.map((option) => (
+                  <SelectItem key={option} value={option}>
+                    {option}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <PlusIcon onClick={() => handleAddField(section.id)} className="h-4 w-4" />
+            <PlusIcon onClick={() => handleRemoveField(section.id, field.id)} className="h-4 w-4" />
+          </div>
         )
       default:
         return null
@@ -235,8 +243,6 @@ const AdminRegisterShrineDetails = () => {
                     <div className="flex-1">
                       {renderField(section, field)}
                     </div>
-                    <PlusIcon onClick={() => handleAddField(section.id)} className="h-4 w-4" />
-                    <PlusIcon onClick={() => handleRemoveField(section.id, field.id)} className="h-4 w-4" />
                   </div>
                 ))}
               </div>
@@ -257,17 +263,13 @@ function PlusIcon(props: React.SVGProps<SVGSVGElement>) {
     <svg
       {...props}
       xmlns="http://www.w3.org/2000/svg"
+      x="0px"
+      y="0px"
       width="100"
       height="100"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      viewBox="0 0 50 50"
     >
-      <circle cx="11" cy="11" r="8" />
-      <path d="M 11 7 L 11 11 L 7 11 L 7 13 L 11 13 L 11 17 L 13 17 L 13 13 L 17 13 L 17 11 L 13 11 L 13 7 L 11 7 z" />
+      <path d="M 25 2 C 12.264481 2 2 12.264481 2 25 C 2 37.735519 12.264481 48 25 48 C 37.735519 48 48 37.735519 48 25 C 48 12.264481 37.735519 2 25 2 z M 25 4 C 36.664481 4 46 13.335519 46 25 C 46 36.664481 36.664481 46 25 46 C 13.335519 46 4 36.664481 4 25 C 4 13.335519 13.335519 4 25 4 z M 24 13 L 24 24 L 13 24 L 13 26 L 24 26 L 24 37 L 26 37 L 26 26 L 37 26 L 37 24 L 26 24 L 26 13 L 24 13 z" />
     </svg>
   )
 }
