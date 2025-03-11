@@ -1,196 +1,272 @@
-import { useState, useEffect, useRef } from "react";
-import axios from 'axios';
+import { useState } from "react";
+//import axios from 'axios';
 
 import { Header } from '@/components/ui/header';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 import '@/styles/global.css';
 
-const backendEndpoint = import.meta.env.VITE_BACKEND_ENDPOINT;
+//const backendEndpoint = import.meta.env.VITE_BACKEND_ENDPOINT;
+
+// フィールドの型定義
+type Field = {
+  id: number
+  value: string
+  type: "text" | "select"
+  options?: string[]
+}
+
+// セクションの型定義
+type FormSection = {
+  id: string
+  title: string
+  placeHolder: string
+  fields: Field[]
+}
 
 const AdminRegisterShrineDetails = () => {
 
-  const [payload, setPayload] = useState({plusCode: "", furigana: "", altName: "", tags: "", foundedYear: "", hasGoshuin: "", objectOfWorship: "", websiteURL: "", wikipediaUrl: ""});
   // 初回レンダリングのリクエスト送信を無効化
-  const isFirstRender = useRef(true);
+  //const isFirstRender = useRef(true);
 
-  useEffect(() => {
-
-    const options = {
-      method: "POST",
-      url: backendEndpoint + "/api/admin/regist/shrine-details",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      data: JSON.stringify(payload)
-    };
-
-    console.log(payload)
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return
-    } else {
-      axios(options)
-        .then((resp) => {
-          console.log('POSTリクエストが成功しました', resp)
-        })
-        .catch((err) => console.error("POSTリクエスト失敗", err));
+  // フォームの初期状態を定義
+  const [formSections, setFormSections] = useState<FormSection[]>([
+    {
+      id: "plusCode",
+      title: "PlusCode",
+      placeHolder: "例：8Q6RFP4G+255",
+      fields: [{ id: 1, value: "", type: "text" }],
+    },
+    {
+      id: "furigana",
+      title: "神社名称（振り仮名）",
+      placeHolder: "例：いせじんぐう ないくう（こうたいじんぐう）",
+      fields: [{ id: 1, value: "", type: "text" }],
+    },
+    {
+      id: "altName",
+      title: "別名称",
+      placeHolder: "例：伊勢神宮",
+      fields: [{ id: 1, value: "", type: "text" }],
+    },
+    {
+      id: "tag",
+      title: "関連ワード",
+      placeHolder: "例：お伊勢参り",
+      fields: [{ id: 1, value: "", type: "text" }],
+    },
+    {
+      id: "foundedYear",
+      title: "創建年",
+      placeHolder: "例：垂仁天皇26年",
+      fields: [{ id: 1, value: "", type: "text" }],
+    },
+    {
+      id: "objectOfWorship",
+      title: "御祭神",
+      placeHolder: "例：天照坐皇大御神",
+      fields: [{ id: 1, value: "", type: "text" }],
+    },
+    {
+      id: "shrineRank",
+      title: "社格",
+      placeHolder: "例：式内社",
+      fields: [{ id: 1, value: "", type: "select", options: ["1：延喜式内社", "2：国史見在社", "3：二十二社制度", "4：一宮制度", "5：総社（惣社）", "6：近代社格制度", "7：別表神社"] }],
+    },
+    {
+      id: "hasGoshuin",
+      title: "御朱印",
+      placeHolder: "例：あり",
+      fields: [{ id: 1, value: "", type: "text" }],
+    },
+    {
+      id: "websiteUrl",
+      title: "公式サイトURL",
+      placeHolder: "例：https://www.isejingu.or.jp/",
+      fields: [{ id: 1, value: "", type: "text" }],
+    },
+    {
+      id: "wikipediaUrl",
+      title: "WikipediaURL",
+      placeHolder: "例：https://ja.wikipedia.org/wiki/伊勢神宮",
+      fields: [{ id: 1, value: "", type: "text" }],
     }
+  ])
 
-  }, [payload]);
+  // 特定のセクションにフィールドを追加
+  const handleAddField = (sectionId: string) => {
+    setFormSections((prevSections) =>
+      prevSections.map((section) => {
+        if (section.id === sectionId) {
+          const newId = section.fields.length > 0 ? Math.max(...section.fields.map((field) => field.id)) + 1 : 1
+          const newField: Field = {
+            id: newId,
+            value: "",
+            type: section.fields[0].type, // 最初のフィールドと同じタイプを使用
+            options: section.fields[0].options, // オプションがある場合はそれも複製
+          }
+          return {
+            ...section,
+            fields: [...section.fields, newField],
+          }
+        }
+        return section
+      }),
+    )
+  }
 
-  const handleFromSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  // 特定のセクションから特定のフィールドを削除
+  const handleRemoveField = (sectionId: string, fieldId: number) => {
+    setFormSections((prevSections) =>
+      prevSections.map((section) => {
+        if (section.id === sectionId) {
+          // 最後の1つは削除しない
+          if (section.fields.length === 1) return section
 
-    // ページ遷移を防ぐ（デフォルトでは、フォーム送信ボタンを押すとページが遷移してしまう）
-    e.preventDefault();
+          return {
+            ...section,
+            fields: section.fields.filter((field) => field.id !== fieldId),
+          }
+        }
+        return section
+      }),
+    )
+  }
+  
+  // useEffect(() => {
 
-    const form = e.currentTarget
-    const formElements = form.elements as typeof form.elements & {
-      shrinePlusCode: HTMLInputElement,
-      shrineFurigana: HTMLInputElement,
-      shrineAltName: HTMLInputElement,
-      shrineTag: HTMLInputElement,
-      shrineFoundedYear: HTMLInputElement,
-      shrineHasGoshuin: HTMLInputElement,
-      shrineObjectOfWorship: HTMLInputElement,
-      shrineWebsiteURL: HTMLInputElement,
-      shrineWikiUrl: HTMLInputElement
+  //   const options = {
+  //     method: "POST",
+  //     url: backendEndpoint + "/api/admin/regist/shrine-details",
+  //     headers: {
+  //       "Content-Type": "application/json"
+  //     },
+  //     data: JSON.stringify(formSections)
+  //   };
+
+  //   // if (isFirstRender.current) {
+  //   //   isFirstRender.current = false;
+  //   //   return
+  //   // } else {
+  //   //   axios(options)
+  //   //     .then((resp) => {
+  //   //       console.log('POSTリクエストが成功しました', resp)
+  //   //     })
+  //   //     .catch((err) => console.error("POSTリクエスト失敗", err));
+  //   // }
+
+  // }, [formSections]);
+
+  // 特定のセクションの特定のフィールドの値を更新
+  const handleInputChange = (sectionId: string, fieldId: number, value: string) => {
+    setFormSections((prevSections) =>
+      prevSections.map((section) => {
+        if (section.id === sectionId) {
+          return {
+            ...section,
+            fields: section.fields.map((field) => (field.id === fieldId ? { ...field, value } : field)),
+          }
+        }
+        return section
+      }),
+    )
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    console.log("Form submitted with values:", formSections)
+    // ここでバックエンドにデータを送信する処理を行う
+  }
+
+    // フィールドのレンダリング関数
+  const renderField = (section: FormSection, field: Field) => {
+    switch (field.type) {
+      case "text":
+        return (
+          <Input
+            id={`${section.id}-${field.id}`}
+            value={field.value}
+            onChange={(e) => handleInputChange(section.id, field.id, e.target.value)}
+            placeholder={section.placeHolder}
+          />
+        )
+      case "select":
+        return (
+          <Select value={field.value} onValueChange={(value) => handleInputChange(section.id, field.id, value)}>
+            <SelectTrigger>
+              <SelectValue placeholder={`${section.title}を選択`} />
+            </SelectTrigger>
+            <SelectContent>
+              {field.options?.map((option) => (
+                <SelectItem key={option} value={option}>
+                  {option}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )
+      default:
+        return null
     }
-    setPayload({ plusCode: formElements.shrinePlusCode.value, furigana: formElements.shrineFurigana.value, altName: formElements.shrineAltName.value, tags: formElements.shrineTag.value, foundedYear: formElements.shrineFoundedYear.value, hasGoshuin: formElements.shrineHasGoshuin.value, objectOfWorship: formElements.shrineObjectOfWorship.value, websiteURL: formElements.shrineWebsiteURL.value, wikipediaUrl: formElements.shrineWikiUrl.value });
-
-    // フォームをクリア
-    formElements.shrinePlusCode.value = "";
-    formElements.shrineFurigana.value = "";
-    formElements.shrineAltName.value = "";
-    formElements.shrineTag.value = "";
-    formElements.shrineFoundedYear.value = "";
-    formElements.shrineHasGoshuin.value = "";
-    formElements.shrineObjectOfWorship.value = "";
-    formElements.shrineWebsiteURL.value = "";
-    formElements.shrineWikiUrl.value = "";
-
-  };
+  }
 
   return (
     <>
       <Header />
       <div className="bg-gradient-to-b from-red-50 to-white flex items-top justify-center p-8">
-        <div className="w-full max-w-md bg-white rounded-lg shadow-xl overflow-hidden">
+        <div className="w-full max-w-lg bg-white rounded-lg shadow-xl overflow-hidden">
           <div className="bg-red-900 p-4 flex items-center justify-center">
             <h2 className="text-2xl font-bold text-white ml-2 font-serif">神社詳細情報登録</h2>
           </div>
-          <form onSubmit={handleFromSubmit} className="p-6 space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="shrinePlusCode" className="text-lg font-medium text-gray-700 font-serif">
-                PlusCode
-              </Label>
-              <Input
-                id="shrinePlusCode"
-                type="text"
-                placeholder="例：8Q6RFP4G+255"
-                className="w-full border-2 border-red-800 rounded-md p-2 font-serif"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="shrineFurigana" className="text-lg font-medium text-gray-700 font-serif">
-                神社名称（振り仮名）
-              </Label>
-              <Input
-                id="shrineFurigana"
-                type="text"
-                placeholder="例：いせじんぐう ないくう（こうたいじんぐう）"
-                className="w-full border-2 border-red-800 rounded-md p-2 font-serif"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="shrineAltName" className="text-lg font-medium text-gray-700 font-serif">
-                別名称
-              </Label>
-              <Input
-                id="shrineAltName"
-                type="text"
-                placeholder="例：伊勢神宮"
-                className="w-full border-2 border-red-800 rounded-md p-2 font-serif"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="shrineTag" className="text-lg font-medium text-gray-700 font-serif">
-                関連ワード
-              </Label>
-              <Input
-                id="shrineTag"
-                type="text"
-                placeholder="例：お伊勢参り"
-                className="w-full border-2 border-red-800 rounded-md p-2 font-serif"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="shrineFoundedYear" className="text-lg font-medium text-gray-700 font-serif">
-                創建年
-              </Label>
-              <Input
-                id="shrineFoundedYear"
-                type="text"
-                placeholder="例：垂仁天皇26年"
-                className="w-full border-2 border-red-800 rounded-md p-2 font-serif"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="shrineObjectOfWorship" className="text-lg font-medium text-gray-700 font-serif">
-                御祭神
-              </Label>
-              <Input
-                id="shrineObjectOfWorship"
-                type="text"
-                placeholder="例：天照坐皇大御神"
-                className="w-full border-2 border-red-800 rounded-md p-2 font-serif"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="shrineHasGoshuin" className="text-lg font-medium text-gray-700 font-serif">
-                御朱印
-              </Label>
-              <Input
-                id="shrineHasGoshuin"
-                type="text"
-                placeholder="例：あり"
-                className="w-full border-2 border-red-800 rounded-md p-2 font-serif"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="shrineWebsiteURL" className="text-lg font-medium text-gray-700 font-serif">
-              公式サイトURL
-              </Label>
-              <Input
-                id="shrineWebsiteURL"
-                type="text"
-                placeholder="例：https://www.isejingu.or.jp/"
-                className="w-full border-2 border-red-800 rounded-md p-2 font-serif"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="shrineWikiUrl" className="text-lg font-medium text-gray-700 font-serif">
-                WikipediaURL
-              </Label>
-              <Input
-                id="shrineWikiUrl"
-                type="text"
-                placeholder="例：https://ja.wikipedia.org/wiki/伊勢神宮"
-                className="w-full border-2 border-red-800 rounded-md p-2 font-serif"
-              />
-            </div>
+          <form onSubmit={handleSubmit} className="space-y-8">
+            {formSections.map((section) => (
+              <div key={section.id}>
+                <Label htmlFor={section.id} className="mb-2 block">
+                  {section.title}
+                </Label>
+                {section.fields.map((field) => (
+                  <div key={field.id} className="flex items-end gap-2">
+                    <div className="flex-1">
+                      {renderField(section, field)}
+                    </div>
+                    <PlusIcon onClick={() => handleAddField(section.id)} className="h-4 w-4" />
+                    <PlusIcon onClick={() => handleRemoveField(section.id, field.id)} className="h-4 w-4" />
+                  </div>
+                ))}
+              </div>
+            ))}
             <Button className="w-full bg-red-900 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:scale-105 font-serif">
               登録
             </Button>
-          </form>
+            </form>
         </div>
       </div>
     </>
-
   );
   
 };
+
+function PlusIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="11" cy="11" r="8" />
+      <path d="M 11 7 L 11 11 L 7 11 L 7 13 L 11 13 L 11 17 L 13 17 L 13 13 L 17 13 L 17 11 L 13 11 L 13 7 L 11 7 z" />
+    </svg>
+  )
+}
 
 export default AdminRegisterShrineDetails;
