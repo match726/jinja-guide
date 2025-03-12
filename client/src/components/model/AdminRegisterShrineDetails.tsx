@@ -15,10 +15,7 @@ import '@/styles/global.css';
 // フィールドの型定義
 type Field = {
   id: number
-  value1: string
-  value2: string
-  type: "text" | "select + text"
-  options?: string[]
+  value: string
 }
 
 // セクションの型定義
@@ -26,6 +23,8 @@ type FormSection = {
   id: string
   title: string
   placeHolder: string
+  type: "text" | "select + text"
+  options?: string[]
   isMultiple: boolean
   fields: Field[]
 }
@@ -41,71 +40,82 @@ const AdminRegisterShrineDetails = () => {
       id: "plusCode",
       title: "PlusCode",
       placeHolder: "例：8Q6RFP4G+255",
+      type: "text",
       isMultiple: false,
-      fields: [{ id: 1, value1: "", value2: "", type: "text" }],
+      fields: [{ id: 1, value: "" }],
     },
     {
       id: "furigana",
       title: "神社名称（振り仮名）",
       placeHolder: "例：いせじんぐう ないくう（こうたいじんぐう）",
+      type: "text",
       isMultiple: false,
-      fields: [{ id: 1, value1: "", value2: "", type: "text" }],
+      fields: [{ id: 1, value: "" }],
     },
     {
       id: "altName",
       title: "別名称",
       placeHolder: "例：伊勢神宮",
+      type: "text",
       isMultiple: true,
-      fields: [{ id: 1, value1: "", value2: "", type: "text" }],
+      fields: [{ id: 1, value: "" }],
     },
     {
       id: "tag",
       title: "関連ワード",
       placeHolder: "例：お伊勢参り",
+      type: "text",
       isMultiple: true,
-      fields: [{ id: 1, value1: "", value2: "", type: "text" }],
+      fields: [{ id: 1, value: "" }],
     },
     {
       id: "foundedYear",
       title: "創建年",
       placeHolder: "例：垂仁天皇26年",
+      type: "text",
       isMultiple: false,
-      fields: [{ id: 1, value1: "", value2: "", type: "text" }],
+      fields: [{ id: 1, value: "" }],
     },
     {
       id: "objectOfWorship",
       title: "御祭神",
       placeHolder: "例：天照坐皇大御神",
+      type: "text",
       isMultiple: true,
-      fields: [{ id: 1, value1: "", value2: "", type: "text" }],
+      fields: [{ id: 1, value: "" }],
     },
     {
       id: "shrineRank",
       title: "社格",
       placeHolder: "例：式内社",
+      type: "select + text",
+      options: ["1: 延喜式内社", "2: 国史見在社", "3: 二十二社制度", "4: 一宮制度", "5: 総社（惣社）", "6: 近代社格制度", "7: 別表神社"],
       isMultiple: true,
-      fields: [{ id: 1, value1: "", value2: "", type: "select + text", options: ["1: 延喜式内社", "2: 国史見在社", "3: 二十二社制度", "4: 一宮制度", "5: 総社（惣社）", "6: 近代社格制度", "7: 別表神社"] }],
+      fields: [{ id: 1, value: "" }],
     },
     {
       id: "hasGoshuin",
       title: "御朱印",
       placeHolder: "例：あり",
+      type: "text",
       isMultiple: false,
-      fields: [{ id: 1, value1: "", value2: "", type: "text" }],
+      fields: [{ id: 1, value: "" }],
     },
     {
       id: "websiteUrl",
       title: "公式サイトURL",
       placeHolder: "例：https://www.isejingu.or.jp/",
+      type: "text",
       isMultiple: false,
-      fields: [{ id: 1, value1: "", value2: "", type: "text" }],
+      fields: [{ id: 1, value: "" }],
     },
     {
       id: "wikipediaUrl",
       title: "WikipediaURL",
       placeHolder: "例：https://ja.wikipedia.org/wiki/伊勢神宮",
+      type: "text",
       isMultiple: false,
-      fields: [{ id: 1, value1: "", value2: "", type: "text" }],
+      fields: [{ id: 1, value: "" }],
     }
   ])
 
@@ -117,10 +127,7 @@ const AdminRegisterShrineDetails = () => {
           const newId = section.fields.length > 0 ? Math.max(...section.fields.map((field) => field.id)) + 1 : 1
           const newField: Field = {
             id: newId,
-            value1: "",
-            value2: "",
-            type: section.fields[0].type, // 最初のフィールドと同じタイプを使用
-            options: section.fields[0].options, // オプションがある場合はそれも複製
+            value: "",
           }
           return {
             ...section,
@@ -197,13 +204,13 @@ const AdminRegisterShrineDetails = () => {
 
   // フィールドのレンダリング関数
   const renderField = (section: FormSection, field: Field) => {
-    switch (field.type) {
+    switch (section.type) {
       case "text":
         return (
           <div className="flex justify-center items-center gap-2">
             <Input
               id={`${section.id}-${field.id}`}
-              value={field.value1}
+              value={field.value}
               onChange={(e) => handleInputChange(section.id, field.id, e.target.value)}
               placeholder={section.placeHolder}
               className="w-full border-2 border-red-800 rounded-md p-2 font-serif"
@@ -220,12 +227,12 @@ const AdminRegisterShrineDetails = () => {
       case "select + text":
         return (
           <div className="flex justify-center items-center gap-2">
-            <Select value={field.value1} onValueChange={(value) => handleInputChange(section.id, field.id, value)}>
+            <Select value={field.value} onValueChange={(value) => handleInputChange(section.id, field.id, value)}>
               <SelectTrigger className="w-full w-max-md border-2 border-red-800 rounded-md p-2 font-serif">
                 <SelectValue placeholder={`${section.title}を選択`} />
               </SelectTrigger>
               <SelectContent>
-                {field.options?.map((option) => (
+                {section.options?.map((option) => (
                   <SelectItem key={option} value={option}>
                     {option}
                   </SelectItem>
@@ -234,7 +241,7 @@ const AdminRegisterShrineDetails = () => {
             </Select>
             <Input
               id={`${section.id}-${field.id}`}
-              value={field.value2}
+              value={field.value}
               onChange={(e) => handleInputChange(section.id, field.id, e.target.value)}
               placeholder={section.placeHolder}
               className="w-full w-max-md border-2 border-red-800 rounded-md p-2 font-serif"
