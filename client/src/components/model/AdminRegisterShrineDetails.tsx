@@ -15,7 +15,8 @@ import '@/styles/global.css';
 // フィールドの型定義
 type Field = {
   id: number
-  value: string
+  value1: string
+  value2: string
   type: "text" | "select + text"
   options?: string[]
 }
@@ -41,70 +42,70 @@ const AdminRegisterShrineDetails = () => {
       title: "PlusCode",
       placeHolder: "例：8Q6RFP4G+255",
       isMultiple: false,
-      fields: [{ id: 1, value: "", type: "text" }],
+      fields: [{ id: 1, value1: "", value2: "", type: "text" }],
     },
     {
       id: "furigana",
       title: "神社名称（振り仮名）",
       placeHolder: "例：いせじんぐう ないくう（こうたいじんぐう）",
       isMultiple: false,
-      fields: [{ id: 1, value: "", type: "text" }],
+      fields: [{ id: 1, value1: "", value2: "", type: "text" }],
     },
     {
       id: "altName",
       title: "別名称",
       placeHolder: "例：伊勢神宮",
       isMultiple: true,
-      fields: [{ id: 1, value: "", type: "text" }],
+      fields: [{ id: 1, value1: "", value2: "", type: "text" }],
     },
     {
       id: "tag",
       title: "関連ワード",
       placeHolder: "例：お伊勢参り",
       isMultiple: true,
-      fields: [{ id: 1, value: "", type: "text" }],
+      fields: [{ id: 1, value1: "", value2: "", type: "text" }],
     },
     {
       id: "foundedYear",
       title: "創建年",
       placeHolder: "例：垂仁天皇26年",
       isMultiple: false,
-      fields: [{ id: 1, value: "", type: "text" }],
+      fields: [{ id: 1, value1: "", value2: "", type: "text" }],
     },
     {
       id: "objectOfWorship",
       title: "御祭神",
       placeHolder: "例：天照坐皇大御神",
       isMultiple: true,
-      fields: [{ id: 1, value: "", type: "text" }],
+      fields: [{ id: 1, value1: "", value2: "", type: "text" }],
     },
     {
       id: "shrineRank",
       title: "社格",
       placeHolder: "例：式内社",
       isMultiple: true,
-      fields: [{ id: 1, value: "", type: "select + text", options: ["1: 延喜式内社", "2: 国史見在社", "3: 二十二社制度", "4: 一宮制度", "5: 総社（惣社）", "6: 近代社格制度", "7: 別表神社"] }],
+      fields: [{ id: 1, value1: "", value2: "", type: "select + text", options: ["1: 延喜式内社", "2: 国史見在社", "3: 二十二社制度", "4: 一宮制度", "5: 総社（惣社）", "6: 近代社格制度", "7: 別表神社"] }],
     },
     {
       id: "hasGoshuin",
       title: "御朱印",
       placeHolder: "例：あり",
       isMultiple: false,
-      fields: [{ id: 1, value: "", type: "text" }],
+      fields: [{ id: 1, value1: "", value2: "", type: "text" }],
     },
     {
       id: "websiteUrl",
       title: "公式サイトURL",
       placeHolder: "例：https://www.isejingu.or.jp/",
       isMultiple: false,
-      fields: [{ id: 1, value: "", type: "text" }],
+      fields: [{ id: 1, value1: "", value2: "", type: "text" }],
     },
     {
       id: "wikipediaUrl",
       title: "WikipediaURL",
       placeHolder: "例：https://ja.wikipedia.org/wiki/伊勢神宮",
       isMultiple: false,
-      fields: [{ id: 1, value: "", type: "text" }],
+      fields: [{ id: 1, value1: "", value2: "", type: "text" }],
     }
   ])
 
@@ -116,7 +117,8 @@ const AdminRegisterShrineDetails = () => {
           const newId = section.fields.length > 0 ? Math.max(...section.fields.map((field) => field.id)) + 1 : 1
           const newField: Field = {
             id: newId,
-            value: "",
+            value1: "",
+            value2: "",
             type: section.fields[0].type, // 最初のフィールドと同じタイプを使用
             options: section.fields[0].options, // オプションがある場合はそれも複製
           }
@@ -201,7 +203,7 @@ const AdminRegisterShrineDetails = () => {
           <div className="flex justify-center items-center gap-2">
             <Input
               id={`${section.id}-${field.id}`}
-              value={field.value}
+              value={field.value1}
               onChange={(e) => handleInputChange(section.id, field.id, e.target.value)}
               placeholder={section.placeHolder}
               className="w-full border-2 border-red-800 rounded-md p-2 font-serif"
@@ -218,7 +220,7 @@ const AdminRegisterShrineDetails = () => {
       case "select + text":
         return (
           <div className="flex justify-center items-center gap-2">
-            <Select value={field.value} onValueChange={(value) => handleInputChange(section.id, field.id, value)}>
+            <Select value={field.value1} onValueChange={(value) => handleInputChange(section.id, field.id, value)}>
               <SelectTrigger className="w-full w-max-md border-2 border-red-800 rounded-md p-2 font-serif">
                 <SelectValue placeholder={`${section.title}を選択`} />
               </SelectTrigger>
@@ -232,7 +234,7 @@ const AdminRegisterShrineDetails = () => {
             </Select>
             <Input
               id={`${section.id}-${field.id}`}
-              value={field.value}
+              value={field.value2}
               onChange={(e) => handleInputChange(section.id, field.id, e.target.value)}
               placeholder={section.placeHolder}
               className="w-full w-max-md border-2 border-red-800 rounded-md p-2 font-serif"
