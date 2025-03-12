@@ -224,7 +224,9 @@ const AdminRegisterShrineDetails = () => {
 
     formSections.map(section => {
       let effectiveFields = section.fields.filter(field => field.value !== "");
+      if (effectiveFields.length > 0) {
         reqMap.set(section.name, effectiveFields)
+      }
     });
 
     console.log(reqMap)
