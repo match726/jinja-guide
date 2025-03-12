@@ -208,8 +208,8 @@ const AdminRegisterShrineDetails = () => {
             />
             {section.isMultiple == true
               ? <div>
-                  <SlPlus onClick={() => handleAddField(section.id)} className="h-4 w-4" />
-                  <SlMinus onClick={() => handleRemoveField(section.id, field.id)} className="h-4 w-4" />
+                  <SlPlus onClick={() => handleAddField(section.id)} className="h-5 w-5" />
+                  <SlMinus onClick={() => handleRemoveField(section.id, field.id)} className="h-5 w-5" />
                 </div>
               : null
             }
@@ -230,10 +230,17 @@ const AdminRegisterShrineDetails = () => {
                 ))}
               </SelectContent>
             </Select>
+            <Input
+              id={`${section.id}-${field.id}`}
+              value={field.value}
+              onChange={(e) => handleInputChange(section.id, field.id, e.target.value)}
+              placeholder={section.placeHolder}
+              className="w-full w-max-md border-2 border-red-800 rounded-md p-2 font-serif"
+            />
             {section.isMultiple == true
               ? <div>
-                  <SlPlus onClick={() => handleAddField(section.id)} className="h-4 w-4" />
-                  <SlMinus onClick={() => handleRemoveField(section.id, field.id)} className="h-4 w-4" />
+                  <SlPlus onClick={() => handleAddField(section.id)} className="h-5 w-5" />
+                  <SlMinus onClick={() => handleRemoveField(section.id, field.id)} className="h-5 w-5" />
                 </div>
               : null
             }
