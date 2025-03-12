@@ -15,12 +15,13 @@ import '@/styles/global.css';
 // フィールドの型定義
 type Field = {
   id: number
+  seq: string
   value: string
 }
 
 // セクションの型定義
 type FormSection = {
-  id: string
+  name: string
   title: string
   placeHolder: string
   type: "text" | "select + text"
@@ -37,96 +38,97 @@ const AdminRegisterShrineDetails = () => {
   // フォームの初期状態を定義
   const [formSections, setFormSections] = useState<FormSection[]>([
     {
-      id: "plusCode",
+      name: "plusCode",
       title: "PlusCode",
       placeHolder: "例：8Q6RFP4G+255",
       type: "text",
       isMultiple: false,
-      fields: [{ id: 1, value: "" }],
+      fields: [{ id: 1, seq: "", value: "" }],
     },
     {
-      id: "furigana",
+      name: "furigana",
       title: "神社名称（振り仮名）",
       placeHolder: "例：いせじんぐう ないくう（こうたいじんぐう）",
       type: "text",
       isMultiple: false,
-      fields: [{ id: 1, value: "" }],
+      fields: [{ id: 1, seq: "", value: "" }],
     },
     {
-      id: "altName",
+      name: "altName",
       title: "別名称",
       placeHolder: "例：伊勢神宮",
       type: "text",
       isMultiple: true,
-      fields: [{ id: 1, value: "" }],
+      fields: [{ id: 1, seq: "", value: "" }],
     },
     {
-      id: "tag",
+      name: "tag",
       title: "関連ワード",
       placeHolder: "例：お伊勢参り",
       type: "text",
       isMultiple: true,
-      fields: [{ id: 1, value: "" }],
+      fields: [{ id: 1, seq: "", value: "" }],
     },
     {
-      id: "foundedYear",
+      name: "foundedYear",
       title: "創建年",
       placeHolder: "例：垂仁天皇26年",
       type: "text",
       isMultiple: false,
-      fields: [{ id: 1, value: "" }],
+      fields: [{ id: 1, seq: "", value: "" }],
     },
     {
-      id: "objectOfWorship",
+      name: "objectOfWorship",
       title: "御祭神",
       placeHolder: "例：天照坐皇大御神",
       type: "text",
       isMultiple: true,
-      fields: [{ id: 1, value: "" }],
+      fields: [{ id: 1, seq: "", value: "" }],
     },
     {
-      id: "shrineRank",
+      name: "shrineRank",
       title: "社格",
       placeHolder: "例：式内社",
       type: "select + text",
       options: ["1: 延喜式内社", "2: 国史見在社", "3: 二十二社制度", "4: 一宮制度", "5: 総社（惣社）", "6: 近代社格制度", "7: 別表神社"],
       isMultiple: true,
-      fields: [{ id: 1, value: "" }],
+      fields: [{ id: 1, seq: "", value: "" }],
     },
     {
-      id: "hasGoshuin",
+      name: "hasGoshuin",
       title: "御朱印",
       placeHolder: "例：あり",
       type: "text",
       isMultiple: false,
-      fields: [{ id: 1, value: "" }],
+      fields: [{ id: 1, seq: "", value: "" }],
     },
     {
-      id: "websiteUrl",
+      name: "websiteUrl",
       title: "公式サイトURL",
       placeHolder: "例：https://www.isejingu.or.jp/",
       type: "text",
       isMultiple: false,
-      fields: [{ id: 1, value: "" }],
+      fields: [{ id: 1, seq: "", value: "" }],
     },
     {
-      id: "wikipediaUrl",
+      name: "wikipediaUrl",
       title: "WikipediaURL",
       placeHolder: "例：https://ja.wikipedia.org/wiki/伊勢神宮",
       type: "text",
       isMultiple: false,
-      fields: [{ id: 1, value: "" }],
+      fields: [{ id: 1, seq: "", value: "" }],
     }
   ])
 
   // 特定のセクションにフィールドを追加
-  const handleAddField = (sectionId: string) => {
+  const handleAddField = (sectionName: string) => {
     setFormSections((prevSections) =>
       prevSections.map((section) => {
-        if (section.id === sectionId) {
+        if (section.name === sectionName) {
           const newId = section.fields.length > 0 ? Math.max(...section.fields.map((field) => field.id)) + 1 : 1
           const newField: Field = {
             id: newId,
+            seq: "",
             value: "",
           }
           return {
@@ -140,10 +142,10 @@ const AdminRegisterShrineDetails = () => {
   }
 
   // 特定のセクションから特定のフィールドを削除
-  const handleRemoveField = (sectionId: string, fieldId: number) => {
+  const handleRemoveField = (sectionName: string, fieldId: number) => {
     setFormSections((prevSections) =>
       prevSections.map((section) => {
-        if (section.id === sectionId) {
+        if (section.name === sectionName) {
           // 最後の1つは削除しない
           if (section.fields.length === 1) return section
 
@@ -181,14 +183,29 @@ const AdminRegisterShrineDetails = () => {
 
   // }, [formSections]);
 
-  // 特定のセクションの特定のフィールドの値を更新
-  const handleInputChange = (sectionId: string, fieldId: number, value: string) => {
+  // 特定のセクションの特定のフィールドの値（value）を更新
+  const handleValueChange = (sectionName: string, fieldId: number, value: string) => {
     setFormSections((prevSections) =>
       prevSections.map((section) => {
-        if (section.id === sectionId) {
+        if (section.name === sectionName) {
           return {
             ...section,
             fields: section.fields.map((field) => (field.id === fieldId ? { ...field, value } : field)),
+          }
+        }
+        return section
+      }),
+    )
+  }
+
+  // 特定のセクションの特定のフィールドの値（seq）を更新
+  const handleSeqChange = (sectionName: string, fieldId: number, seq: string) => {
+    setFormSections((prevSections) =>
+      prevSections.map((section) => {
+        if (section.name === sectionName) {
+          return {
+            ...section,
+            fields: section.fields.map((field) => (field.id === fieldId ? { ...field, seq } : field)),
           }
         }
         return section
@@ -209,16 +226,16 @@ const AdminRegisterShrineDetails = () => {
         return (
           <div className="flex justify-center items-center gap-2">
             <Input
-              id={`${section.id}-${field.id}`}
+              id={`${section.name}-${field.id}`}
               value={field.value}
-              onChange={(e) => handleInputChange(section.id, field.id, e.target.value)}
+              onChange={(e) => handleValueChange(section.name, field.id, e.target.value)}
               placeholder={section.placeHolder}
               className="w-full border-2 border-red-800 rounded-md p-2 font-serif"
             />
             {section.isMultiple == true
               ? <div>
-                  <SlPlus onClick={() => handleAddField(section.id)} className="h-5 w-5" />
-                  <SlMinus onClick={() => handleRemoveField(section.id, field.id)} className="h-5 w-5" />
+                  <SlPlus onClick={() => handleAddField(section.name)} className="h-5 w-5" />
+                  <SlMinus onClick={() => handleRemoveField(section.name, field.id)} className="h-5 w-5" />
                 </div>
               : null
             }
@@ -227,29 +244,29 @@ const AdminRegisterShrineDetails = () => {
       case "select + text":
         return (
           <div className="flex justify-center items-center gap-2">
-            <Select value={field.value} onValueChange={(value) => handleInputChange(section.id, field.id, value)}>
+            <Select value={field.value} onValueChange={(value) => handleSeqChange(section.name, field.id, value)}>
               <SelectTrigger className="w-full w-max-md border-2 border-red-800 rounded-md p-2 font-serif">
                 <SelectValue placeholder={`${section.title}を選択`} />
               </SelectTrigger>
               <SelectContent>
                 {section.options?.map((option) => (
-                  <SelectItem key={option} value={option}>
+                  <SelectItem key={option} value={option.slice(0,option.indexOf(":"))}>
                     {option}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
             <Input
-              id={`${section.id}-${field.id}`}
+              id={`${section.name}-${field.id}`}
               value={field.value}
-              onChange={(e) => handleInputChange(section.id, field.id, e.target.value)}
+              onChange={(e) => handleValueChange(section.name, field.id, e.target.value)}
               placeholder={section.placeHolder}
               className="w-full w-max-md border-2 border-red-800 rounded-md p-2 font-serif"
             />
             {section.isMultiple == true
               ? <div>
-                  <SlPlus onClick={() => handleAddField(section.id)} className="h-5 w-5" />
-                  <SlMinus onClick={() => handleRemoveField(section.id, field.id)} className="h-5 w-5" />
+                  <SlPlus onClick={() => handleAddField(section.name)} className="h-5 w-5" />
+                  <SlMinus onClick={() => handleRemoveField(section.name, field.id)} className="h-5 w-5" />
                 </div>
               : null
             }
@@ -272,8 +289,8 @@ const AdminRegisterShrineDetails = () => {
           </div>
           <form onSubmit={handleSubmit} className="p-6 space-y-6">
             {formSections.map((section) => (
-              <div key={section.id}>
-                <Label htmlFor={section.id} className="text-lg font-medium text-gray-700 font-serif">
+              <div key={section.name}>
+                <Label htmlFor={section.name} className="text-lg font-medium text-gray-700 font-serif">
                   {section.title}
                 </Label>
                 {section.fields.map((field) => (
