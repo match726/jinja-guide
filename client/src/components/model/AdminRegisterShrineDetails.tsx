@@ -214,9 +214,23 @@ const AdminRegisterShrineDetails = () => {
   }
 
   const handleSubmit = (e: React.FormEvent) => {
+
+    // ページ遷移を防ぐ（デフォルトでは、フォーム送信ボタンを押すとページが遷移してしまう）
     e.preventDefault()
-    console.log("Form submitted with values:", formSections)
-    // ここでバックエンドにデータを送信する処理を行う
+
+    let reqData = formSections.filter(section => {
+      section.fields.map(field => {
+        if (field.value != "") {
+          return {
+            name: section.name,
+            field: field
+          };
+        }
+      })
+    })
+
+    console.log(reqData)
+
   }
 
   // フィールドのレンダリング関数
