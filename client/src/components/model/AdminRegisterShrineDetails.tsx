@@ -219,14 +219,7 @@ const AdminRegisterShrineDetails = () => {
     e.preventDefault()
 
     const reqData = formSections.map(section => {
-      section.fields.map(field => {
-        if (field.value != "") {
-          return {
-            name: section.name,
-            field: field
-          };
-        };
-      });
+      section.fields.map(field => (field.value != ""))
     });
 
     console.log(reqData)
