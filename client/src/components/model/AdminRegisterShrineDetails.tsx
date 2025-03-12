@@ -226,16 +226,17 @@ const AdminRegisterShrineDetails = () => {
 
     console.log(formSections);
 
-    const reqData = formSections.map(section => {
-      const effectiveFields = section.fields.filter(field => field.value !== "");
-      if (effectiveFields.length > 0) {
-        effectiveFields.map(field => {
+    const reqData: Request[] = [];
+    formSections.forEach((section) => {
+      section.fields.forEach((field) => {
+        if (field.value !== "") {
           return {
+            ...reqData,
             name: section.name,
-            field: field 
-          }
-        })
-      }
+            field: field
+          };
+        };
+      });
     });
 
     console.log(reqData)
