@@ -244,7 +244,7 @@ const AdminRegisterShrineDetails = () => {
       case "select + text":
         return (
           <div className="flex justify-center items-center gap-2">
-            <Select value={field.value} onValueChange={(value) => handleSeqChange(section.name, field.id, value)}>
+            <Select value={field.seq} onValueChange={(value) => handleSeqChange(section.name, field.id, value)}>
               <SelectTrigger className="w-full w-max-md border-2 border-red-800 rounded-md p-2 font-serif">
                 <SelectValue placeholder={`${section.title}を選択`} />
               </SelectTrigger>
