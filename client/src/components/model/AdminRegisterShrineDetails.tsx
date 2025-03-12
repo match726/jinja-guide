@@ -229,6 +229,7 @@ const AdminRegisterShrineDetails = () => {
     const reqData: Request[] = [];
     formSections.forEach((section) => {
       section.fields.forEach((field) => {
+        console.log(field.value)
         if (field.value !== "") {
           return {
             ...reqData,
