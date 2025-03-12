@@ -218,13 +218,13 @@ const AdminRegisterShrineDetails = () => {
     // ページ遷移を防ぐ（デフォルトでは、フォーム送信ボタンを押すとページが遷移してしまう）
     e.preventDefault()
 
-    console.log("formSections: " + formSections);
+    console.log(formSections);
 
     const reqData = formSections.map(section => {
       section.fields.filter(field => (field.value != ""))
     });
 
-    console.log("reqData: " + reqData)
+    console.log(reqData)
 
   }
 
