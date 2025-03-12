@@ -220,13 +220,12 @@ const AdminRegisterShrineDetails = () => {
 
     console.log(formSections);
 
-    const reqMap = new Map<string, Field>();
+    const reqMap = new Map<string, Field[]>();
 
     formSections.map(section => {
-      section.fields.filter(field => field.value !== "").map(field => {
-        reqMap.set(section.name, field)
-      })
-    })
+      let effectiveFields = section.fields.filter(field => field.value !== "");
+        reqMap.set(section.name, effectiveFields)
+    });
 
     console.log(reqMap)
 
