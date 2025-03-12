@@ -30,12 +30,6 @@ type FormSection = {
   fields: Field[]
 }
 
-// HTTPリクエストの型定義
-type Request = {
-  name: string
-  field: Field[]
-}
-
 const AdminRegisterShrineDetails = () => {
 
   // 初回レンダリングのリクエスト送信を無効化
@@ -226,21 +220,15 @@ const AdminRegisterShrineDetails = () => {
 
     console.log(formSections);
 
-    const reqData: Request[] = [];
-    formSections.forEach((section) => {
-      section.fields.forEach((field) => {
-        if (field.value !== "") {
-          console.log(field.value)
-          return {
-            ...reqData,
-            name: section.name,
-            field: field
-          };
-        };
-      });
-    });
+    const reqMap = new Map<string, Field>();
 
-    console.log(reqData)
+    formSections.map(section => {
+      section.fields.filter(field => field.value !== "").map(field => {
+        reqMap.set(section.name, field)
+      })
+    })
+
+    console.log(reqMap)
 
   }
 
