@@ -18,9 +18,9 @@ func NewShrineRegisterPersistence(pg *database.Postgres) repository.ShrineRegist
 	return &shrineRegisterPersistence{pg: pg}
 }
 
-func (r *shrineRegisterPersistence) GetRegisterShrines(ctx context.Context, query string) (pshrrreqs []*model.ShrineRegisterReq, err error) {
+func (r *shrineRegisterPersistence) GetRegisterShrines(ctx context.Context, query string) (pshrrs []*model.ShrineRegister, err error) {
 
-	var shrrreqs []model.ShrineRegisterReq
+	var shrrs []model.ShrineRegister
 
 	rows, err := r.pg.DbPool.Query(ctx, query)
 	if err != nil {
@@ -28,16 +28,16 @@ func (r *shrineRegisterPersistence) GetRegisterShrines(ctx context.Context, quer
 	}
 	defer rows.Close()
 
-	shrrreqs, err = pgx.CollectRows(rows, pgx.RowToStructByPos[model.ShrineRegisterReq])
+	shrrs, err = pgx.CollectRows(rows, pgx.RowToStructByPos[model.ShrineRegister])
 	if err != nil {
 		return nil, fmt.Errorf("[コレクト失敗]: %w", err)
 	}
 
-	for _, shrrreq := range shrrreqs {
-		pshrrreqs = append(pshrrreqs, &shrrreq)
+	for _, shrr := range shrrs {
+		pshrrs = append(pshrrs, &shrr)
 	}
 
-	return pshrrreqs, nil
+	return pshrrs, nil
 
 }
 

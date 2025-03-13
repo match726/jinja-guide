@@ -7,6 +7,6 @@ import (
 )
 
 type ShrineRegisterRepository interface {
-	GetRegisterShrines(ctx context.Context, query string) ([]*model.ShrineRegisterReq, error)
+	GetRegisterShrines(ctx context.Context, query string) ([]*model.ShrineRegister, error)
 	DeleteRegisterShrine(ctx context.Context, query string) error
 }

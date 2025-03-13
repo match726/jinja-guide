@@ -79,29 +79,27 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 	body := make([]byte, r.ContentLength)
 	r.Body.Read(body)
 
-	// ShrineContentsRegisterReq構造体へ変換
-	var shrcreq model.ShrineContentsRegisterReq
-	err := json.Unmarshal([]byte(string(body)), &shrcreq)
+	// ShrineRegisterReq構造体へ変換
+	var shrq *model.ShrineRegisterReq
+	err := json.Unmarshal([]byte(string(body)), shrq)
 	if err != nil {
 		logger.Error(ctx, "リクエスト構造体変換失敗", "errmsg", err)
 		w.WriteHeader(http.StatusBadRequest)
 	}
 
-	fmt.Printf("shrcreq: %+v\n", shrcreq)
-
-	var shr *model.Shrine
-
 	// 神社の登録があるかをチェック
-	shr, existsShrine := srh.sru.ExistsShrineByPlusCode(ctx, shrcreq.PlusCode[0].Value)
+	existsShrine := srh.sru.ExistsShrineByPlusCode(ctx, shrq)
 	if !existsShrine {
 		logger.Error(ctx, "対象神社検索失敗", "errmsg", err)
-		err = srh.sru.SendErrMessageToDiscord("神社詳細情報登録", []string{"対象神社検索失敗"}, nil, shr)
+		err = srh.sru.SendErrMessageToDiscord("神社詳細情報登録", []string{"対象神社検索失敗"}, shrq)
 		if err != nil {
 			logger.Error(ctx, "Discord連携失敗", "errmsg", err)
 		}
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+
+	fmt.Printf("shrcreq: %+v\n", shrq)
 
 	// if len(shrcreq.Furigana) != 0 {
 	// 	err = srh.sru.RegisterShrineContents(ctx, 1, 1, shrcreq.PlusCode, "", shrcreq.Furigana, "", "", 0)
@@ -161,7 +159,7 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 	// }
 
 	w.Header().Set("Content-Type", "application/json")
-	b, err := json.Marshal(shrcreq)
+	b, err := json.Marshal(shrq)
 
 	if err != nil {
 		logger.Error(ctx, "JSON変換失敗", "errmsg", err)

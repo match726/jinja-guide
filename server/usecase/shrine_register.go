@@ -16,14 +16,14 @@ import (
 )
 
 type ShrineRegisterUsecase interface {
-	GetAllRegisterShrines(ctx context.Context) (rshrs []*model.ShrineRegisterReq, err error)
-	DeleteRegisteredShrine(ctx context.Context, rshr *model.ShrineRegisterReq) (err error)
-	GetStdAreaCodeByAddress(ctx context.Context, shrrreq *model.ShrineRegisterReq) (sac string, err error)
-	GetLocnInfoFromPlaceAPI(ctx context.Context, shrrreq *model.ShrineRegisterReq, sac string) (shr *model.Shrine, caution []string, err error)
+	GetAllRegisterShrines(ctx context.Context) (pshrqs []*model.ShrineRegisterReq, err error)
+	DeleteRegisteredShrine(ctx context.Context, shrq *model.ShrineRegisterReq) (err error)
+	GetStdAreaCodeByAddress(ctx context.Context, shrq *model.ShrineRegisterReq) (sac string, err error)
+	GetLocnInfoFromPlaceAPI(ctx context.Context, shrq *model.ShrineRegisterReq, sac string) (shr *model.Shrine, caution []string, err error)
 	RegisterShrine(ctx context.Context, shr *model.Shrine) (err error)
 	RegisterShrineContents(ctx context.Context, id int, seq int, keyword1 string, keyword2 string, content1 string, content2 string, content3 string, seqHandler int) (err error)
-	ExistsShrineByPlusCode(ctx context.Context, plusCode string) (*model.Shrine, bool)
-	SendErrMessageToDiscord(procname string, errmsgs []string, shrreq *model.ShrineRegisterReq, shr *model.Shrine) error
+	ExistsShrineByPlusCode(ctx context.Context, shrq *model.ShrineRegisterReq) bool
+	SendErrMessageToDiscord(procName string, errmsgs []string, shrq *model.ShrineRegisterReq) error
 	ConvertSQLErrorMessage(err error) (errmsg string)
 }
 
@@ -38,27 +38,108 @@ func NewShrineRegisterUsecase(sacr repository.StdAreaCodeRepository, sr reposito
 	return &shrineRegisterUsecase{sacr: sacr, sr: sr, scr: scr, srr: srr}
 }
 
-func (sru shrineRegisterUsecase) GetAllRegisterShrines(ctx context.Context) (shrreqs []*model.ShrineRegisterReq, err error) {
+// 神社一括登録テーブルから情報取得
+func (sru shrineRegisterUsecase) GetAllRegisterShrines(ctx context.Context) (pshrqs []*model.ShrineRegisterReq, err error) {
+
+	var shrrs []*model.ShrineRegister
 
 	query := `SELECT rshr.name, rshr.address, rshr.furigana, rshr.alt_name, rshr.tags, rshr.founded_year, rshr.object_of_worship, rshr.has_goshuin, rshr.website_url, rshr.wikipedia_url
 						FROM m_register_shrine rshr`
 
-	shrreqs, err = sru.srr.GetRegisterShrines(ctx, query)
+	shrrs, err = sru.srr.GetRegisterShrines(ctx, query)
 	if err != nil {
 		return nil, err
 	}
 
-	return shrreqs, nil
+	for idx, shrr := range shrrs {
+
+		var altNameFields []model.Field
+		var tagFields []model.Field
+		var objectOfWorshipFields []model.Field
+		var shrineRankFields []model.Field
+
+		// 別名称をFieldへ変換
+		for _, altName := range shrr.AltNames {
+			altNameFields = append(altNameFields, model.Field{Id: idx + 1, Seq: "", Value: altName})
+		}
+		// 関連ワードをFieldへ変換
+		for idx, tag := range shrr.Tags {
+			tagFields = append(tagFields, model.Field{Id: idx + 1, Seq: "", Value: tag})
+		}
+		// 御祭神をFieldへ変換
+		for idx, oow := range shrr.ObjectOfWorships {
+			objectOfWorshipFields = append(objectOfWorshipFields, model.Field{Id: idx + 1, Seq: "", Value: oow})
+		}
+		// 社格をFieldへ変換
+		for idx, shrineRank := range shrr.ShrineRanks {
+			shrineRankFields = append(shrineRankFields, model.Field{Id: idx + 1, Seq: shrineRank.Seq, Value: shrineRank.Value})
+		}
+
+		shrq := model.ShrineRegisterReq{
+			Name: model.Field{
+				Id:    1,
+				Seq:   "",
+				Value: shrr.Name,
+			},
+			Address: model.Field{
+				Id:    1,
+				Seq:   "",
+				Value: shrr.Address,
+			},
+			PlusCode: model.Field{
+				Id:    1,
+				Seq:   "",
+				Value: "",
+			},
+			PlaceID: model.Field{
+				Id:    1,
+				Seq:   "",
+				Value: "",
+			},
+			Furigana: model.Field{
+				Id:    1,
+				Seq:   "",
+				Value: shrr.Furigana,
+			},
+			AltNames: altNameFields,
+			Tags:     tagFields,
+			FoundedYear: model.Field{
+				Id:    1,
+				Seq:   "",
+				Value: shrr.FoundedYear,
+			},
+			ObjectOfWorships: objectOfWorshipFields,
+			ShrineRanks:      shrineRankFields,
+			HasGoshuin: model.Field{
+				Id:    1,
+				Seq:   "",
+				Value: shrr.HasGoshuin,
+			},
+			WebsiteURL: model.Field{
+				Id:    1,
+				Seq:   "",
+				Value: shrr.WebsiteURL,
+			},
+			WikipediaURL: model.Field{
+				Id:    1,
+				Seq:   "",
+				Value: shrr.WikipediaURL,
+			},
+		}
+		pshrqs = append(pshrqs, &shrq)
+	}
+
+	return pshrqs, nil
 
 }
 
 // 登録済のレコードを神社一括登録テーブルから削除
-func (sru shrineRegisterUsecase) DeleteRegisteredShrine(ctx context.Context, shrreq *model.ShrineRegisterReq) (err error) {
+func (sru shrineRegisterUsecase) DeleteRegisteredShrine(ctx context.Context, shrq *model.ShrineRegisterReq) (err error) {
 
 	// 登録済のレコードを神社一括登録テーブルから削除
 	query := fmt.Sprintf(`DELETE FROM m_register_shrine rshr
 						WHERE rshr.name = '%s'
-						AND rshr.address = '%s'`, shrreq.Name, shrreq.Address)
+						AND rshr.address = '%s'`, shrq.Name.Value, shrq.Address.Value)
 
 	err = sru.srr.DeleteRegisterShrine(ctx, query)
 	if err != nil {
@@ -70,13 +151,13 @@ func (sru shrineRegisterUsecase) DeleteRegisteredShrine(ctx context.Context, shr
 }
 
 // 住所から該当する標準地域コードを取得
-func (sru shrineRegisterUsecase) GetStdAreaCodeByAddress(ctx context.Context, shrrreq *model.ShrineRegisterReq) (sac string, err error) {
+func (sru shrineRegisterUsecase) GetStdAreaCodeByAddress(ctx context.Context, shrq *model.ShrineRegisterReq) (sac string, err error) {
 
 	var sacs []*model.StdAreaCode
 
 	// 住所から都道府県を取得
 	reg, _ := regexp.Compile(`^東京都|^北海道|^(大阪|京都)府|^\W{2,3}県`)
-	pref := reg.FindString(shrrreq.Address)
+	pref := reg.FindString(shrq.Address.Value)
 
 	// 該当の都道府県の標準地域コード一覧を取得
 	query := fmt.Sprintf(`SELECT sac.std_area_code, sac.pref_area_code, sac.subpref_area_code, sac.munic_area_code1, sac.munic_area_code2, sac.pref_name, sac.subpref_name, sac.munic_name1, sac.munic_name2, sac.created_at, sac.updated_at
@@ -94,7 +175,7 @@ func (sru shrineRegisterUsecase) GetStdAreaCodeByAddress(ctx context.Context, sh
 			continue
 		} else {
 			keyword := sacs[i].PrefName + sacs[i].MunicName1 + sacs[i].MunicName2
-			if strings.HasPrefix(shrrreq.Address, keyword) {
+			if strings.HasPrefix(shrq.Address.Value, keyword) {
 				sac = sacs[i].StdAreaCode
 				break
 			}
@@ -107,26 +188,30 @@ func (sru shrineRegisterUsecase) GetStdAreaCodeByAddress(ctx context.Context, sh
 
 // PlaceAPIから位置情報(PlaceID、緯度、経度)とPlusCodeを取得
 // ⇒Shrine構造体の形式で返す
-func (sru shrineRegisterUsecase) GetLocnInfoFromPlaceAPI(ctx context.Context, shrrreq *model.ShrineRegisterReq, sac string) (shr *model.Shrine, caution []string, err error) {
+func (sru shrineRegisterUsecase) GetLocnInfoFromPlaceAPI(ctx context.Context, shrq *model.ShrineRegisterReq, sac string) (shr *model.Shrine, caution []string, err error) {
 
 	// PlaceAPIから位置情報(PlaceID、緯度、経度)、及び取得した緯度経度からPlusCodeを取得
-	resp, err := placeapi.QueryPlaceAPI(ctx, shrrreq.Name, shrrreq.Address)
+	resp, err := placeapi.QueryPlaceAPI(ctx, shrq.Name.Value, shrq.Address.Value)
 	if err != nil {
 		return nil, []string{}, err
 	}
 
-	// shrを初期化
+	// Shrine構造体を初期化
 	shr = &model.Shrine{}
 
 	// Shrine構造体に値を設定
-	shr.Name = shrrreq.Name
-	shr.Address = shrrreq.Address
+	shr.Name = shrq.Name.Value
+	shr.Address = shrq.Address.Value
 	shr.StdAreaCode = sac
 	shr.Seq = 0
 	shr.PlaceID = resp.Results[0].PlaceID
 	shr.Latitude = resp.Results[0].Geometry.Location.Lat
 	shr.Longitude = resp.Results[0].Geometry.Location.Lng
 	shr.PlusCode = olc.Encode(shr.Latitude, shr.Longitude, 11)
+
+	// ShrineRegisterReq構造体に値を設定
+	shrq.PlusCode.Value = shr.PlusCode
+	shrq.PlaceID.Value = shr.PlaceID
 
 	//fmt.Println(resp.Results[0])
 
@@ -186,55 +271,54 @@ func (sru shrineRegisterUsecase) RegisterShrineContents(ctx context.Context, id 
 }
 
 // PlusCodeから神社の登録の有無を判定
-func (sru shrineRegisterUsecase) ExistsShrineByPlusCode(ctx context.Context, plusCode string) (*model.Shrine, bool) {
+func (sru shrineRegisterUsecase) ExistsShrineByPlusCode(ctx context.Context, shrq *model.ShrineRegisterReq) bool {
 
 	var shrs []*model.Shrine
 	var err error
 
+	// 該当のPlusCodeから神社テーブルを取得
 	query := fmt.Sprintf(`SELECT shr.name, shr.address, shr.std_area_code, shr.plus_code, shr.seq, shr.place_id, shr.latitude, shr.longitude, shr.created_at, shr.updated_at
 						FROM t_shrines shr
-						WHERE shr.plus_code = '%s'`, plusCode)
+						WHERE shr.plus_code = '%s'`, shrq.PlusCode.Value)
 
 	shrs, err = sru.sr.GetShrines(ctx, query)
 	if err != nil {
-		return nil, false
+		return false
 	}
 
+	// 登録がある場合、ShrineRegisterReq構造体に値を設定
 	if len(shrs) == 1 {
-		return shrs[0], true
+		shrq.Name.Value = shrs[0].Name
+		shrq.Address.Value = shrs[0].Address
+		shrq.PlusCode.Value = shrs[0].PlusCode
+		shrq.PlaceID.Value = shrs[0].PlaceID
+		return true
 	}
 
-	shrs[0].PlusCode = plusCode
-	return shrs[0], false
+	return false
 
 }
 
 // エラー／要確認事象発生時にDiscordへメッセージ送信
-func (sru shrineRegisterUsecase) SendErrMessageToDiscord(procname string, errmsgs []string, shrreq *model.ShrineRegisterReq, shr *model.Shrine) error {
+func (sru shrineRegisterUsecase) SendErrMessageToDiscord(procName string, errmsgs []string, shrq *model.ShrineRegisterReq) error {
 
 	// エラーメッセージ設定
-	content := "<< [" + procname + "] エラー概要>>\n"
+	content := "<< [" + procName + "] エラー概要>>\n"
 	for _, errmsg := range errmsgs {
 		content = content + "　" + errmsg + "\n"
 	}
 	content = content + "<<神社情報>>\n"
-	if len(shrreq.Name) != 0 {
-		content = content + "　神社名称：" + shrreq.Name + "\n"
-	} else if len(shr.Name) != 0 {
-		content = content + "　神社名称：" + shr.Name + "\n"
+	if len(shrq.Name.Value) != 0 {
+		content = content + "　神社名称：" + shrq.Name.Value + "\n"
 	}
-	if len(shrreq.Address) != 0 {
-		content = content + "　住所　　：" + shrreq.Address + "\n"
-	} else if len(shr.Address) != 0 {
-		content = content + "　住所　　：" + shr.Address + "\n"
+	if len(shrq.Address.Value) != 0 {
+		content = content + "　住所　　：" + shrq.Address.Value + "\n"
 	}
-	if len(shr.PlusCode) != 0 {
-		content = content + "　PlusCode：" + shr.PlusCode + "\n"
+	if len(shrq.PlusCode.Value) != 0 {
+		content = content + "　PlusCode：" + shrq.PlusCode.Value + "\n"
 	}
-	if len(shrreq.Name) != 0 && len(shr.PlaceID) != 0 {
-		content = content + "<<GoogleMapLink>>\nhttps://www.google.com/maps/search/?api=1&query=" + shrreq.Name + "&query_place_id=" + shr.PlaceID
-	} else if len(shr.Name) != 0 && len(shr.PlaceID) != 0 {
-		content = content + "<<GoogleMapLink>>\nhttps://www.google.com/maps/search/?api=1&query=" + shr.Name + "&query_place_id=" + shr.PlaceID
+	if len(shrq.Name.Value) != 0 && len(shrq.PlaceID.Value) != 0 {
+		content = content + "<<GoogleMapLink>>\nhttps://www.google.com/maps/search/?api=1&query=" + shrq.Name.Value + "&query_place_id=" + shrq.PlaceID.Value
 	}
 
 	err := discord.SendMessage(os.Getenv("DISCORD_ADMIN_WEBHOOK_URL"), os.Getenv("DISCORD_BOT_TOKEN"), content)
