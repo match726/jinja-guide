@@ -23,13 +23,14 @@ type ShrineRegisterReq struct {
 
 // 神社詳細情報登録画面のリクエストデータ定義
 type ShrineContentsRegisterReq struct {
-	PlusCode         Field   `json:"plusCode"`
-	Furigana         Field   `json:"furigana"`
+	PlusCode         []Field `json:"plusCode"`
+	Furigana         []Field `json:"furigana"`
 	AltNames         []Field `json:"altName"`
 	Tags             []Field `json:"tag"`
-	FoundedYear      Field   `json:"foundedYear"`
+	FoundedYear      []Field `json:"foundedYear"`
 	ObjectOfWorships []Field `json:"objectOfWorship"`
-	HasGoshuin       Field   `json:"hasGoshuin"`
-	WebsiteURL       Field   `json:"websiteUrl"`
-	WikipediaURL     Field   `json:"wikipediaUrl"`
+	ShrineRanks      []Field `json:"shrineRank"`
+	HasGoshuin       []Field `json:"hasGoshuin"`
+	WebsiteURL       []Field `json:"websiteUrl"`
+	WikipediaURL     []Field `json:"wikipediaUrl"`
 }
