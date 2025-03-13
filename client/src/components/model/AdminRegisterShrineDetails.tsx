@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 
 import '@/styles/global.css';
 
-const backendEndpoint = import.meta.env.VITE_BACKEND_ENDPOINT;
+//const backendEndpoint = import.meta.env.VITE_BACKEND_ENDPOINT;
 
 // フィールドの型定義
 type Field = {
