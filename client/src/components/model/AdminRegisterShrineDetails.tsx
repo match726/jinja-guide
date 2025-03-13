@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 
 import '@/styles/global.css';
 
-//const backendEndpoint = import.meta.env.VITE_BACKEND_ENDPOINT;
+const backendEndpoint = import.meta.env.VITE_BACKEND_ENDPOINT;
 
 // フィールドの型定義
 type Field = {
@@ -161,15 +161,6 @@ const AdminRegisterShrineDetails = () => {
   
   // useEffect(() => {
 
-  //   const options = {
-  //     method: "POST",
-  //     url: backendEndpoint + "/api/admin/regist/shrine-details",
-  //     headers: {
-  //       "Content-Type": "application/json"
-  //     },
-  //     data: JSON.stringify(formSections)
-  //   };
-
   //   // if (isFirstRender.current) {
   //   //   isFirstRender.current = false;
   //   //   return
@@ -218,10 +209,7 @@ const AdminRegisterShrineDetails = () => {
     // ページ遷移を防ぐ（デフォルトでは、フォーム送信ボタンを押すとページが遷移してしまう）
     e.preventDefault()
 
-    console.log(formSections);
-
     const reqMap = new Map<string, Field[]>();
-
     formSections.map(section => {
       let effectiveFields = section.fields.filter(field => field.value !== "");
       if (effectiveFields.length > 0) {
@@ -229,7 +217,24 @@ const AdminRegisterShrineDetails = () => {
       }
     });
 
-    console.log(reqMap)
+    // function replacer(key, value) {
+    //   if (value instanceof Map) {
+    //       return Object.fromEntries(value);
+    //   } else {
+    //       return value;
+    //   }
+    // }
+
+    console.log(JSON.stringify(Object.fromEntries(reqMap)));
+
+    // const options = {
+    //   method: "POST",
+    //   url: backendEndpoint + "/api/admin/regist/shrine-details",
+    //   headers: {
+    //     "Content-Type": "application/json"
+    //   },
+    //   data: JSON.stringify(reqMap, replacer)
+    // };
 
   }
 
