@@ -87,7 +87,7 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 		w.WriteHeader(http.StatusBadRequest)
 	}
 
-	fmt.Println(shrcreq)
+	fmt.Printf("shrcreq: %+v\n", shrcreq)
 
 	// 神社の登録があるかをチェック
 	existsShrine := srh.sru.ExistsShrineByPlusCode(ctx, shrcreq.PlusCode[0].Value)
