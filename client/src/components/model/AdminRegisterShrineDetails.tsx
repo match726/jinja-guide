@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { SlPlus, SlMinus } from 'react-icons/sl';
-//import axios from 'axios';
+import axios from 'axios';
 
 import { Header } from '@/components/ui/header';
 import { Button } from '@/components/ui/button';
@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 
 import '@/styles/global.css';
 
-//const backendEndpoint = import.meta.env.VITE_BACKEND_ENDPOINT;
+const backendEndpoint = import.meta.env.VITE_BACKEND_ENDPOINT;
 
 // フィールドの型定義
 type Field = {
@@ -31,9 +31,6 @@ type FormSection = {
 }
 
 const AdminRegisterShrineDetails = () => {
-
-  // 初回レンダリングのリクエスト送信を無効化
-  //const isFirstRender = useRef(true);
 
   // フォームの初期状態を定義
   const [formSections, setFormSections] = useState<FormSection[]>([
@@ -158,21 +155,6 @@ const AdminRegisterShrineDetails = () => {
       }),
     )
   }
-  
-  // useEffect(() => {
-
-  //   // if (isFirstRender.current) {
-  //   //   isFirstRender.current = false;
-  //   //   return
-  //   // } else {
-  //   //   axios(options)
-  //   //     .then((resp) => {
-  //   //       console.log('POSTリクエストが成功しました', resp)
-  //   //     })
-  //   //     .catch((err) => console.error("POSTリクエスト失敗", err));
-  //   // }
-
-  // }, [formSections]);
 
   // 特定のセクションの特定のフィールドの値（value）を更新
   const handleValueChange = (sectionName: string, fieldId: number, value: string) => {
@@ -217,24 +199,20 @@ const AdminRegisterShrineDetails = () => {
       }
     });
 
-    // function replacer(key, value) {
-    //   if (value instanceof Map) {
-    //       return Object.fromEntries(value);
-    //   } else {
-    //       return value;
-    //   }
-    // }
+    const options = {
+      method: "POST",
+      url: backendEndpoint + "/api/admin/regist/shrine-details",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      data: JSON.stringify(Object.fromEntries(reqMap))
+    };
 
-    console.log(JSON.stringify(Object.fromEntries(reqMap)));
-
-    // const options = {
-    //   method: "POST",
-    //   url: backendEndpoint + "/api/admin/regist/shrine-details",
-    //   headers: {
-    //     "Content-Type": "application/json"
-    //   },
-    //   data: JSON.stringify(reqMap, replacer)
-    // };
+    axios(options)
+      .then((resp) => {
+        console.log('POSTリクエストが成功しました', resp)
+      })
+      .catch((err) => console.error("POSTリクエスト失敗", err));
 
   }
 
