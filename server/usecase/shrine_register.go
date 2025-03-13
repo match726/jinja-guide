@@ -22,8 +22,8 @@ type ShrineRegisterUsecase interface {
 	GetLocnInfoFromPlaceAPI(ctx context.Context, shrrreq *model.ShrineRegisterReq, sac string) (shr *model.Shrine, caution []string, err error)
 	RegisterShrine(ctx context.Context, shr *model.Shrine) (err error)
 	RegisterShrineContents(ctx context.Context, id int, seq int, keyword1 string, keyword2 string, content1 string, content2 string, content3 string, seqHandler int) (err error)
-	ExistsShrineByPlusCode(ctx context.Context, plusCode string) bool
-	SendErrMessageToDiscord(errmsgs []string, shrreq *model.ShrineRegisterReq, shr *model.Shrine) error
+	ExistsShrineByPlusCode(ctx context.Context, plusCode string) (*model.Shrine, bool)
+	SendErrMessageToDiscord(procname string, errmsgs []string, shrreq *model.ShrineRegisterReq, shr *model.Shrine) error
 	ConvertSQLErrorMessage(err error) (errmsg string)
 }
 
@@ -186,7 +186,7 @@ func (sru shrineRegisterUsecase) RegisterShrineContents(ctx context.Context, id 
 }
 
 // PlusCodeから神社の登録の有無を判定
-func (sru shrineRegisterUsecase) ExistsShrineByPlusCode(ctx context.Context, plusCode string) bool {
+func (sru shrineRegisterUsecase) ExistsShrineByPlusCode(ctx context.Context, plusCode string) (*model.Shrine, bool) {
 
 	var shrs []*model.Shrine
 	var err error
@@ -197,26 +197,45 @@ func (sru shrineRegisterUsecase) ExistsShrineByPlusCode(ctx context.Context, plu
 
 	shrs, err = sru.sr.GetShrines(ctx, query)
 	if err != nil {
-		return false
+		return nil, false
 	}
 
 	if len(shrs) == 1 {
-		return true
+		return shrs[0], true
 	}
 
-	return false
+	shrs[0].PlusCode = plusCode
+	return shrs[0], false
 
 }
 
-// エラー／確認点発生時にDiscordへメッセージ送信
-func (sru shrineRegisterUsecase) SendErrMessageToDiscord(errmsgs []string, shrreq *model.ShrineRegisterReq, shr *model.Shrine) error {
+// エラー／要確認事象発生時にDiscordへメッセージ送信
+func (sru shrineRegisterUsecase) SendErrMessageToDiscord(procname string, errmsgs []string, shrreq *model.ShrineRegisterReq, shr *model.Shrine) error {
 
 	// エラーメッセージ設定
-	content := "<<エラー概要>>\n"
+	content := "<< [" + procname + "] エラー概要>>\n"
 	for _, errmsg := range errmsgs {
 		content = content + "　" + errmsg + "\n"
 	}
-	content = content + "<<神社情報>>\n　神社名称：" + shrreq.Name + "\n　住所　　：" + shrreq.Address + "\n　PlusCode：" + shr.PlusCode + "\n<<GoogleMapLink>>\nhttps://www.google.com/maps/search/?api=1&query=" + shrreq.Name + "&query_place_id=" + shr.PlaceID
+	content = content + "<<神社情報>>\n"
+	if len(shrreq.Name) != 0 {
+		content = content + "　神社名称：" + shrreq.Name + "\n"
+	} else if len(shr.Name) != 0 {
+		content = content + "　神社名称：" + shr.Name + "\n"
+	}
+	if len(shrreq.Address) != 0 {
+		content = content + "　住所　　：" + shrreq.Address + "\n"
+	} else if len(shr.Address) != 0 {
+		content = content + "　住所　　：" + shr.Address + "\n"
+	}
+	if len(shr.PlusCode) != 0 {
+		content = content + "　PlusCode：" + shr.PlusCode + "\n"
+	}
+	if len(shrreq.Name) != 0 && len(shr.PlaceID) != 0 {
+		content = content + "<<GoogleMapLink>>\nhttps://www.google.com/maps/search/?api=1&query=" + shrreq.Name + "&query_place_id=" + shr.PlaceID
+	} else if len(shr.Name) != 0 && len(shr.PlaceID) != 0 {
+		content = content + "<<GoogleMapLink>>\nhttps://www.google.com/maps/search/?api=1&query=" + shr.Name + "&query_place_id=" + shr.PlaceID
+	}
 
 	err := discord.SendMessage(os.Getenv("DISCORD_ADMIN_WEBHOOK_URL"), os.Getenv("DISCORD_BOT_TOKEN"), content)
 	if err != nil {
@@ -244,7 +263,7 @@ func (sru shrineRegisterUsecase) ConvertSQLErrorMessage(err error) (errmsg strin
 
 	switch sqlcode {
 	case "23505":
-		errmsg = "既に登録のある神社です"
+		errmsg = "既に登録があります"
 	default:
 		errmsg = "神社テーブル登録失敗"
 	}

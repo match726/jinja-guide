@@ -89,10 +89,16 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 
 	fmt.Printf("shrcreq: %+v\n", shrcreq)
 
+	var shr *model.Shrine
+
 	// 神社の登録があるかをチェック
-	existsShrine := srh.sru.ExistsShrineByPlusCode(ctx, shrcreq.PlusCode[0].Value)
+	shr, existsShrine := srh.sru.ExistsShrineByPlusCode(ctx, shrcreq.PlusCode[0].Value)
 	if !existsShrine {
-		logger.Error(ctx, "対象神社検索不可", "errmsg", err)
+		logger.Error(ctx, "対象神社検索失敗", "errmsg", err)
+		err = srh.sru.SendErrMessageToDiscord("神社詳細情報登録", []string{"対象神社検索失敗"}, nil, shr)
+		if err != nil {
+			logger.Error(ctx, "Discord連携失敗", "errmsg", err)
+		}
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
