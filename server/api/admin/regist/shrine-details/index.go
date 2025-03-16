@@ -79,6 +79,8 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 	body := make([]byte, r.ContentLength)
 	r.Body.Read(body)
 
+	fmt.Println(body)
+
 	// ShrineRegisterReq構造体へ変換
 	var shrq *model.ShrineRegisterReq
 	err := json.Unmarshal([]byte(string(body)), shrq)
