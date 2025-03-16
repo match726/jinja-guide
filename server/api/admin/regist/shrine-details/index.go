@@ -79,10 +79,8 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 	body := make([]byte, r.ContentLength)
 	r.Body.Read(body)
 
-	fmt.Println([]byte(string(body)))
-
 	// ShrineRegisterReq構造体へ変換
-	var shrq *model.ShrineRegisterReq
+	shrq := &model.ShrineRegisterReq{}
 	err := json.Unmarshal([]byte(string(body)), shrq)
 	if err != nil {
 		logger.Error(ctx, "リクエスト構造体変換失敗", "errmsg", err)
@@ -90,7 +88,7 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 		return
 	}
 
-	fmt.Printf("shrcreq: %+v\n", shrq)
+	fmt.Printf("shrq: %+v\n", shrq)
 
 	// 神社の登録があるかをチェック
 	existsShrine := srh.sru.ExistsShrineByPlusCode(ctx, shrq)
