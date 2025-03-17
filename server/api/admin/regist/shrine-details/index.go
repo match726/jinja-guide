@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/match726/jinja-guide/tree/main/server/domain/model"
@@ -86,6 +87,8 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+
+	fmt.Printf("len(shrq.Name): %d", len(shrq.Name))
 
 	// 神社の登録があるかをチェック
 	existsShrine := srh.sru.ExistsShrineByPlusCode(ctx, shrq)
