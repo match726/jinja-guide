@@ -3,7 +3,6 @@ package api
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/match726/jinja-guide/tree/main/server/domain/model"
@@ -79,8 +78,6 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 	body := make([]byte, r.ContentLength)
 	r.Body.Read(body)
 
-	fmt.Println(r.Body.Read(body))
-
 	// ShrineRegisterReq構造体へ変換
 	shrq := &model.ShrineRegisterReq{}
 	err := json.Unmarshal([]byte(string(body)), shrq)
@@ -90,13 +87,11 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 		return
 	}
 
-	fmt.Printf("shrq: %+v\n", shrq)
-
 	// 神社の登録があるかをチェック
 	existsShrine := srh.sru.ExistsShrineByPlusCode(ctx, shrq)
 	if !existsShrine {
 		logger.Error(ctx, "対象神社検索失敗", "errmsg", err)
-		err = srh.sru.SendErrMessageToDiscord("神社詳細情報登録", []string{"対象神社検索失敗"}, nil)
+		err = srh.sru.SendErrMessageToDiscord("神社詳細情報登録", []string{"対象神社検索失敗"}, shrq)
 		if err != nil {
 			logger.Error(ctx, "Discord連携失敗", "errmsg", err)
 		}
