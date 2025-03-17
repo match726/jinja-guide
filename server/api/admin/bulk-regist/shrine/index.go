@@ -142,8 +142,8 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 		}
 
 		// 神社詳細テーブルへ登録
-		if len(shrq.Furigana.Value) != 0 {
-			err = srh.sru.RegisterShrineContents(ctx, 1, 1, shrq.PlusCode.Value, "", shrq.Furigana.Value, "", "", 0)
+		if len(shrq.Furigana[0].Value) != 0 {
+			err = srh.sru.RegisterShrineContents(ctx, 1, 1, shrq.PlusCode[0].Value, "", shrq.Furigana[0].Value, "", "", 0)
 			if err != nil {
 				logger.Error(ctx, "神社詳細情報[振り仮名]登録失敗", "errmsg", err)
 				w.WriteHeader(http.StatusInternalServerError)
@@ -152,7 +152,7 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 		if len(shrq.AltNames) != 0 {
 			for i := 0; i < len(shrq.AltNames); i++ {
 				if len(strings.TrimSpace(shrq.AltNames[i].Value)) != 0 {
-					err = srh.sru.RegisterShrineContents(ctx, 2, 1, shrq.PlusCode.Value, "", shrq.AltNames[i].Value, "", "", 1)
+					err = srh.sru.RegisterShrineContents(ctx, 2, 1, shrq.PlusCode[0].Value, "", shrq.AltNames[i].Value, "", "", 1)
 					if err != nil {
 						logger.Error(ctx, "神社詳細情報[別名称]登録失敗", "errmsg", err)
 						w.WriteHeader(http.StatusInternalServerError)
@@ -162,15 +162,15 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 		}
 		if len(shrq.Tags) != 0 {
 			for i := 0; i < len(shrq.Tags); i++ {
-				err = srh.sru.RegisterShrineContents(ctx, 4, 1, shrq.PlusCode.Value, "", shrq.Tags[i].Value, "", "", 1)
+				err = srh.sru.RegisterShrineContents(ctx, 4, 1, shrq.PlusCode[0].Value, "", shrq.Tags[i].Value, "", "", 1)
 				if err != nil {
 					logger.Error(ctx, "神社詳細情報[関連ワード]登録失敗", "errmsg", err)
 					w.WriteHeader(http.StatusInternalServerError)
 				}
 			}
 		}
-		if len(shrq.FoundedYear.Value) != 0 {
-			err = srh.sru.RegisterShrineContents(ctx, 5, 1, shrq.PlusCode.Value, "", shrq.FoundedYear.Value, "", "", 0)
+		if len(shrq.FoundedYear[0].Value) != 0 {
+			err = srh.sru.RegisterShrineContents(ctx, 5, 1, shrq.PlusCode[0].Value, "", shrq.FoundedYear[0].Value, "", "", 0)
 			if err != nil {
 				logger.Error(ctx, "神社詳細情報[創建年]登録失敗", "errmsg", err)
 				w.WriteHeader(http.StatusInternalServerError)
@@ -178,29 +178,29 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 		}
 		if len(shrq.ObjectOfWorships) != 0 {
 			for i := 0; i < len(shrq.ObjectOfWorships); i++ {
-				err = srh.sru.RegisterShrineContents(ctx, 6, 1, shrq.PlusCode.Value, "", shrq.ObjectOfWorships[i].Value, "", "", 1)
+				err = srh.sru.RegisterShrineContents(ctx, 6, 1, shrq.PlusCode[0].Value, "", shrq.ObjectOfWorships[i].Value, "", "", 1)
 				if err != nil {
 					logger.Error(ctx, "神社詳細情報[御祭神]登録失敗", "errmsg", err)
 					w.WriteHeader(http.StatusInternalServerError)
 				}
 			}
 		}
-		if len(shrq.HasGoshuin.Value) != 0 {
-			err = srh.sru.RegisterShrineContents(ctx, 8, 1, shrq.PlusCode.Value, "", shrq.HasGoshuin.Value, "", "", 0)
+		if len(shrq.HasGoshuin[0].Value) != 0 {
+			err = srh.sru.RegisterShrineContents(ctx, 8, 1, shrq.PlusCode[0].Value, "", shrq.HasGoshuin[0].Value, "", "", 0)
 			if err != nil {
 				logger.Error(ctx, "神社詳細情報[御朱印]登録失敗", "errmsg", err)
 				w.WriteHeader(http.StatusInternalServerError)
 			}
 		}
-		if len(shrq.WebsiteURL.Value) != 0 {
-			err = srh.sru.RegisterShrineContents(ctx, 9, 1, shrq.PlusCode.Value, "", shrq.WebsiteURL.Value, "", "", 0)
+		if len(shrq.WebsiteURL[0].Value) != 0 {
+			err = srh.sru.RegisterShrineContents(ctx, 9, 1, shrq.PlusCode[0].Value, "", shrq.WebsiteURL[0].Value, "", "", 0)
 			if err != nil {
 				logger.Error(ctx, "神社詳細情報[公式サイトURL]登録失敗", "errmsg", err)
 				w.WriteHeader(http.StatusInternalServerError)
 			}
 		}
-		if len(shrq.WikipediaURL.Value) != 0 {
-			err = srh.sru.RegisterShrineContents(ctx, 10, 1, shrq.PlusCode.Value, "", shrq.WikipediaURL.Value, "", "", 0)
+		if len(shrq.WikipediaURL[0].Value) != 0 {
+			err = srh.sru.RegisterShrineContents(ctx, 10, 1, shrq.PlusCode[0].Value, "", shrq.WikipediaURL[0].Value, "", "", 0)
 			if err != nil {
 				logger.Error(ctx, "神社詳細情報[WikipediaURL]登録失敗", "errmsg", err)
 				w.WriteHeader(http.StatusInternalServerError)

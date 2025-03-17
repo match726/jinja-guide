@@ -142,14 +142,14 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 	}
 
 	// 神社詳細テーブルへ登録
-	if len(shrq.Furigana.Value) != 0 {
-		err = srh.sru.RegisterShrineContents(ctx, 1, 1, shrq.PlusCode.Value, "", shrq.Furigana.Value, "", "", 0)
+	if len(shrq.Furigana[0].Value) != 0 {
+		err = srh.sru.RegisterShrineContents(ctx, 1, 1, shrq.PlusCode[0].Value, "", shrq.Furigana[0].Value, "", "", 0)
 		if err != nil {
 			logger.Error(ctx, "神社詳細情報[振り仮名]登録失敗", "errmsg", err)
 		}
 	}
-	if len(shrq.WikipediaURL.Value) != 0 {
-		err = srh.sru.RegisterShrineContents(ctx, 10, 1, shrq.PlusCode.Value, "", shrq.WikipediaURL.Value, "", "", 0)
+	if len(shrq.WikipediaURL[0].Value) != 0 {
+		err = srh.sru.RegisterShrineContents(ctx, 10, 1, shrq.PlusCode[0].Value, "", shrq.WikipediaURL[0].Value, "", "", 0)
 		if err != nil {
 			logger.Error(ctx, "神社詳細情報[WikipediaURL]登録失敗", "errmsg", err)
 		}

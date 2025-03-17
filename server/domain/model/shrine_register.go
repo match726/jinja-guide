@@ -23,19 +23,19 @@ type ShrineRank struct {
 
 // 神社／神社詳細情報登録画面のリクエストデータ定義
 type ShrineRegisterReq struct {
-	Name             Field   `json:"name"`
-	Address          Field   `json:"address"`
-	PlusCode         Field   `json:"plusCode"`
-	PlaceID          Field   `json:"placeId"`
-	Furigana         Field   `json:"furigana"`
+	Name             []Field `json:"name"`
+	Address          []Field `json:"address"`
+	PlusCode         []Field `json:"plusCode"`
+	PlaceID          []Field `json:"placeId"`
+	Furigana         []Field `json:"furigana"`
 	AltNames         []Field `json:"altName"`
 	Tags             []Field `json:"tag"`
-	FoundedYear      Field   `json:"foundedYear"`
+	FoundedYear      []Field `json:"foundedYear"`
 	ObjectOfWorships []Field `json:"objectOfWorship"`
 	ShrineRanks      []Field `json:"shrineRank"`
-	HasGoshuin       Field   `json:"hasGoshuin"`
-	WebsiteURL       Field   `json:"websiteUrl"`
-	WikipediaURL     Field   `json:"wikipediaUrl"`
+	HasGoshuin       []Field `json:"hasGoshuin"`
+	WebsiteURL       []Field `json:"websiteUrl"`
+	WikipediaURL     []Field `json:"wikipediaUrl"`
 }
 
 type Field struct {
