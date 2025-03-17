@@ -272,19 +272,26 @@ func (sru shrineRegisterUsecase) SendErrMessageToDiscord(procName string, errmsg
 		content = content + "　" + errmsg + "\n"
 	}
 	content = content + "<<神社情報>>\n"
-	if len(shrq.Name[0].Value) != 0 {
-		content = content + "　神社名称：" + shrq.Name[0].Value + "\n"
+	if len(shrq.Name) != 0 {
+		if len(shrq.Name[0].Value) != 0 {
+			content = content + "　神社名称：" + shrq.Name[0].Value + "\n"
+		}
 	}
-	if len(shrq.Address[0].Value) != 0 {
-		content = content + "　住所　　：" + shrq.Address[0].Value + "\n"
+	if len(shrq.Address) != 0 {
+		if len(shrq.Address[0].Value) != 0 {
+			content = content + "　住所　　：" + shrq.Address[0].Value + "\n"
+		}
 	}
-	if len(shrq.PlusCode[0].Value) != 0 {
-		content = content + "　PlusCode：" + shrq.PlusCode[0].Value + "\n"
+	if len(shrq.PlusCode) != 0 {
+		if len(shrq.PlusCode[0].Value) != 0 {
+			content = content + "　PlusCode：" + shrq.PlusCode[0].Value + "\n"
+		}
 	}
-	if len(shrq.Name[0].Value) != 0 && len(shrq.PlaceID[0].Value) != 0 {
-		content = content + "<<GoogleMapLink>>\nhttps://www.google.com/maps/search/?api=1&query=" + shrq.Name[0].Value + "&query_place_id=" + shrq.PlaceID[0].Value
+	if len(shrq.Name) != 0 && len(shrq.PlaceID) != 0 {
+		if len(shrq.Name[0].Value) != 0 && len(shrq.PlaceID[0].Value) != 0 {
+			content = content + "<<GoogleMapLink>>\nhttps://www.google.com/maps/search/?api=1&query=" + shrq.Name[0].Value + "&query_place_id=" + shrq.PlaceID[0].Value
+		}
 	}
-
 	err := discord.SendMessage(os.Getenv("DISCORD_ADMIN_WEBHOOK_URL"), os.Getenv("DISCORD_BOT_TOKEN"), content)
 	if err != nil {
 		return err
