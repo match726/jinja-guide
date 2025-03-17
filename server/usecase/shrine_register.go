@@ -222,7 +222,7 @@ func (sru shrineRegisterUsecase) RegisterShrineContents(ctx context.Context, id 
 			return err
 		}
 	} else {
-		shrc.Seq = 1
+		shrc.Seq = seq
 	}
 
 	err = sru.scr.InsertShrineContents(ctx, shrc)
@@ -267,7 +267,7 @@ func (sru shrineRegisterUsecase) ExistsShrineByPlusCode(ctx context.Context, shr
 func (sru shrineRegisterUsecase) SendErrMessageToDiscord(procName string, errmsgs []string, shrq *model.ShrineRegisterReq) error {
 
 	// エラーメッセージ設定
-	content := "<< [" + procName + "] エラー概要>>\n"
+	content := "[" + procName + "]\n<<エラー概要>>\n"
 	for _, errmsg := range errmsgs {
 		content = content + "　" + errmsg + "\n"
 	}
