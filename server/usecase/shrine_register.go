@@ -252,10 +252,10 @@ func (sru shrineRegisterUsecase) ExistsShrineByPlusCode(ctx context.Context, shr
 
 	// 登録がある場合、ShrineRegisterReq構造体に値を設定
 	if len(shrs) == 1 {
-		shrq.Name[0].Value = shrs[0].Name
-		shrq.Address[0].Value = shrs[0].Address
-		shrq.PlusCode[0].Value = shrs[0].PlusCode
-		shrq.PlaceID[0].Value = shrs[0].PlaceID
+		shrq.Name = []model.Field{{Id: 1, Seq: "", Value: shrs[0].Name}}
+		shrq.Address = []model.Field{{Id: 1, Seq: "", Value: shrs[0].Address}}
+		shrq.PlusCode = []model.Field{{Id: 1, Seq: "", Value: shrs[0].PlusCode}}
+		shrq.PlaceID = []model.Field{{Id: 1, Seq: "", Value: shrs[0].PlaceID}}
 		return true
 	}
 
