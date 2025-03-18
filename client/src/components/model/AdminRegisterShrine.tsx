@@ -51,7 +51,7 @@ const defaultFormSections: FormSection[] = [
   {
     name: "address",
     title: "住所",
-    placeHolder: "例：伊勢神宮",
+    placeHolder: "例：三重県伊勢市宇治館町１",
     type: "text",
     isMultiple: false,
     fields: [{ id: 1, seq: "", value: "" }],

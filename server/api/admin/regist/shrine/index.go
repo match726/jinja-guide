@@ -79,11 +79,11 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 	r.Body.Read(body)
 
 	// ShrineRegisterReq構造体へ変換
-	var shrq model.ShrineRegisterReq
+	shrq := &model.ShrineRegisterReq{}
 	err := json.Unmarshal([]byte(string(body)), &shrq)
 	if err != nil {
 		logger.Error(ctx, "リクエスト構造体変換失敗", "errmsg", err)
-		err = srh.sru.SendErrMessageToDiscord("神社登録", []string{"リクエスト構造体変換失敗"}, &shrq)
+		err = srh.sru.SendErrMessageToDiscord("神社登録", []string{"リクエスト構造体変換失敗"}, shrq)
 		if err != nil {
 			logger.Error(ctx, "Discord連携失敗", "errmsg", err)
 		}
@@ -92,10 +92,10 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 
 	// リクエストされた住所から該当する標準地域コードを取得
 	var sac string
-	sac, err = srh.sru.GetStdAreaCodeByAddress(ctx, &shrq)
+	sac, err = srh.sru.GetStdAreaCodeByAddress(ctx, shrq)
 	if err != nil {
 		logger.Error(ctx, "標準地域コード取得失敗", "errmsg", err)
-		err = srh.sru.SendErrMessageToDiscord("神社登録", []string{"標準地域コード取得失敗"}, &shrq)
+		err = srh.sru.SendErrMessageToDiscord("神社登録", []string{"標準地域コード取得失敗"}, shrq)
 		if err != nil {
 			logger.Error(ctx, "Discord連携失敗", "errmsg", err)
 		}
@@ -105,10 +105,10 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 	// PlaceAPIから位置情報(PlaceID、緯度、経度)とPlusCodeを取得
 	var shr *model.Shrine
 	var caution []string
-	shr, caution, err = srh.sru.GetLocnInfoFromPlaceAPI(ctx, &shrq, sac)
+	shr, caution, err = srh.sru.GetLocnInfoFromPlaceAPI(ctx, shrq, sac)
 	if err != nil {
 		logger.Error(ctx, "PlaceAPI取得失敗", "errmsg", err)
-		err = srh.sru.SendErrMessageToDiscord("神社登録", []string{"PlaceAPI取得失敗"}, &shrq)
+		err = srh.sru.SendErrMessageToDiscord("神社登録", []string{"PlaceAPI取得失敗"}, shrq)
 		if err != nil {
 			logger.Error(ctx, "Discord連携失敗", "errmsg", err)
 		}
@@ -116,14 +116,14 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 	}
 
 	if len(caution) != 0 {
-		err = srh.sru.SendErrMessageToDiscord("神社登録", caution, &shrq)
+		err = srh.sru.SendErrMessageToDiscord("神社登録", caution, shrq)
 		if err != nil {
 			logger.Error(ctx, "Discord連携失敗", "errmsg", err)
 		}
 	}
 
 	if len(shr.PlusCode) == 0 {
-		err = srh.sru.SendErrMessageToDiscord("神社登録", []string{"PlusCode取得失敗"}, &shrq)
+		err = srh.sru.SendErrMessageToDiscord("神社登録", []string{"PlusCode取得失敗"}, shrq)
 		if err != nil {
 			logger.Error(ctx, "Discord連携失敗", "errmsg", err)
 		}
@@ -134,7 +134,7 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 	err = srh.sru.RegisterShrine(ctx, shr)
 	if err != nil {
 		logger.Error(ctx, "神社テーブル登録失敗", "errmsg", err)
-		err = srh.sru.SendErrMessageToDiscord("神社登録", []string{srh.sru.ConvertSQLErrorMessage(err)}, &shrq)
+		err = srh.sru.SendErrMessageToDiscord("神社登録", []string{srh.sru.ConvertSQLErrorMessage(err)}, shrq)
 		if err != nil {
 			logger.Error(ctx, "Discord連携失敗", "errmsg", err)
 		}
@@ -142,16 +142,28 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 	}
 
 	// 神社詳細テーブルへ登録
-	if len(shrq.Furigana[0].Value) != 0 {
-		err = srh.sru.RegisterShrineContents(ctx, 1, 1, shrq.PlusCode[0].Value, "", shrq.Furigana[0].Value, "", "", 0)
-		if err != nil {
-			logger.Error(ctx, "神社詳細情報[振り仮名]登録失敗", "errmsg", err)
+	if len(shrq.Furigana) != 0 {
+		if len(shrq.Furigana[0].Value) != 0 {
+			err = srh.sru.RegisterShrineContents(ctx, 1, 1, shrq.PlusCode[0].Value, "", shrq.Furigana[0].Value, "", "", 0)
+			if err != nil {
+				logger.Error(ctx, "神社詳細情報[振り仮名]登録失敗", "errmsg", err)
+				err = srh.sru.SendErrMessageToDiscord("神社登録", []string{"神社詳細情報[振り仮名]登録失敗"}, shrq)
+				if err != nil {
+					logger.Error(ctx, "Discord連携失敗", "errmsg", err)
+				}
+			}
 		}
 	}
-	if len(shrq.WikipediaURL[0].Value) != 0 {
-		err = srh.sru.RegisterShrineContents(ctx, 10, 1, shrq.PlusCode[0].Value, "", shrq.WikipediaURL[0].Value, "", "", 0)
-		if err != nil {
-			logger.Error(ctx, "神社詳細情報[WikipediaURL]登録失敗", "errmsg", err)
+	if len(shrq.WikipediaURL) != 0 {
+		if len(shrq.WikipediaURL[0].Value) != 0 {
+			err = srh.sru.RegisterShrineContents(ctx, 10, 1, shrq.PlusCode[0].Value, "", shrq.WikipediaURL[0].Value, "", "", 0)
+			if err != nil {
+				logger.Error(ctx, "神社詳細情報[WikipediaURL]登録失敗", "errmsg", err)
+				err = srh.sru.SendErrMessageToDiscord("神社登録", []string{"神社詳細情報[WikipediaURL]登録失敗"}, shrq)
+				if err != nil {
+					logger.Error(ctx, "Discord連携失敗", "errmsg", err)
+				}
+			}
 		}
 	}
 
