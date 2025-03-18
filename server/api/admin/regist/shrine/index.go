@@ -88,6 +88,7 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 			logger.Error(ctx, "Discord連携失敗", "errmsg", err)
 		}
 		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
 
 	// リクエストされた住所から該当する標準地域コードを取得
@@ -100,6 +101,7 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 			logger.Error(ctx, "Discord連携失敗", "errmsg", err)
 		}
 		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 
 	// PlaceAPIから位置情報(PlaceID、緯度、経度)とPlusCodeを取得
@@ -113,6 +115,7 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 			logger.Error(ctx, "Discord連携失敗", "errmsg", err)
 		}
 		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 
 	if len(caution) != 0 {
@@ -128,6 +131,7 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 			logger.Error(ctx, "Discord連携失敗", "errmsg", err)
 		}
 		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 
 	// 神社テーブルへ登録
@@ -139,6 +143,7 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 			logger.Error(ctx, "Discord連携失敗", "errmsg", err)
 		}
 		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 
 	// 神社詳細テーブルへ登録

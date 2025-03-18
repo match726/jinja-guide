@@ -173,9 +173,9 @@ func (sru shrineRegisterUsecase) GetLocnInfoFromPlaceAPI(ctx context.Context, sh
 	shr.Longitude = resp.Results[0].Geometry.Location.Lng
 	shr.PlusCode = olc.Encode(shr.Latitude, shr.Longitude, 11)
 
-	// ShrineRegisterReq構造体に値を設定
-	shrq.PlusCode[0].Value = shr.PlusCode
-	shrq.PlaceID[0].Value = shr.PlaceID
+	// ShrineRegisterReq構造体に値を追加
+	shrq.PlusCode = []model.Field{{Id: 1, Seq: "", Value: shr.PlusCode}}
+	shrq.PlaceID = []model.Field{{Id: 1, Seq: "", Value: shr.PlaceID}}
 
 	//fmt.Println(resp.Results[0])
 
