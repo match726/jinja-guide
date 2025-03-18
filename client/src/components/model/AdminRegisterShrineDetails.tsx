@@ -30,92 +30,95 @@ type FormSection = {
   fields: Field[]
 }
 
+// セクションの初期状態
+const defaultFormSections: FormSection[] = [
+  {
+    name: "plusCode",
+    title: "PlusCode",
+    placeHolder: "例：8Q6RFP4G+255",
+    type: "text",
+    isMultiple: false,
+    fields: [{ id: 1, seq: "", value: "" }],
+  },
+  {
+    name: "furigana",
+    title: "神社名称（振り仮名）",
+    placeHolder: "例：いせじんぐう ないくう（こうたいじんぐう）",
+    type: "text",
+    isMultiple: false,
+    fields: [{ id: 1, seq: "", value: "" }],
+  },
+  {
+    name: "altName",
+    title: "別名称",
+    placeHolder: "例：伊勢神宮",
+    type: "text",
+    isMultiple: true,
+    fields: [{ id: 1, seq: "", value: "" }],
+  },
+  {
+    name: "tag",
+    title: "関連ワード",
+    placeHolder: "例：お伊勢参り",
+    type: "text",
+    isMultiple: true,
+    fields: [{ id: 1, seq: "", value: "" }],
+  },
+  {
+    name: "foundedYear",
+    title: "創建年",
+    placeHolder: "例：垂仁天皇26年",
+    type: "text",
+    isMultiple: false,
+    fields: [{ id: 1, seq: "", value: "" }],
+  },
+  {
+    name: "objectOfWorship",
+    title: "御祭神",
+    placeHolder: "例：天照坐皇大御神",
+    type: "text",
+    isMultiple: true,
+    fields: [{ id: 1, seq: "", value: "" }],
+  },
+  {
+    name: "shrineRank",
+    title: "社格",
+    placeHolder: "例：式内社",
+    type: "select + text",
+    options: ["1: 延喜式内社", "2: 国史見在社", "3: 二十二社制度", "4: 一宮制度", "5: 総社（惣社）", "6: 近代社格制度", "7: 別表神社"],
+    isMultiple: true,
+    fields: [{ id: 1, seq: "", value: "" }],
+  },
+  {
+    name: "hasGoshuin",
+    title: "御朱印",
+    placeHolder: "例：あり",
+    type: "text",
+    isMultiple: false,
+    fields: [{ id: 1, seq: "", value: "" }],
+  },
+  {
+    name: "websiteUrl",
+    title: "公式サイトURL",
+    placeHolder: "例：https://www.isejingu.or.jp/",
+    type: "text",
+    isMultiple: false,
+    fields: [{ id: 1, seq: "", value: "" }],
+  },
+  {
+    name: "wikipediaUrl",
+    title: "WikipediaURL",
+    placeHolder: "例：https://ja.wikipedia.org/wiki/伊勢神宮",
+    type: "text",
+    isMultiple: false,
+    fields: [{ id: 1, seq: "", value: "" }],
+  }
+]
+
 const AdminRegisterShrineDetails = () => {
 
   // フォームの初期状態を定義
-  const [formSections, setFormSections] = useState<FormSection[]>([
-    {
-      name: "plusCode",
-      title: "PlusCode",
-      placeHolder: "例：8Q6RFP4G+255",
-      type: "text",
-      isMultiple: false,
-      fields: [{ id: 1, seq: "", value: "" }],
-    },
-    {
-      name: "furigana",
-      title: "神社名称（振り仮名）",
-      placeHolder: "例：いせじんぐう ないくう（こうたいじんぐう）",
-      type: "text",
-      isMultiple: false,
-      fields: [{ id: 1, seq: "", value: "" }],
-    },
-    {
-      name: "altName",
-      title: "別名称",
-      placeHolder: "例：伊勢神宮",
-      type: "text",
-      isMultiple: true,
-      fields: [{ id: 1, seq: "", value: "" }],
-    },
-    {
-      name: "tag",
-      title: "関連ワード",
-      placeHolder: "例：お伊勢参り",
-      type: "text",
-      isMultiple: true,
-      fields: [{ id: 1, seq: "", value: "" }],
-    },
-    {
-      name: "foundedYear",
-      title: "創建年",
-      placeHolder: "例：垂仁天皇26年",
-      type: "text",
-      isMultiple: false,
-      fields: [{ id: 1, seq: "", value: "" }],
-    },
-    {
-      name: "objectOfWorship",
-      title: "御祭神",
-      placeHolder: "例：天照坐皇大御神",
-      type: "text",
-      isMultiple: true,
-      fields: [{ id: 1, seq: "", value: "" }],
-    },
-    {
-      name: "shrineRank",
-      title: "社格",
-      placeHolder: "例：式内社",
-      type: "select + text",
-      options: ["1: 延喜式内社", "2: 国史見在社", "3: 二十二社制度", "4: 一宮制度", "5: 総社（惣社）", "6: 近代社格制度", "7: 別表神社"],
-      isMultiple: true,
-      fields: [{ id: 1, seq: "", value: "" }],
-    },
-    {
-      name: "hasGoshuin",
-      title: "御朱印",
-      placeHolder: "例：あり",
-      type: "text",
-      isMultiple: false,
-      fields: [{ id: 1, seq: "", value: "" }],
-    },
-    {
-      name: "websiteUrl",
-      title: "公式サイトURL",
-      placeHolder: "例：https://www.isejingu.or.jp/",
-      type: "text",
-      isMultiple: false,
-      fields: [{ id: 1, seq: "", value: "" }],
-    },
-    {
-      name: "wikipediaUrl",
-      title: "WikipediaURL",
-      placeHolder: "例：https://ja.wikipedia.org/wiki/伊勢神宮",
-      type: "text",
-      isMultiple: false,
-      fields: [{ id: 1, seq: "", value: "" }],
-    }
-  ])
+  const [formSections, setFormSections] = useState<FormSection[]>(defaultFormSections)
 
   // 特定のセクションにフィールドを追加
   const handleAddField = (sectionName: string) => {
@@ -186,6 +189,7 @@ const AdminRegisterShrineDetails = () => {
     )
   }
 
+  // 登録ボタン押下時の処理
   const handleSubmit = (e: React.FormEvent) => {
 
     // ページ遷移を防ぐ（デフォルトでは、フォーム送信ボタンを押すとページが遷移してしまう）
@@ -208,13 +212,14 @@ const AdminRegisterShrineDetails = () => {
       data: JSON.stringify(Object.fromEntries(reqMap))
     };
 
-    console.log(options.data);
-
     axios(options)
       .then((resp) => {
         console.log('POSTリクエストが成功しました', resp)
       })
       .catch((err) => console.error("POSTリクエスト失敗", err));
+
+    // フォームを初期状態に戻す
+    setFormSections(defaultFormSections);
 
   }
 
