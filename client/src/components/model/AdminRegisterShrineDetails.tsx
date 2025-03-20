@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { SlPlus, SlMinus } from 'react-icons/sl';
-import axios from 'axios';
+//import axios from 'axios';
 
 import { Header } from '@/components/ui/header';
 import { Button } from '@/components/ui/button';
