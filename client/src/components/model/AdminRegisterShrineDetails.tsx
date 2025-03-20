@@ -234,6 +234,8 @@ const AdminRegisterShrineDetails = () => {
       data: JSON.stringify(Object.fromEntries(reqMap))
     };
 
+    console.log(options.data);
+  
     axios(options)
       .then((resp) => {
         console.log('POSTリクエストが成功しました', resp)
