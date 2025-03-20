@@ -17,8 +17,9 @@ type ShrineRegister struct {
 
 // 社格（神社一括登録テーブル）データ定義
 type ShrineRank struct {
-	Seq   string `json:"seq"`
-	Value string `json:"value"`
+	Seq      string `json:"seq"`
+	Content1 string `json:"content1"`
+	Content2 string `json:"content2"`
 }
 
 // 神社／神社詳細情報登録画面のリクエストデータ定義
@@ -39,7 +40,9 @@ type ShrineRegisterReq struct {
 }
 
 type Field struct {
-	Id    int    `json:"id"`
-	Seq   string `json:"seq"`
-	Value string `json:"value"`
+	Id       int    `json:"id"`
+	Seq      string `json:"seq"`
+	Content1 string `json:"content1"`
+	Content2 string `json:"content2"`
+	Content3 string `json:"content3"`
 }

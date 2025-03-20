@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { SlPlus, SlMinus } from 'react-icons/sl';
-//import axios from 'axios';
+import axios from 'axios';
 
 import { Header } from '@/components/ui/header';
 import { Button } from '@/components/ui/button';
@@ -234,12 +234,11 @@ const AdminRegisterShrineDetails = () => {
       data: JSON.stringify(Object.fromEntries(reqMap))
     };
 
-    console.log(options.data);
-    // axios(options)
-    //   .then((resp) => {
-    //     console.log('POSTリクエストが成功しました', resp)
-    //   })
-    //   .catch((err) => console.error("POSTリクエスト失敗", err));
+    axios(options)
+      .then((resp) => {
+        console.log('POSTリクエストが成功しました', resp)
+      })
+      .catch((err) => console.error("POSTリクエスト失敗", err));
 
     // フォームを初期状態に戻す
     setFormSections(defaultFormSections);

@@ -6,7 +6,6 @@ import { Header } from '@/components/ui/header';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 import '@/styles/global.css';
 
@@ -16,14 +15,17 @@ const backendEndpoint = import.meta.env.VITE_BACKEND_ENDPOINT;
 type Field = {
   id: number
   seq: string
-  value: string
+  content1: string
+  content2: string
+  content3: string
 }
 
 // セクションの型定義
 type FormSection = {
   name: string
   title: string
-  placeHolder: string
+  placeHolder1: string
+  placeHolder2?: string
   type: "text" | "select + text"
   options?: string[]
   isMultiple: boolean
@@ -35,34 +37,34 @@ const defaultFormSections: FormSection[] = [
   {
     name: "name",
     title: "神社名称",
-    placeHolder: "例：伊勢神宮 内宮（皇大神宮）",
+    placeHolder1: "例：伊勢神宮 内宮（皇大神宮）",
     type: "text",
     isMultiple: false,
-    fields: [{ id: 1, seq: "", value: "" }],
+    fields: [{ id: 1, seq: "", content1: "", content2: "", content3: "" }],
   },
   {
     name: "furigana",
     title: "神社名称（振り仮名）",
-    placeHolder: "例：いせじんぐう ないくう（こうたいじんぐう）",
+    placeHolder1: "例：いせじんぐう ないくう（こうたいじんぐう）",
     type: "text",
     isMultiple: false,
-    fields: [{ id: 1, seq: "", value: "" }],
+    fields: [{ id: 1, seq: "", content1: "", content2: "", content3: "" }],
   },
   {
     name: "address",
     title: "住所",
-    placeHolder: "例：三重県伊勢市宇治館町１",
+    placeHolder1: "例：三重県伊勢市宇治館町１",
     type: "text",
     isMultiple: false,
-    fields: [{ id: 1, seq: "", value: "" }],
+    fields: [{ id: 1, seq: "", content1: "", content2: "", content3: "" }],
   },
   {
     name: "wikipediaUrl",
     title: "WikipediaURL",
-    placeHolder: "例：https://ja.wikipedia.org/wiki/伊勢神宮",
+    placeHolder1: "例：https://ja.wikipedia.org/wiki/伊勢神宮",
     type: "text",
     isMultiple: false,
-    fields: [{ id: 1, seq: "", value: "" }],
+    fields: [{ id: 1, seq: "", content1: "", content2: "", content3: "" }],
   }
 ]
 
@@ -80,7 +82,9 @@ const AdminRegisterShrine = () => {
           const newField: Field = {
             id: newId,
             seq: "",
-            value: "",
+            content1: "",
+            content2: "",
+            content3: "",
           }
           return {
             ...section,
@@ -110,29 +114,14 @@ const AdminRegisterShrine = () => {
     )
   }
 
-  // 特定のセクションの特定のフィールドの値（value）を更新
+  // 特定のセクションの特定のフィールドの値（content1）を更新
   const handleValueChange = (sectionName: string, fieldId: number, value: string) => {
     setFormSections((prevSections) =>
       prevSections.map((section) => {
         if (section.name === sectionName) {
           return {
             ...section,
-            fields: section.fields.map((field) => (field.id === fieldId ? { ...field, value } : field)),
-          }
-        }
-        return section
-      }),
-    )
-  }
-
-  // 特定のセクションの特定のフィールドの値（seq）を更新
-  const handleSeqChange = (sectionName: string, fieldId: number, seq: string) => {
-    setFormSections((prevSections) =>
-      prevSections.map((section) => {
-        if (section.name === sectionName) {
-          return {
-            ...section,
-            fields: section.fields.map((field) => (field.id === fieldId ? { ...field, seq } : field)),
+            fields: section.fields.map((field) => (field.id === fieldId ? { ...field, content1: value } : field)),
           }
         }
         return section
@@ -148,7 +137,7 @@ const AdminRegisterShrine = () => {
 
     const reqMap = new Map<string, Field[]>();
     formSections.map(section => {
-      let effectiveFields = section.fields.filter(field => field.value !== "");
+      let effectiveFields = section.fields.filter(field => field.content1 !== "");
       if (effectiveFields.length > 0) {
         reqMap.set(section.name, effectiveFields)
       }
@@ -182,41 +171,10 @@ const AdminRegisterShrine = () => {
           <div className="flex justify-center items-center gap-2">
             <Input
               id={`${section.name}-${field.id}`}
-              value={field.value}
+              value={field.content1}
               onChange={(e) => handleValueChange(section.name, field.id, e.target.value)}
-              placeholder={section.placeHolder}
+              placeholder={section.placeHolder1}
               className="w-full border-2 border-red-800 rounded-md p-2 font-serif"
-            />
-            {section.isMultiple == true
-              ? <div>
-                  <SlPlus onClick={() => handleAddField(section.name)} className="h-5 w-5" />
-                  <SlMinus onClick={() => handleRemoveField(section.name, field.id)} className="h-5 w-5" />
-                </div>
-              : null
-            }
-          </div>
-        )
-      case "select + text":
-        return (
-          <div className="flex justify-center items-center gap-2">
-            <Select value={field.seq} onValueChange={(value) => handleSeqChange(section.name, field.id, value)}>
-              <SelectTrigger className="w-full w-max-md border-2 border-red-800 rounded-md p-2 font-serif">
-                <SelectValue placeholder={`${section.title}を選択`} />
-              </SelectTrigger>
-              <SelectContent>
-                {section.options?.map((option) => (
-                  <SelectItem key={option} value={option.slice(0,option.indexOf(":"))}>
-                    {option}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Input
-              id={`${section.name}-${field.id}`}
-              value={field.value}
-              onChange={(e) => handleValueChange(section.name, field.id, e.target.value)}
-              placeholder={section.placeHolder}
-              className="w-full w-max-md border-2 border-red-800 rounded-md p-2 font-serif"
             />
             {section.isMultiple == true
               ? <div>

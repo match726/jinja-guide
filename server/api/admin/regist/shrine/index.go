@@ -148,8 +148,8 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 
 	// 神社詳細テーブルへ登録
 	if len(shrq.Furigana) != 0 {
-		if len(shrq.Furigana[0].Value) != 0 {
-			err = srh.sru.RegisterShrineContents(ctx, 1, 1, shrq.PlusCode[0].Value, "", shrq.Furigana[0].Value, "", "", 0)
+		if len(shrq.Furigana[0].Content1) != 0 {
+			err = srh.sru.RegisterShrineContents(ctx, 1, 1, shrq.PlusCode[0].Content1, "", shrq.Furigana[0].Content1, "", "", 0)
 			if err != nil {
 				logger.Error(ctx, "神社詳細情報[振り仮名]登録失敗", "errmsg", err)
 				err = srh.sru.SendErrMessageToDiscord("神社登録", []string{"神社詳細情報[振り仮名]登録失敗"}, shrq)
@@ -160,8 +160,8 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 		}
 	}
 	if len(shrq.WikipediaURL) != 0 {
-		if len(shrq.WikipediaURL[0].Value) != 0 {
-			err = srh.sru.RegisterShrineContents(ctx, 10, 1, shrq.PlusCode[0].Value, "", shrq.WikipediaURL[0].Value, "", "", 0)
+		if len(shrq.WikipediaURL[0].Content1) != 0 {
+			err = srh.sru.RegisterShrineContents(ctx, 10, 1, shrq.PlusCode[0].Content1, "", shrq.WikipediaURL[0].Content1, "", "", 0)
 			if err != nil {
 				logger.Error(ctx, "神社詳細情報[WikipediaURL]登録失敗", "errmsg", err)
 				err = srh.sru.SendErrMessageToDiscord("神社登録", []string{"神社詳細情報[WikipediaURL]登録失敗"}, shrq)
