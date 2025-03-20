@@ -18,13 +18,15 @@ type Field = {
   seq: string
   content1: string
   content2: string
+  content3: string
 }
 
 // セクションの型定義
 type FormSection = {
   name: string
   title: string
-  placeHolder: string
+  placeHolder1: string
+  placeHolder2?: string
   type: "text" | "text + text" | "select + text + text"
   options?: string[]
   isMultiple: boolean
@@ -36,83 +38,85 @@ const defaultFormSections: FormSection[] = [
   {
     name: "plusCode",
     title: "PlusCode",
-    placeHolder: "例：8Q6RFP4G+255",
+    placeHolder1: "例：8Q6RFP4G+255",
     type: "text",
     isMultiple: false,
-    fields: [{ id: 1, seq: "", content1: "", content2: "" }],
+    fields: [{ id: 1, seq: "", content1: "", content2: "", content3: "" }],
   },
   {
     name: "furigana",
     title: "神社名称（振り仮名）",
-    placeHolder: "例：いせじんぐう ないくう（こうたいじんぐう）",
+    placeHolder1: "例：いせじんぐう ないくう（こうたいじんぐう）",
     type: "text",
     isMultiple: false,
-    fields: [{ id: 1, seq: "", content1: "", content2: "" }],
+    fields: [{ id: 1, seq: "", content1: "", content2: "", content3: "" }],
   },
   {
     name: "altName",
     title: "別名称",
-    placeHolder: "例：伊勢神宮",
+    placeHolder1: "例：伊勢神宮",
     type: "text",
     isMultiple: true,
-    fields: [{ id: 1, seq: "", content1: "", content2: "" }],
+    fields: [{ id: 1, seq: "", content1: "", content2: "", content3: "" }],
   },
   {
     name: "tag",
     title: "関連ワード",
-    placeHolder: "例：お伊勢参り",
+    placeHolder1: "例：お伊勢参り",
     type: "text",
     isMultiple: true,
-    fields: [{ id: 1, seq: "", content1: "", content2: "" }],
+    fields: [{ id: 1, seq: "", content1: "", content2: "", content3: "" }],
   },
   {
     name: "foundedYear",
     title: "創建年",
-    placeHolder: "例：垂仁天皇26年",
+    placeHolder1: "例：垂仁天皇26年",
+    placeHolder2: "例：伝",
     type: "text + text",
     isMultiple: false,
-    fields: [{ id: 1, seq: "", content1: "", content2: "" }],
+    fields: [{ id: 1, seq: "", content1: "", content2: "", content3: "" }],
   },
   {
     name: "objectOfWorship",
     title: "御祭神",
-    placeHolder: "例：天照坐皇大御神",
+    placeHolder1: "例：天照坐皇大御神",
     type: "text",
     isMultiple: true,
-    fields: [{ id: 1, seq: "", content1: "", content2: "" }],
+    fields: [{ id: 1, seq: "", content1: "", content2: "", content3: "" }],
   },
   {
     name: "shrineRank",
     title: "社格",
-    placeHolder: "例：式内社",
+    placeHolder1: "例：並大社",
+    placeHolder2: "例：論社",
     type: "select + text + text",
     options: ["1: 延喜式内社", "2: 国史見在社", "3: 二十二社制度", "4: 一宮制度", "5: 総社（惣社）", "6: 近代社格制度", "7: 別表神社"],
     isMultiple: true,
-    fields: [{ id: 1, seq: "", content1: "", content2: "" }],
+    fields: [{ id: 1, seq: "", content1: "", content2: "", content3: "" }],
   },
   {
     name: "hasGoshuin",
     title: "御朱印",
-    placeHolder: "例：あり",
+    placeHolder1: "例：あり",
     type: "text",
     isMultiple: false,
-    fields: [{ id: 1, seq: "", content1: "", content2: "" }],
+    fields: [{ id: 1, seq: "", content1: "", content2: "", content3: "" }],
   },
   {
     name: "websiteUrl",
     title: "公式サイトURL",
-    placeHolder: "例：https://www.isejingu.or.jp/",
+    placeHolder1: "例：https://www.isejingu.or.jp/",
     type: "text",
     isMultiple: false,
-    fields: [{ id: 1, seq: "", content1: "", content2: "" }],
+    fields: [{ id: 1, seq: "", content1: "", content2: "", content3: "" }],
   },
   {
     name: "wikipediaUrl",
     title: "WikipediaURL",
-    placeHolder: "例：https://ja.wikipedia.org/wiki/伊勢神宮",
+    placeHolder1: "例：https://ja.wikipedia.org/wiki/伊勢神宮",
     type: "text",
     isMultiple: false,
-    fields: [{ id: 1, seq: "", content1: "", content2: "" }],
+    fields: [{ id: 1, seq: "", content1: "", content2: "", content3: "" }],
   }
 ]
 
@@ -132,6 +136,7 @@ const AdminRegisterShrineDetails = () => {
             seq: "",
             content1: "",
             content2: "",
+            content3: "",
           }
           return {
             ...section,
@@ -251,7 +256,7 @@ const AdminRegisterShrineDetails = () => {
               id={`${section.name}-${field.id}`}
               value={field.content1}
               onChange={(e) => handleContent1Change(section.name, field.id, e.target.value)}
-              placeholder={section.placeHolder}
+              placeholder={section.placeHolder1}
               className="w-full border-2 border-red-800 rounded-md p-2 font-serif"
             />
             {section.isMultiple == true
@@ -270,14 +275,14 @@ const AdminRegisterShrineDetails = () => {
                 id={`${section.name}-${field.id}1`}
                 value={field.content1}
                 onChange={(e) => handleContent1Change(section.name, field.id, e.target.value)}
-                placeholder={section.placeHolder}
+                placeholder={section.placeHolder1}
                 className="w-full border-2 border-red-800 rounded-md p-2 font-serif"
               />
               <Input
                 id={`${section.name}-${field.id}2`}
                 value={field.content2}
                 onChange={(e) => handleContent2Change(section.name, field.id, e.target.value)}
-                placeholder={section.placeHolder}
+                placeholder={section.placeHolder2}
                 className="w-full border-2 border-red-800 rounded-md p-2 font-serif"
               />
               {section.isMultiple == true
@@ -308,14 +313,14 @@ const AdminRegisterShrineDetails = () => {
               id={`${section.name}-${field.id}1`}
               value={field.content1}
               onChange={(e) => handleContent1Change(section.name, field.id, e.target.value)}
-              placeholder={section.placeHolder}
+              placeholder={section.placeHolder1}
               className="w-full w-max-md border-2 border-red-800 rounded-md p-2 font-serif"
             />
             <Input
               id={`${section.name}-${field.id}2`}
               value={field.content2}
               onChange={(e) => handleContent2Change(section.name, field.id, e.target.value)}
-              placeholder={section.placeHolder}
+              placeholder={section.placeHolder2}
               className="w-full w-max-md border-2 border-red-800 rounded-md p-2 font-serif"
             />
             {section.isMultiple == true
