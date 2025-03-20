@@ -16,7 +16,8 @@ const backendEndpoint = import.meta.env.VITE_BACKEND_ENDPOINT;
 type Field = {
   id: number
   seq: string
-  value: string
+  content1: string
+  content2: string
 }
 
 // セクションの型定義
@@ -24,7 +25,7 @@ type FormSection = {
   name: string
   title: string
   placeHolder: string
-  type: "text" | "select + text"
+  type: "text" | "text + text" | "select + text + text"
   options?: string[]
   isMultiple: boolean
   fields: Field[]
@@ -38,7 +39,7 @@ const defaultFormSections: FormSection[] = [
     placeHolder: "例：8Q6RFP4G+255",
     type: "text",
     isMultiple: false,
-    fields: [{ id: 1, seq: "", value: "" }],
+    fields: [{ id: 1, seq: "", content1: "", content2: "" }],
   },
   {
     name: "furigana",
@@ -46,7 +47,7 @@ const defaultFormSections: FormSection[] = [
     placeHolder: "例：いせじんぐう ないくう（こうたいじんぐう）",
     type: "text",
     isMultiple: false,
-    fields: [{ id: 1, seq: "", value: "" }],
+    fields: [{ id: 1, seq: "", content1: "", content2: "" }],
   },
   {
     name: "altName",
@@ -54,7 +55,7 @@ const defaultFormSections: FormSection[] = [
     placeHolder: "例：伊勢神宮",
     type: "text",
     isMultiple: true,
-    fields: [{ id: 1, seq: "", value: "" }],
+    fields: [{ id: 1, seq: "", content1: "", content2: "" }],
   },
   {
     name: "tag",
@@ -62,15 +63,15 @@ const defaultFormSections: FormSection[] = [
     placeHolder: "例：お伊勢参り",
     type: "text",
     isMultiple: true,
-    fields: [{ id: 1, seq: "", value: "" }],
+    fields: [{ id: 1, seq: "", content1: "", content2: "" }],
   },
   {
     name: "foundedYear",
     title: "創建年",
     placeHolder: "例：垂仁天皇26年",
-    type: "text",
+    type: "text + text",
     isMultiple: false,
-    fields: [{ id: 1, seq: "", value: "" }],
+    fields: [{ id: 1, seq: "", content1: "", content2: "" }],
   },
   {
     name: "objectOfWorship",
@@ -78,16 +79,16 @@ const defaultFormSections: FormSection[] = [
     placeHolder: "例：天照坐皇大御神",
     type: "text",
     isMultiple: true,
-    fields: [{ id: 1, seq: "", value: "" }],
+    fields: [{ id: 1, seq: "", content1: "", content2: "" }],
   },
   {
     name: "shrineRank",
     title: "社格",
     placeHolder: "例：式内社",
-    type: "select + text",
+    type: "select + text + text",
     options: ["1: 延喜式内社", "2: 国史見在社", "3: 二十二社制度", "4: 一宮制度", "5: 総社（惣社）", "6: 近代社格制度", "7: 別表神社"],
     isMultiple: true,
-    fields: [{ id: 1, seq: "", value: "" }],
+    fields: [{ id: 1, seq: "", content1: "", content2: "" }],
   },
   {
     name: "hasGoshuin",
@@ -95,7 +96,7 @@ const defaultFormSections: FormSection[] = [
     placeHolder: "例：あり",
     type: "text",
     isMultiple: false,
-    fields: [{ id: 1, seq: "", value: "" }],
+    fields: [{ id: 1, seq: "", content1: "", content2: "" }],
   },
   {
     name: "websiteUrl",
@@ -103,7 +104,7 @@ const defaultFormSections: FormSection[] = [
     placeHolder: "例：https://www.isejingu.or.jp/",
     type: "text",
     isMultiple: false,
-    fields: [{ id: 1, seq: "", value: "" }],
+    fields: [{ id: 1, seq: "", content1: "", content2: "" }],
   },
   {
     name: "wikipediaUrl",
@@ -111,7 +112,7 @@ const defaultFormSections: FormSection[] = [
     placeHolder: "例：https://ja.wikipedia.org/wiki/伊勢神宮",
     type: "text",
     isMultiple: false,
-    fields: [{ id: 1, seq: "", value: "" }],
+    fields: [{ id: 1, seq: "", content1: "", content2: "" }],
   }
 ]
 
@@ -129,7 +130,8 @@ const AdminRegisterShrineDetails = () => {
           const newField: Field = {
             id: newId,
             seq: "",
-            value: "",
+            content1: "",
+            content2: "",
           }
           return {
             ...section,
@@ -159,21 +161,6 @@ const AdminRegisterShrineDetails = () => {
     )
   }
 
-  // 特定のセクションの特定のフィールドの値（value）を更新
-  const handleValueChange = (sectionName: string, fieldId: number, value: string) => {
-    setFormSections((prevSections) =>
-      prevSections.map((section) => {
-        if (section.name === sectionName) {
-          return {
-            ...section,
-            fields: section.fields.map((field) => (field.id === fieldId ? { ...field, value } : field)),
-          }
-        }
-        return section
-      }),
-    )
-  }
-
   // 特定のセクションの特定のフィールドの値（seq）を更新
   const handleSeqChange = (sectionName: string, fieldId: number, seq: string) => {
     setFormSections((prevSections) =>
@@ -189,6 +176,36 @@ const AdminRegisterShrineDetails = () => {
     )
   }
 
+  // 特定のセクションの特定のフィールドの値（content1）を更新
+  const handleContent1Change = (sectionName: string, fieldId: number, value: string) => {
+    setFormSections((prevSections) =>
+      prevSections.map((section) => {
+        if (section.name === sectionName) {
+          return {
+            ...section,
+            fields: section.fields.map((field) => (field.id === fieldId ? { ...field, content1: value } : field)),
+          }
+        }
+        return section
+      }),
+    )
+  }
+
+  // 特定のセクションの特定のフィールドの値（content2）を更新
+  const handleContent2Change = (sectionName: string, fieldId: number, value: string) => {
+    setFormSections((prevSections) =>
+      prevSections.map((section) => {
+        if (section.name === sectionName) {
+          return {
+            ...section,
+            fields: section.fields.map((field) => (field.id === fieldId ? { ...field, content2: value } : field)),
+          }
+        }
+        return section
+      }),
+    )
+  }
+
   // 登録ボタン押下時の処理
   const handleSubmit = (e: React.FormEvent) => {
 
@@ -197,7 +214,7 @@ const AdminRegisterShrineDetails = () => {
 
     const reqMap = new Map<string, Field[]>();
     formSections.map(section => {
-      let effectiveFields = section.fields.filter(field => field.value !== "");
+      let effectiveFields = section.fields.filter(field => field.content1 !== "");
       if (effectiveFields.length > 0) {
         reqMap.set(section.name, effectiveFields)
       }
@@ -212,11 +229,12 @@ const AdminRegisterShrineDetails = () => {
       data: JSON.stringify(Object.fromEntries(reqMap))
     };
 
-    axios(options)
-      .then((resp) => {
-        console.log('POSTリクエストが成功しました', resp)
-      })
-      .catch((err) => console.error("POSTリクエスト失敗", err));
+    console.log(options.data);
+    // axios(options)
+    //   .then((resp) => {
+    //     console.log('POSTリクエストが成功しました', resp)
+    //   })
+    //   .catch((err) => console.error("POSTリクエスト失敗", err));
 
     // フォームを初期状態に戻す
     setFormSections(defaultFormSections);
@@ -231,8 +249,8 @@ const AdminRegisterShrineDetails = () => {
           <div className="flex justify-center items-center gap-2">
             <Input
               id={`${section.name}-${field.id}`}
-              value={field.value}
-              onChange={(e) => handleValueChange(section.name, field.id, e.target.value)}
+              value={field.content1}
+              onChange={(e) => handleContent1Change(section.name, field.id, e.target.value)}
               placeholder={section.placeHolder}
               className="w-full border-2 border-red-800 rounded-md p-2 font-serif"
             />
@@ -245,7 +263,33 @@ const AdminRegisterShrineDetails = () => {
             }
           </div>
         )
-      case "select + text":
+        case "text + text":
+          return (
+            <div className="flex justify-center items-center gap-2">
+              <Input
+                id={`${section.name}-${field.id}1`}
+                value={field.content1}
+                onChange={(e) => handleContent1Change(section.name, field.id, e.target.value)}
+                placeholder={section.placeHolder}
+                className="w-full border-2 border-red-800 rounded-md p-2 font-serif"
+              />
+              <Input
+                id={`${section.name}-${field.id}2`}
+                value={field.content2}
+                onChange={(e) => handleContent2Change(section.name, field.id, e.target.value)}
+                placeholder={section.placeHolder}
+                className="w-full border-2 border-red-800 rounded-md p-2 font-serif"
+              />
+              {section.isMultiple == true
+                ? <div>
+                    <SlPlus onClick={() => handleAddField(section.name)} className="h-5 w-5" />
+                    <SlMinus onClick={() => handleRemoveField(section.name, field.id)} className="h-5 w-5" />
+                  </div>
+                : null
+              }
+            </div>
+          )  
+        case "select + text + text":
         return (
           <div className="flex justify-center items-center gap-2">
             <Select value={field.seq} onValueChange={(value) => handleSeqChange(section.name, field.id, value)}>
@@ -261,9 +305,16 @@ const AdminRegisterShrineDetails = () => {
               </SelectContent>
             </Select>
             <Input
-              id={`${section.name}-${field.id}`}
-              value={field.value}
-              onChange={(e) => handleValueChange(section.name, field.id, e.target.value)}
+              id={`${section.name}-${field.id}1`}
+              value={field.content1}
+              onChange={(e) => handleContent1Change(section.name, field.id, e.target.value)}
+              placeholder={section.placeHolder}
+              className="w-full w-max-md border-2 border-red-800 rounded-md p-2 font-serif"
+            />
+            <Input
+              id={`${section.name}-${field.id}2`}
+              value={field.content2}
+              onChange={(e) => handleContent2Change(section.name, field.id, e.target.value)}
               placeholder={section.placeHolder}
               className="w-full w-max-md border-2 border-red-800 rounded-md p-2 font-serif"
             />
