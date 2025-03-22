@@ -43,7 +43,7 @@ func (sru shrineRegisterUsecase) GetAllRegisterShrines(ctx context.Context) (psh
 
 	var shrrs []*model.ShrineRegister
 
-	query := `SELECT rshr.name, rshr.address, rshr.furigana, rshr.alt_name, rshr.tags, rshr.founded_year, rshr.object_of_worship, rshr.has_goshuin, rshr.website_url, rshr.wikipedia_url
+	query := `SELECT rshr.name, rshr.address, rshr.furigana, rshr.alt_name, rshr.tags, rshr.founded_year, rshr.object_of_worship, rshr.shrine_rank, rshr.has_goshuin, rshr.website_url, rshr.wikipedia_url
 						FROM m_register_shrine rshr`
 
 	shrrs, err = sru.srr.GetRegisterShrines(ctx, query)
