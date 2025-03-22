@@ -47,6 +47,7 @@ CREATE TABLE IF NOT EXISTS m_register_shrine (
   tags              text[],
   founded_year      text,
   object_of_worship text[],
+  shrine_rank       text[][],
   has_goshuin       varchar(2),
   website_url       text,
   wikipedia_url     text,

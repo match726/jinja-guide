@@ -187,13 +187,15 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 				}
 			}
 		}
-		if len(shrq.FoundedYear[0].Content1) != 0 {
-			err = srh.sru.RegisterShrineContents(ctx, 5, 1, shrq.PlusCode[0].Content1, "", shrq.FoundedYear[0].Content1, shrq.FoundedYear[0].Content2, "", 0)
-			if err != nil {
-				logger.Error(ctx, "神社詳細情報[創建年]登録失敗", "errmsg", err)
-				err = srh.sru.SendErrMessageToDiscord("神社詳細情報登録", []string{"神社詳細情報[創建年]登録失敗"}, shrq)
+		if len(shrq.FoundedYear) != 0 {
+			if len(shrq.FoundedYear[0].Content1) != 0 {
+				err = srh.sru.RegisterShrineContents(ctx, 5, 1, shrq.PlusCode[0].Content1, "", shrq.FoundedYear[0].Content1, shrq.FoundedYear[0].Content2, "", 0)
 				if err != nil {
-					logger.Error(ctx, "Discord連携失敗", "errmsg", err)
+					logger.Error(ctx, "神社詳細情報[創建年]登録失敗", "errmsg", err)
+					err = srh.sru.SendErrMessageToDiscord("神社詳細情報登録", []string{"神社詳細情報[創建年]登録失敗"}, shrq)
+					if err != nil {
+						logger.Error(ctx, "Discord連携失敗", "errmsg", err)
+					}
 				}
 			}
 		}
@@ -216,7 +218,7 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 				if len(shrineRank.Seq) != 0 && len(shrineRank.Content1) != 0 {
 					// Seqをint型に変換
 					seq, _ := strconv.Atoi(shrineRank.Seq)
-					err = srh.sru.RegisterShrineContents(ctx, 7, seq, shrq.PlusCode[0].Content1, "", shrineRank.Content1, shrineRank.Content2, "", 0)
+					err = srh.sru.RegisterShrineContents(ctx, 7, seq, shrq.PlusCode[0].Content1, "", shrineRank.Content1, shrineRank.Content2, shrineRank.Content3, 0)
 					if err != nil {
 						logger.Error(ctx, "神社詳細情報[社格]登録失敗", "errmsg", err)
 						err = srh.sru.SendErrMessageToDiscord("神社詳細情報登録", []string{"神社詳細情報[社格]登録失敗"}, shrq)
@@ -227,28 +229,34 @@ func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWri
 				}
 			}
 		}
-		if len(shrq.HasGoshuin[0].Content1) != 0 {
-			err = srh.sru.RegisterShrineContents(ctx, 8, 1, shrq.PlusCode[0].Content1, "", shrq.HasGoshuin[0].Content1, "", "", 0)
-			if err != nil {
-				logger.Error(ctx, "神社詳細情報[御朱印]登録失敗", "errmsg", err)
-				err = srh.sru.SendErrMessageToDiscord("神社詳細情報登録", []string{"神社詳細情報[御朱印]登録失敗"}, shrq)
+		if len(shrq.HasGoshuin) != 0 {
+			if len(shrq.HasGoshuin[0].Content1) != 0 {
+				err = srh.sru.RegisterShrineContents(ctx, 8, 1, shrq.PlusCode[0].Content1, "", shrq.HasGoshuin[0].Content1, "", "", 0)
 				if err != nil {
-					logger.Error(ctx, "Discord連携失敗", "errmsg", err)
+					logger.Error(ctx, "神社詳細情報[御朱印]登録失敗", "errmsg", err)
+					err = srh.sru.SendErrMessageToDiscord("神社詳細情報登録", []string{"神社詳細情報[御朱印]登録失敗"}, shrq)
+					if err != nil {
+						logger.Error(ctx, "Discord連携失敗", "errmsg", err)
+					}
 				}
 			}
 		}
-		if len(shrq.WebsiteURL[0].Content1) != 0 {
-			err = srh.sru.RegisterShrineContents(ctx, 9, 1, shrq.PlusCode[0].Content1, "", shrq.WebsiteURL[0].Content1, "", "", 0)
-			if err != nil {
-				logger.Error(ctx, "神社詳細情報[公式サイトURL]登録失敗", "errmsg", err)
-				w.WriteHeader(http.StatusInternalServerError)
+		if len(shrq.WebsiteURL) != 0 {
+			if len(shrq.WebsiteURL[0].Content1) != 0 {
+				err = srh.sru.RegisterShrineContents(ctx, 9, 1, shrq.PlusCode[0].Content1, "", shrq.WebsiteURL[0].Content1, "", "", 0)
+				if err != nil {
+					logger.Error(ctx, "神社詳細情報[公式サイトURL]登録失敗", "errmsg", err)
+					w.WriteHeader(http.StatusInternalServerError)
+				}
 			}
 		}
-		if len(shrq.WikipediaURL[0].Content1) != 0 {
-			err = srh.sru.RegisterShrineContents(ctx, 10, 1, shrq.PlusCode[0].Content1, "", shrq.WikipediaURL[0].Content1, "", "", 0)
-			if err != nil {
-				logger.Error(ctx, "神社詳細情報[WikipediaURL]登録失敗", "errmsg", err)
-				w.WriteHeader(http.StatusInternalServerError)
+		if len(shrq.WikipediaURL) != 0 {
+			if len(shrq.WikipediaURL[0].Content1) != 0 {
+				err = srh.sru.RegisterShrineContents(ctx, 10, 1, shrq.PlusCode[0].Content1, "", shrq.WikipediaURL[0].Content1, "", "", 0)
+				if err != nil {
+					logger.Error(ctx, "神社詳細情報[WikipediaURL]登録失敗", "errmsg", err)
+					w.WriteHeader(http.StatusInternalServerError)
+				}
 			}
 		}
 
