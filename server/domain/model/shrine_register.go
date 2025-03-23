@@ -7,19 +7,12 @@ type ShrineRegister struct {
 	Furigana         string       `json:"furigana"`
 	AltNames         []string     `json:"altName"`
 	Tags             []string     `json:"tag"`
-	FoundedYear      FoundedYear  `json:"foundedYear"`
+	FoundedYear      []string     `json:"foundedYear"`
 	ObjectOfWorships []string     `json:"objectOfWorship"`
 	ShrineRanks      []ShrineRank `json:"shrineRank"`
 	HasGoshuin       string       `json:"hasGoshuin"`
 	WebsiteURL       string       `json:"websiteUrl"`
 	WikipediaURL     string       `json:"wikipediaUrl"`
-}
-
-// 創建年（神社一括登録テーブル）データ定義
-type FoundedYear struct {
-	Year        string `json:"year"`
-	Supplement1 string `json:"supplement1"`
-	Supplement2 string `json:"supplement2"`
 }
 
 // 社格（神社一括登録テーブル）データ定義

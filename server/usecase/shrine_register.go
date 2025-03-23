@@ -83,7 +83,7 @@ func (sru shrineRegisterUsecase) GetAllRegisterShrines(ctx context.Context) (psh
 			Furigana:         []model.Field{{Id: 1, Seq: "", Content1: shrr.Furigana, Content2: "", Content3: ""}},
 			AltNames:         altNameFields,
 			Tags:             tagFields,
-			FoundedYear:      []model.Field{{Id: 1, Seq: "", Content1: shrr.FoundedYear.Year, Content2: shrr.FoundedYear.Supplement1, Content3: shrr.FoundedYear.Supplement2}},
+			FoundedYear:      []model.Field{{Id: 1, Seq: "", Content1: shrr.FoundedYear[0], Content2: shrr.FoundedYear[1], Content3: shrr.FoundedYear[2]}},
 			ObjectOfWorships: objectOfWorshipFields,
 			ShrineRanks:      shrineRankFields,
 			HasGoshuin:       []model.Field{{Id: 1, Seq: "", Content1: shrr.HasGoshuin, Content2: "", Content3: ""}},
