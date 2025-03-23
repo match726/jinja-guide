@@ -75,9 +75,6 @@ func (sru shrineRegisterUsecase) GetAllRegisterShrines(ctx context.Context) (psh
 			shrineRankFields = append(shrineRankFields, model.Field{Id: idx + 1, Seq: shrineRank.Seq, Content1: shrineRank.Content1, Content2: shrineRank.Content2, Content3: shrineRank.Content3})
 		}
 
-		fmt.Println(len(shrr.FoundedYear.Content1))
-		fmt.Println(len(shrr.FoundedYear.Content2))
-		fmt.Println(len(shrr.FoundedYear.Content3))
 		shrq := model.ShrineRegisterReq{
 			Name:             []model.Field{{Id: 1, Seq: "", Content1: shrr.Name, Content2: "", Content3: ""}},
 			Address:          []model.Field{{Id: 1, Seq: "", Content1: shrr.Address, Content2: "", Content3: ""}},
@@ -86,7 +83,7 @@ func (sru shrineRegisterUsecase) GetAllRegisterShrines(ctx context.Context) (psh
 			Furigana:         []model.Field{{Id: 1, Seq: "", Content1: shrr.Furigana, Content2: "", Content3: ""}},
 			AltNames:         altNameFields,
 			Tags:             tagFields,
-			FoundedYear:      []model.Field{{Id: 1, Seq: "", Content1: shrr.FoundedYear.Content1, Content2: shrr.FoundedYear.Content2, Content3: shrr.FoundedYear.Content3}},
+			FoundedYear:      []model.Field{{Id: 1, Seq: "", Content1: shrr.FoundedYear.Year, Content2: shrr.FoundedYear.Supplement1, Content3: shrr.FoundedYear.Supplement2}},
 			ObjectOfWorships: objectOfWorshipFields,
 			ShrineRanks:      shrineRankFields,
 			HasGoshuin:       []model.Field{{Id: 1, Seq: "", Content1: shrr.HasGoshuin, Content2: "", Content3: ""}},

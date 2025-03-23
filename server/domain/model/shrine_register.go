@@ -17,9 +17,9 @@ type ShrineRegister struct {
 
 // 創建年（神社一括登録テーブル）データ定義
 type FoundedYear struct {
-	Content1 string `json:"content1"`
-	Content2 string `json:"content2"`
-	Content3 string `json:"content3"`
+	Year        string `json:"year"`
+	Supplement1 string `json:"supplement1"`
+	Supplement2 string `json:"supplement2"`
 }
 
 // 社格（神社一括登録テーブル）データ定義
