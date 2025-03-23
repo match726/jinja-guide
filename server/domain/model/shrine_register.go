@@ -2,25 +2,17 @@ package model
 
 // 神社一括登録テーブル定義
 type ShrineRegister struct {
-	Name             string       `json:"name"`
-	Address          string       `json:"address"`
-	Furigana         string       `json:"furigana"`
-	AltNames         []string     `json:"altName"`
-	Tags             []string     `json:"tag"`
-	FoundedYear      []string     `json:"foundedYear"`
-	ObjectOfWorships []string     `json:"objectOfWorship"`
-	ShrineRanks      []ShrineRank `json:"shrineRank"`
-	HasGoshuin       string       `json:"hasGoshuin"`
-	WebsiteURL       string       `json:"websiteUrl"`
-	WikipediaURL     string       `json:"wikipediaUrl"`
-}
-
-// 社格（神社一括登録テーブル）データ定義
-type ShrineRank struct {
-	Seq      string `json:"seq"`
-	Content1 string `json:"content1"`
-	Content2 string `json:"content2"`
-	Content3 string `json:"content3"`
+	Name             string     `json:"name"`
+	Address          string     `json:"address"`
+	Furigana         string     `json:"furigana"`
+	AltNames         []string   `json:"altName"`
+	Tags             []string   `json:"tag"`
+	FoundedYear      []string   `json:"foundedYear"`
+	ObjectOfWorships []string   `json:"objectOfWorship"`
+	ShrineRanks      [][]string `json:"shrineRank"`
+	HasGoshuin       string     `json:"hasGoshuin"`
+	WebsiteURL       string     `json:"websiteUrl"`
+	WikipediaURL     string     `json:"wikipediaUrl"`
 }
 
 // 神社／神社詳細情報登録画面のリクエストデータ定義

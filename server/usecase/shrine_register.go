@@ -72,7 +72,7 @@ func (sru shrineRegisterUsecase) GetAllRegisterShrines(ctx context.Context) (psh
 		}
 		// 社格をFieldへ変換
 		for idx, shrineRank := range shrr.ShrineRanks {
-			shrineRankFields = append(shrineRankFields, model.Field{Id: idx + 1, Seq: shrineRank.Seq, Content1: shrineRank.Content1, Content2: shrineRank.Content2, Content3: shrineRank.Content3})
+			shrineRankFields = append(shrineRankFields, model.Field{Id: idx + 1, Seq: shrineRank[0], Content1: shrineRank[1], Content2: shrineRank[2], Content3: shrineRank[3]})
 		}
 
 		shrq := model.ShrineRegisterReq{
