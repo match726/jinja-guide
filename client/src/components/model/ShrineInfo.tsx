@@ -13,18 +13,27 @@ import '@/styles/global.css';
 const frontendUrl = import.meta.env.VITE_FRONTEND_URL;
 const backendEndpoint = import.meta.env.VITE_BACKEND_ENDPOINT;
 
+// フィールドの型定義
+type Field = {
+  id: number
+  seq: string
+  content1: string
+  content2: string
+  content3: string
+}
+
 type ShrineDetails = {
   name: string
   furigana: string
   image: string
-  altName: string[]
+  altName: Field[]
   address: string
   placeId: string
   description: string
-  tags: string[]
-  foundedYear: string
-  objectOfWorship: string[]
-  shrineRank: string[]
+  tags: Field[]
+  foundedYear: Field
+  objectOfWorship: Field[]
+  shrineRank: Field[]
   hasGoshuin: boolean
   websiteUrl: string
   wikipediaUrl: string
@@ -32,7 +41,7 @@ type ShrineDetails = {
 
 const ShrineInfo = () => {
 
-  const [shrDetails, setShrDetails] = useState<ShrineDetails>({name: "", furigana: "", altName: [""], address: "", placeId: "", image: "", description: "", tags: [""], foundedYear: "", objectOfWorship: [""], shrineRank: [""], hasGoshuin: false, websiteUrl: "", wikipediaUrl: ""});
+  const [shrDetails, setShrDetails] = useState<ShrineDetails>({name: "", furigana: "", altName: [], address: "", placeId: "", image: "", description: "", tags: [], foundedYear: {id: 0, seq: "", content1: "", content2: "", content3: ""}, objectOfWorship: [], shrineRank: [], hasGoshuin: false, websiteUrl: "", wikipediaUrl: ""});
   const search = useLocation().search;
   // プラス記号が空白として解釈されるため、置換する
   const query = new URLSearchParams(search.replace("+", "%2B"));
@@ -78,7 +87,7 @@ const ShrineInfo = () => {
               <div>
                 <h3 className="text-lg font-semibold mb-2">別名称</h3>
                   {shrDetails.altName.map((item, index) => (
-                    <li key={index}>{item}</li>
+                    <li key={index}>{item.content1}</li>
                   ))}
               </div>
               <div>
@@ -92,19 +101,22 @@ const ShrineInfo = () => {
               </div>
               <div>
                 <h3 className="text-lg font-semibold mb-2">創建年</h3>
-                <p>{shrDetails.foundedYear}</p>
+                {shrDetails.foundedYear.content2 === "伝"
+                 ? <p>"（" + shrDetails.foundedYear.content2 + "）" + shrDetails.foundedYear.content1</p>
+                 : <p>shrDetails.foundedYear</p>
+                }
               </div>
               <div>
                 <h3 className="text-lg font-semibold mb-2">社格</h3>
                   {shrDetails.shrineRank.map((item, index) => (
-                    <li key={index}>{item}</li>
+                    <li key={index}>{item.content1}</li>
                   ))}
               </div>
               <div>
                 <h3 className="text-lg font-semibold mb-2">御祭神</h3>
                 <ul className="list-disc list-inside">
                   {shrDetails.objectOfWorship.map((deity, index) => (
-                    <li key={index}>{deity}</li>
+                    <li key={index}>{deity.content1}</li>
                   ))}
                 </ul>
               </div>
@@ -120,13 +132,13 @@ const ShrineInfo = () => {
                 <h3 className="text-lg font-semibold mb-2">関連ワード</h3>
                 <div className="flex flex-wrap gap-2">
                   {shrDetails.tags.map((item, index) => (
-                    item === "登録なし"
+                    item.content1 === "登録なし"
                       ? <Badge key={index} variant="secondary">
-                          {item}
+                          {item.content1}
                         </Badge>
                       : <Badge key={index} variant="secondary" className="cursor-pointer hover:bg-primary/80">
-                          <a href={frontendUrl + "/shrines/tag?tag=" + encodeURIComponent(item)} rel="noopener noreferrer" className="flex items-center">
-                            {item}
+                          <a href={frontendUrl + "/shrines/tag?tag=" + encodeURIComponent(item.content1)} rel="noopener noreferrer" className="flex items-center">
+                            {item.content1}
                           </a>
                         </Badge>
                   ))}
