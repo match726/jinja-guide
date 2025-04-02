@@ -62,72 +62,73 @@ func (sdu shrineDetailUsecase) GetShrineDetailByPlusCode(ctx context.Context, pl
 	// 神社詳細情報テーブルからShrineDetailsResp構造体に項目設定
 	for _, shrc := range shrcs {
 
+		fieldResp := model.Field{Id: 1, Seq: strconv.Itoa(shrc.Seq), Content1: shrc.Content1, Content2: shrc.Content2, Content3: shrc.Content3}
+
 		switch shrc.Id {
 		case 1:
 			// 振り仮名の設定
-			shrd.Furigana = shrc.Content1
+			shrd.Furigana = fieldResp
 		case 2:
 			// 別名称の設定
-			shrd.AltName = append(shrd.AltName, shrc.Content1)
+			shrd.AltName = append(shrd.AltName, fieldResp)
 		case 3:
 			// 説明の設定
-			shrd.Description = shrc.Content1
+			shrd.Description = fieldResp
 		case 4:
 			// 関連タグの設定
-			shrd.Tags = append(shrd.Tags, shrc.Content1)
+			shrd.Tags = append(shrd.Tags, fieldResp)
 		case 5:
 			// 創建年の設定
+			shrd.FoundedYear = fieldResp
 			if _, err = strconv.Atoi(shrc.Content1); err == nil {
-				shrd.FoundedYear = shrc.Content1 + "年"
-			} else {
-				shrd.FoundedYear = shrc.Content1
+				shrd.FoundedYear.Content1 = shrc.Content1 + "年"
 			}
 		case 6:
 			// 御祭神の設定
-			shrd.ObjectOfWorship = append(shrd.ObjectOfWorship, shrc.Content1)
+			shrd.ObjectOfWorship = append(shrd.ObjectOfWorship, fieldResp)
 		case 7:
 			// 社格の設定
-			shrd.ShrineRank = append(shrd.ShrineRank, shrc.Content1)
+			shrd.ShrineRank = append(shrd.ShrineRank, fieldResp)
 		case 8:
 			//御朱印の設定
-			if shrc.Content1 == "あり" {
-				shrd.HasGoshuin = true
-			}
+			shrd.HasGoshuin = fieldResp
 		case 9:
 			// 公式サイトの設定
-			shrd.WebsiteURL = shrc.Content1
+			shrd.WebsiteURL = fieldResp
 		case 10:
 			// Wikipediaの設定
-			shrd.WikipediaURL = shrc.Content1
+			shrd.WikipediaURL = fieldResp
 		}
 
 	}
 
 	// Wikipediaから情報取得し、ShrineDetailsResp構造体に設定
-	if len(shrd.WikipediaURL) != 0 {
-		title := shrd.WikipediaURL[strings.LastIndex(shrd.WikipediaURL, "/")+1:]
+	if len(shrd.WikipediaURL.Content1) != 0 {
+		title := shrd.WikipediaURL.Content1[strings.LastIndex(shrd.WikipediaURL.Content1, "/")+1:]
 		image, extract, err := wikipedia.QueryWikipedia(title)
 		if err != nil {
 			return shrd, fmt.Errorf("%w", err)
 		}
 
 		shrd.Image = image
-		if len(shrd.Description) == 0 {
-			shrd.Description = extract
+		if len(shrd.Description.Content1) == 0 {
+			shrd.Description.Content1 = extract
 		}
 	}
 
+	noFieldResp := model.Field{Id: 1, Seq: "", Content1: "登録なし", Content2: "", Content3: ""}
+
 	if len(shrd.AltName) == 0 {
-		shrd.AltName = []string{"登録なし"}
+		shrd.AltName = append(shrd.AltName, noFieldResp)
 	}
 	if len(shrd.Tags) == 0 {
-		shrd.Tags = []string{"登録なし"}
+		shrd.Tags = append(shrd.Tags, noFieldResp)
 	}
 	if len(shrd.ObjectOfWorship) == 0 {
-		shrd.ObjectOfWorship = []string{"登録なし"}
+		shrd.ObjectOfWorship = append(shrd.ObjectOfWorship, noFieldResp)
 	}
 	if len(shrd.ShrineRank) == 0 {
-		shrd.ShrineRank = []string{"登録なし"}
+		shrd.ShrineRank = append(shrd.ShrineRank, noFieldResp)
 	}
 
 	return shrd, err

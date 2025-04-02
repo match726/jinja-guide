@@ -14,3 +14,12 @@ type ShrineContents struct {
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 }
+
+// 神社詳細情報テーブルの項目をI/Fする際のフィールド定義
+type Field struct {
+	Id       int    `json:"id"`
+	Seq      string `json:"seq"`
+	Content1 string `json:"content1"`
+	Content2 string `json:"content2"`
+	Content3 string `json:"content3"`
+}

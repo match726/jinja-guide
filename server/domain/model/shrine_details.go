@@ -7,18 +7,18 @@ type ShrineDetailsReq struct {
 
 // 神社詳細画面のレスポンスデータ定義
 type ShrineDetailsResp struct {
-	Name            string   `json:"name"`
-	Furigana        string   `json:"furigana"`
-	Image           string   `json:"image"`
-	AltName         []string `json:"altName"`
-	Address         string   `json:"address"`
-	PlaceID         string   `json:"placeId"`
-	Description     string   `json:"description"`
-	Tags            []string `json:"tags"`
-	FoundedYear     string   `json:"foundedYear"`
-	ObjectOfWorship []string `json:"objectOfWorship"`
-	ShrineRank      []string `json:"shrineRank"`
-	HasGoshuin      bool     `json:"hasGoshuin"`
-	WebsiteURL      string   `json:"websiteUrl"`
-	WikipediaURL    string   `json:"wikipediaUrl"`
+	Name            string  `json:"name"`
+	Furigana        Field   `json:"furigana"`
+	Image           string  `json:"image"`
+	AltName         []Field `json:"altName"`
+	Address         string  `json:"address"`
+	PlaceID         string  `json:"placeId"`
+	Description     Field   `json:"description"`
+	Tags            []Field `json:"tags"`
+	FoundedYear     Field   `json:"foundedYear"`
+	ObjectOfWorship []Field `json:"objectOfWorship"`
+	ShrineRank      []Field `json:"shrineRank"`
+	HasGoshuin      Field   `json:"hasGoshuin"`
+	WebsiteURL      Field   `json:"websiteUrl"`
+	WikipediaURL    Field   `json:"wikipediaUrl"`
 }

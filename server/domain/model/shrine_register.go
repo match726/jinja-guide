@@ -31,11 +31,3 @@ type ShrineRegisterReq struct {
 	WebsiteURL       []Field `json:"websiteUrl"`
 	WikipediaURL     []Field `json:"wikipediaUrl"`
 }
-
-type Field struct {
-	Id       int    `json:"id"`
-	Seq      string `json:"seq"`
-	Content1 string `json:"content1"`
-	Content2 string `json:"content2"`
-	Content3 string `json:"content3"`
-}
