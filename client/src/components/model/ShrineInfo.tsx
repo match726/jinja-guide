@@ -107,7 +107,7 @@ const ShrineInfo = () => {
               <div>
                 <h3 className="text-lg font-semibold mb-2">創建年</h3>
                 {shrDetails.foundedYear.content2 === "伝"
-                 ? <p>"（" + {shrDetails.foundedYear.content2} + "）" + {shrDetails.foundedYear.content1}</p>
+                 ? <p>{"（" + shrDetails.foundedYear.content2 + "）" + shrDetails.foundedYear.content1}</p>
                  : <p>{shrDetails.foundedYear.content1}</p>
                 }
               </div>
