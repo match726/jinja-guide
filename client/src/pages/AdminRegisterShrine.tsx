@@ -2,13 +2,15 @@ import { useState } from "react";
 import axios from 'axios';
 
 import { BACKEND_ENDPOINT } from '@/config/config';
-import { FieldProps, FormProps } from '@/features/register/types/types';
+import { FieldProps } from '@/types/types';
+import { FormProps } from '@/features/register/types/types';
 import { Header } from '@/components/ui/header';
 import { RegisterForm } from '@/features/register/components/formField';
 import { RegisterShrineFormProps } from '@/features/register/consts/formContents';
 
 import '@/styles/global.css';
 
+// TODO: 入力時のバリデーションチェック機能
 const AdminRegisterShrine = () => {
 
   // フォームの初期状態を定義

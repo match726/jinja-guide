@@ -3,6 +3,8 @@ import { useLocation } from 'react-router-dom';
 import { ExternalLink } from 'lucide-react';
 import axios from 'axios';
 
+import { FRONTEND_URL, BACKEND_ENDPOINT } from '@/config/config';
+import { FieldProps } from '@/types/types';
 import { Header } from '@/components/ui/header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
@@ -10,30 +12,18 @@ import { Badge } from '@/components/ui/badge';
 
 import '@/styles/global.css';
 
-const frontendUrl = import.meta.env.VITE_FRONTEND_URL;
-const backendEndpoint = import.meta.env.VITE_BACKEND_ENDPOINT;
-
-// フィールドの型定義
-type Field = {
-  id: number
-  seq: string
-  content1: string
-  content2: string
-  content3: string
-}
-
 type ShrineDetails = {
   name: string
   furigana: string
   image: string
-  altName: Field[]
+  altName: FieldProps[]
   address: string
   placeId: string
   description: string
-  tags: Field[]
-  foundedYear: Field
-  objectOfWorship: Field[]
-  shrineRank: Field[]
+  tags: FieldProps[]
+  foundedYear: FieldProps
+  objectOfWorship: FieldProps[]
+  shrineRank: FieldProps[]
   hasGoshuin: boolean
   websiteUrl: string
   wikipediaUrl: string
@@ -51,7 +41,7 @@ const ShrineInfo = () => {
 
     const reqOptions = {
       method: "GET",
-      url: backendEndpoint + "/api/shrine",
+      url: BACKEND_ENDPOINT + "/api/shrine",
       headers: {
         "Content-Type": "application/json",
         "ShrGuide-Shrines-Authorization": JSON.stringify(payload),
@@ -102,8 +92,8 @@ const ShrineInfo = () => {
               <div>
                 <h3 className="text-lg font-semibold mb-2">創建年</h3>
                 {shrDetails.foundedYear.content2 === "伝"
-                 ? <p>"（" + shrDetails.foundedYear.content2 + "）" + shrDetails.foundedYear.content1</p>
-                 : <p>shrDetails.foundedYear</p>
+                 ? <p>"（" + {shrDetails.foundedYear.content2} + "）" + {shrDetails.foundedYear.content1}</p>
+                 : <p>{shrDetails.foundedYear.content1}</p>
                 }
               </div>
               <div>
@@ -137,7 +127,7 @@ const ShrineInfo = () => {
                           {item.content1}
                         </Badge>
                       : <Badge key={index} variant="secondary" className="cursor-pointer hover:bg-primary/80">
-                          <a href={frontendUrl + "/shrines/tag?tag=" + encodeURIComponent(item.content1)} rel="noopener noreferrer" className="flex items-center">
+                          <a href={FRONTEND_URL + "/shrines/tag?tag=" + encodeURIComponent(item.content1)} rel="noopener noreferrer" className="flex items-center">
                             {item.content1}
                           </a>
                         </Badge>
