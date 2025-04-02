@@ -14,24 +14,39 @@ import '@/styles/global.css';
 
 type ShrineDetails = {
   name: string
-  furigana: string
+  furigana: FieldProps
   image: string
   altName: FieldProps[]
   address: string
   placeId: string
-  description: string
+  description: FieldProps
   tags: FieldProps[]
   foundedYear: FieldProps
   objectOfWorship: FieldProps[]
   shrineRank: FieldProps[]
-  hasGoshuin: boolean
-  websiteUrl: string
-  wikipediaUrl: string
+  hasGoshuin: FieldProps
+  websiteUrl: FieldProps
+  wikipediaUrl: FieldProps
 };
 
 const ShrineInfo = () => {
 
-  const [shrDetails, setShrDetails] = useState<ShrineDetails>({name: "", furigana: "", altName: [], address: "", placeId: "", image: "", description: "", tags: [], foundedYear: {id: 0, seq: "", content1: "", content2: "", content3: ""}, objectOfWorship: [], shrineRank: [], hasGoshuin: false, websiteUrl: "", wikipediaUrl: ""});
+  const [shrDetails, setShrDetails] = useState<ShrineDetails>({
+    name: "",
+    furigana: {id: 0, seq: "", content1: "", content2: "", content3: ""},
+    altName: [],
+    address: "",
+    placeId: "",
+    image: "",
+    description: {id: 0, seq: "", content1: "", content2: "", content3: ""},
+    tags: [],
+    foundedYear: {id: 0, seq: "", content1: "", content2: "", content3: ""},
+    objectOfWorship: [],
+    shrineRank: [],
+    hasGoshuin: {id: 0, seq: "", content1: "", content2: "", content3: ""},
+    websiteUrl: {id: 0, seq: "", content1: "", content2: "", content3: ""},
+    wikipediaUrl: {id: 0, seq: "", content1: "", content2: "", content3: ""}
+  });
   const search = useLocation().search;
   // プラス記号が空白として解釈されるため、置換する
   const query = new URLSearchParams(search.replace("+", "%2B"));
@@ -69,7 +84,7 @@ const ShrineInfo = () => {
         <Card className="w-full max-w-4xl bg-white shadow-lg rounded-lg overflow-hidden border-2 border-red-900">
           <CardHeader className="bg-red-900 text-white p-4">
             <h2 className="text-2xl font-bold text-center">{shrDetails.name}</h2>
-            <p className="text-center text-gray-200">{shrDetails.furigana}</p>
+            <p className="text-center text-gray-200">{shrDetails.furigana.content1}</p>
           </CardHeader>
           <img src={shrDetails.image} alt={shrDetails.name} className="aspect-auto w-full object-cover" />
           <CardContent className="p-6">
@@ -116,7 +131,7 @@ const ShrineInfo = () => {
               </div>
               <div className="md:col-span-2">
                 <h3 className="text-lg font-semibold mb-2">説明</h3>
-                <p className="text-gray-700">{shrDetails.description}</p>
+                <p className="text-gray-700">{shrDetails.description.content1}</p>
               </div>
               <div className="md:col-span-2">
                 <h3 className="text-lg font-semibold mb-2">関連ワード</h3>
@@ -136,12 +151,12 @@ const ShrineInfo = () => {
               </div>
               <div>
                 <h3 className="text-lg font-semibold mb-2">公式HP</h3>
-                {shrDetails.websiteUrl === ""
+                {shrDetails.websiteUrl.content1 === ""
                   ? <Button variant="link" className="p-0 cursor-not-allowed">
                       登録なし
                     </Button>
                   : <Button variant="link" className="p-0">
-                      <a href={shrDetails.websiteUrl} target="_blank" rel="noopener noreferrer" className="flex items-center">
+                      <a href={shrDetails.websiteUrl.content1} target="_blank" rel="noopener noreferrer" className="flex items-center">
                         公式サイトへ <ExternalLink className="ml-1 h-4 w-4" />
                       </a>
                     </Button>
@@ -149,12 +164,12 @@ const ShrineInfo = () => {
               </div>
               <div>
                 <h3 className="text-lg font-semibold mb-2">Wikipedia</h3>
-                {shrDetails.wikipediaUrl === ""
+                {shrDetails.wikipediaUrl.content1 === ""
                   ? <Button variant="link" className="p-0 cursor-not-allowed">
                       登録なし
                     </Button>
                   : <Button variant="link" className="p-0">
-                      <a href={shrDetails.wikipediaUrl} target="_blank" rel="noopener noreferrer" className="flex items-center">
+                      <a href={shrDetails.wikipediaUrl.content1} target="_blank" rel="noopener noreferrer" className="flex items-center">
                         Wikipediaへ <ExternalLink className="ml-1 h-4 w-4" />
                       </a>
                     </Button>
