@@ -5,9 +5,9 @@ import PrefList from '@/components/model/PrefList';
 import ShrineInfo from '@/components/model/ShrineInfo';
 import ShrineSacList from '@/components/model/ShrineSacList';
 import ShrineTagList from '@/components/model/ShrineTagList';
-import Admin from '@/features/Admin/components/Admin';
-import AdminRegisterShrine from '@/features/AdminRegisterShrine/components/AdminRegisterShrine';
-import AdminRegisterShrineDetails from '@/components/model/AdminRegisterShrineDetails';
+import Admin from '@/pages/Admin';
+import AdminRegisterShrine from '@/pages/AdminRegisterShrine';
+import AdminRegisterShrineDetails from '@/pages/AdminRegisterShrineDetails';
 import AdminBulkRegisterShrine from '@/components/model/AdminBulkRegisterShrine';
 import AdminStdAreaCode from '@/components/model/AdminStdAreaCode';
 

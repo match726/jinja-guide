@@ -1,6 +1,6 @@
-import { CardProps } from '@/features/Admin/types/cardProps';
+import { OrdinaryCardProps } from '@/types/cardProps';
 
-export const CardFields: CardProps[] = [
+export const CardContents: OrdinaryCardProps[] = [
   {
     title: "神社登録",
     furigana: "じんじゃとうろく",

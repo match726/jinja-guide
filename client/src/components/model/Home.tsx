@@ -110,14 +110,14 @@ const Home: React.FC = () => {
               <div className="absolute container flex grid grid-cols-2 gap-10 xl:grid-cols-3">
                 {contents && contents.shrines.map((data) => (
                   <ShrineCard
-                    cardTitle={data.name}
-                    cardTitleRuby={data.furigana}
+              cardTitle={data.name}
+              cardTitleRuby={data.furigana}
                     cardAddress={data.address}
                     cardObjectOfWorship={data.objectOfWorship}
-                    cardDescription={data.description}
-                    cardLink={frontendUrl + "/shrine?code=" + data.plusCode}
-                  />
-                ))}
+              cardDescription={data.description}
+              cardLink={frontendUrl + "/shrine?code=" + data.plusCode}
+            />         
+          ))}
               </div>
             </TabsContent>
             <TabsContent value="2" className="py-6 flex justify-center">
