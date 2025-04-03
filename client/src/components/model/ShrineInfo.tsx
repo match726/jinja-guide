@@ -98,7 +98,7 @@ const ShrineInfo = () => {
             <h2 className="text-2xl font-bold text-center">{shrDetails.name}</h2>
             <p className="text-center text-gray-200">{shrDetails.furigana.content1}</p>
           </CardHeader>
-          {shrDetails.image
+          {shrDetails.image !== ""
             ? <img src={shrDetails.image} alt={shrDetails.name} className="aspect-auto w-full object-cover"/>
             : null
           }
