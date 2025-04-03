@@ -4,49 +4,19 @@ import { ExternalLink } from 'lucide-react';
 import axios from 'axios';
 
 import { FRONTEND_URL, BACKEND_ENDPOINT } from '@/config/config';
-import { FieldProps } from '@/types/types';
-import { Header } from '@/components/ui/header';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { FieldProps } from '@/types/types';
+import { Header } from '@/components/ui/header';
+import { InitShrineDetails } from '@/features/shrine/consts/shrineInfoContents';
+import { ShrineDetails } from '@/features/shrine/types/types';
 
 import '@/styles/global.css';
 
-type ShrineDetails = {
-  name: string
-  furigana: FieldProps
-  image: string
-  altName: FieldProps[]
-  address: string
-  placeId: string
-  description: FieldProps
-  tags: FieldProps[]
-  foundedYear: FieldProps
-  objectOfWorship: FieldProps[]
-  shrineRank: FieldProps[]
-  hasGoshuin: FieldProps
-  websiteUrl: FieldProps
-  wikipediaUrl: FieldProps
-};
-
 const ShrineInfo = () => {
 
-  const [shrDetails, setShrDetails] = useState<ShrineDetails>({
-    name: "",
-    furigana: {id: 0, seq: "", content1: "", content2: "", content3: ""},
-    altName: [],
-    address: "",
-    placeId: "",
-    image: "",
-    description: {id: 0, seq: "", content1: "", content2: "", content3: ""},
-    tags: [],
-    foundedYear: {id: 0, seq: "", content1: "", content2: "", content3: ""},
-    objectOfWorship: [],
-    shrineRank: [],
-    hasGoshuin: {id: 0, seq: "", content1: "", content2: "", content3: ""},
-    websiteUrl: {id: 0, seq: "", content1: "", content2: "", content3: ""},
-    wikipediaUrl: {id: 0, seq: "", content1: "", content2: "", content3: ""}
-  });
+  const [shrDetails, setShrDetails] = useState<ShrineDetails>(InitShrineDetails);
   const search = useLocation().search;
   // プラス記号が空白として解釈されるため、置換する
   const query = new URLSearchParams(search.replace("+", "%2B"));
@@ -76,6 +46,48 @@ const ShrineInfo = () => {
     fetchShrineInfo();
 
   }, []);
+
+  const renderShrineRank = (item: FieldProps, index: number) => {
+    switch (item.seq) {
+      case "1":
+        // 延喜式内社の場合
+        return (
+          <li key={index}>延喜式内社：{item.content1}</li>         
+        )
+      case "2":
+        // 国史見在社の場合
+        return (
+          <li key={index}>国史見在社：{item.content1}</li>         
+        )
+      case "3":
+        // 二十二社制度の場合
+        return (
+          <li key={index}>二十二社制度：{item.content1}</li>         
+        )
+      case "4":
+        // 一宮制度の場合
+        return (
+          <li key={index}>一宮制度：{item.content1}（{item.content2}）</li>         
+        )
+      case "5":
+        // 総社（惣社）の場合
+        return (
+          <li key={index}>総社（惣社）：{item.content1}</li>         
+        )
+      case "6":
+        // 近代社格制度の場合
+        return (
+          <li key={index}>近代社格制度：{item.content1}</li>         
+        )
+      case "7":
+        // 別表神社の場合
+        return (
+          <li key={index}>別表神社：{item.content1}</li>         
+        )
+      default:
+        return null
+    }
+  }
 
   return (
     <>
@@ -114,20 +126,20 @@ const ShrineInfo = () => {
               <div>
                 <h3 className="text-lg font-semibold mb-2">社格</h3>
                   {shrDetails.shrineRank.map((item, index) => (
-                    <li key={index}>{item.content1}</li>
+                    renderShrineRank(item, index)
                   ))}
               </div>
               <div>
                 <h3 className="text-lg font-semibold mb-2">御祭神</h3>
                 <ul className="list-disc list-inside">
-                  {shrDetails.objectOfWorship.map((deity, index) => (
-                    <li key={index}>{deity.content1}</li>
+                  {shrDetails.objectOfWorship.map((item, index) => (
+                    <li key={index}>{item.content1}</li>
                   ))}
                 </ul>
               </div>
               <div>
                 <h3 className="text-lg font-semibold mb-2">御朱印</h3>
-                <p>{shrDetails.hasGoshuin ? "あり" : "なし"}</p>
+                <p>{shrDetails.hasGoshuin.content1}</p>
               </div>
               <div className="md:col-span-2">
                 <h3 className="text-lg font-semibold mb-2">説明</h3>
