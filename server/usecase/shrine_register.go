@@ -55,6 +55,7 @@ func (sru shrineRegisterUsecase) GetAllRegisterShrines(ctx context.Context) (psh
 
 		var altNameFields []model.Field
 		var tagFields []model.Field
+		var foundedYearFields []model.Field
 		var objectOfWorshipFields []model.Field
 		var shrineRankFields []model.Field
 
@@ -65,6 +66,10 @@ func (sru shrineRegisterUsecase) GetAllRegisterShrines(ctx context.Context) (psh
 		// 関連ワードをFieldへ変換
 		for idx, tag := range shrr.Tags {
 			tagFields = append(tagFields, model.Field{Id: idx + 1, Seq: "", Content1: tag, Content2: "", Content3: ""})
+		}
+		// 創建年をFieldへ変換
+		if len(shrr.FoundedYear) != 0 {
+			foundedYearFields = []model.Field{{Id: 1, Seq: "", Content1: shrr.FoundedYear[0], Content2: shrr.FoundedYear[1], Content3: shrr.FoundedYear[2]}}
 		}
 		// 御祭神をFieldへ変換
 		for idx, objectOfWorships := range shrr.ObjectOfWorships {
@@ -85,7 +90,7 @@ func (sru shrineRegisterUsecase) GetAllRegisterShrines(ctx context.Context) (psh
 			Furigana:         []model.Field{{Id: 1, Seq: "", Content1: shrr.Furigana, Content2: "", Content3: ""}},
 			AltNames:         altNameFields,
 			Tags:             tagFields,
-			FoundedYear:      []model.Field{{Id: 1, Seq: "", Content1: shrr.FoundedYear[0], Content2: shrr.FoundedYear[1], Content3: shrr.FoundedYear[2]}},
+			FoundedYear:      foundedYearFields,
 			ObjectOfWorships: objectOfWorshipFields,
 			ShrineRanks:      shrineRankFields,
 			HasGoshuin:       []model.Field{{Id: 1, Seq: "", Content1: shrr.HasGoshuin, Content2: "", Content3: ""}},
