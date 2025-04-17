@@ -16,7 +16,7 @@ import (
 )
 
 type ShrineRegisterUsecase interface {
-	GetAllRegisterShrines(ctx context.Context) (pshrqs []*model.ShrineRegisterReq, err error)
+	GetAllRegisterShrines(ctx context.Context) (shrrs []*model.ShrineRegister, err error)
 	DeleteRegisteredShrine(ctx context.Context, shrq *model.ShrineRegisterReq) (err error)
 	GetStdAreaCodeByAddress(ctx context.Context, shrq *model.ShrineRegisterReq) (sac string, err error)
 	GetLocnInfoFromPlaceAPI(ctx context.Context, shrq *model.ShrineRegisterReq, sac string) (shr *model.Shrine, caution []string, err error)
@@ -39,9 +39,7 @@ func NewShrineRegisterUsecase(sacr repository.StdAreaCodeRepository, sr reposito
 }
 
 // 神社一括登録テーブルから情報取得
-func (sru shrineRegisterUsecase) GetAllRegisterShrines(ctx context.Context) (pshrqs []*model.ShrineRegisterReq, err error) {
-
-	var shrrs []*model.ShrineRegister
+func (sru shrineRegisterUsecase) GetAllRegisterShrines(ctx context.Context) (shrrs []*model.ShrineRegister, err error) {
 
 	query := `SELECT rshr.name, rshr.address, rshr.furigana, rshr.alt_name, rshr.tags, rshr.founded_year, rshr.object_of_worship, rshr.shrine_rank, rshr.has_goshuin, rshr.website_url, rshr.wikipedia_url
 						FROM m_register_shrine rshr`
@@ -51,58 +49,58 @@ func (sru shrineRegisterUsecase) GetAllRegisterShrines(ctx context.Context) (psh
 		return nil, err
 	}
 
-	for idx, shrr := range shrrs {
+	// for idx, shrr := range shrrs {
 
-		var altNameFields []model.Field
-		var tagFields []model.Field
-		var foundedYearFields []model.Field
-		var objectOfWorshipFields []model.Field
-		var shrineRankFields []model.Field
+	// 	var altNameFields []model.Field
+	// 	var tagFields []model.Field
+	// 	var foundedYearFields []model.Field
+	// 	var objectOfWorshipFields []model.Field
+	// 	var shrineRankFields []model.Field
 
-		// 別名称をFieldへ変換
-		for _, altName := range shrr.AltNames {
-			altNameFields = append(altNameFields, model.Field{Id: idx + 1, Seq: "", Content1: altName, Content2: "", Content3: ""})
-		}
-		// 関連ワードをFieldへ変換
-		for idx, tag := range shrr.Tags {
-			tagFields = append(tagFields, model.Field{Id: idx + 1, Seq: "", Content1: tag, Content2: "", Content3: ""})
-		}
-		// 創建年をFieldへ変換
-		if len(shrr.FoundedYear) != 0 {
-			foundedYearFields = []model.Field{{Id: 1, Seq: "", Content1: shrr.FoundedYear[0], Content2: shrr.FoundedYear[1], Content3: shrr.FoundedYear[2]}}
-		}
-		// 御祭神をFieldへ変換
-		for idx, objectOfWorships := range shrr.ObjectOfWorships {
-			objectOfWorshipFields = append(objectOfWorshipFields, model.Field{Id: idx + 1, Seq: "", Content1: objectOfWorships, Content2: "", Content3: ""})
-		}
-		// 社格をFieldへ変換
-		for idx, shrineRank := range shrr.ShrineRanks {
-			if len(shrineRank) == 0 {
-				shrineRankFields = append(shrineRankFields, model.Field{Id: idx + 1, Seq: shrineRank[0], Content1: shrineRank[1], Content2: shrineRank[2], Content3: shrineRank[3]})
-			}
-		}
+	// 	// 別名称をFieldへ変換
+	// 	for _, altName := range shrr.AltNames {
+	// 		altNameFields = append(altNameFields, model.Field{Id: idx + 1, Seq: "", Content1: altName, Content2: "", Content3: ""})
+	// 	}
+	// 	// 関連ワードをFieldへ変換
+	// 	for idx, tag := range shrr.Tags {
+	// 		tagFields = append(tagFields, model.Field{Id: idx + 1, Seq: "", Content1: tag, Content2: "", Content3: ""})
+	// 	}
+	// 	// 創建年をFieldへ変換
+	// 	if len(shrr.FoundedYear) != 0 {
+	// 		foundedYearFields = []model.Field{{Id: 1, Seq: "", Content1: shrr.FoundedYear[0], Content2: shrr.FoundedYear[1], Content3: shrr.FoundedYear[2]}}
+	// 	}
+	// 	// 御祭神をFieldへ変換
+	// 	for idx, objectOfWorships := range shrr.ObjectOfWorships {
+	// 		objectOfWorshipFields = append(objectOfWorshipFields, model.Field{Id: idx + 1, Seq: "", Content1: objectOfWorships, Content2: "", Content3: ""})
+	// 	}
+	// 	// 社格をFieldへ変換
+	// 	for idx, shrineRank := range shrr.ShrineRanks {
+	// 		if len(shrineRank) == 0 {
+	// 			shrineRankFields = append(shrineRankFields, model.Field{Id: idx + 1, Seq: shrineRank[0], Content1: shrineRank[1], Content2: shrineRank[2], Content3: shrineRank[3]})
+	// 		}
+	// 	}
 
-		shrq := model.ShrineRegisterReq{
-			Name:             []model.Field{{Id: 1, Seq: "", Content1: shrr.Name, Content2: "", Content3: ""}},
-			Address:          []model.Field{{Id: 1, Seq: "", Content1: shrr.Address, Content2: "", Content3: ""}},
-			PlusCode:         []model.Field{{Id: 1, Seq: "", Content1: "", Content2: "", Content3: ""}},
-			PlaceID:          []model.Field{{Id: 1, Seq: "", Content1: "", Content2: "", Content3: ""}},
-			Furigana:         []model.Field{{Id: 1, Seq: "", Content1: shrr.Furigana, Content2: "", Content3: ""}},
-			AltNames:         altNameFields,
-			Tags:             tagFields,
-			FoundedYear:      foundedYearFields,
-			ObjectOfWorships: objectOfWorshipFields,
-			ShrineRanks:      shrineRankFields,
-			HasGoshuin:       []model.Field{{Id: 1, Seq: "", Content1: shrr.HasGoshuin, Content2: "", Content3: ""}},
-			WebsiteURL:       []model.Field{{Id: 1, Seq: "", Content1: shrr.WebsiteURL, Content2: "", Content3: ""}},
-			WikipediaURL:     []model.Field{{Id: 1, Seq: "", Content1: shrr.WikipediaURL, Content2: "", Content3: ""}},
-		}
-		pshrqs = append(pshrqs, &shrq)
-	}
+	// 	shrq := model.ShrineRegisterReq{
+	// 		Name:             []model.Field{{Id: 1, Seq: "", Content1: shrr.Name, Content2: "", Content3: ""}},
+	// 		Address:          []model.Field{{Id: 1, Seq: "", Content1: shrr.Address, Content2: "", Content3: ""}},
+	// 		PlusCode:         []model.Field{{Id: 1, Seq: "", Content1: "", Content2: "", Content3: ""}},
+	// 		PlaceID:          []model.Field{{Id: 1, Seq: "", Content1: "", Content2: "", Content3: ""}},
+	// 		Furigana:         []model.Field{{Id: 1, Seq: "", Content1: shrr.Furigana, Content2: "", Content3: ""}},
+	// 		AltNames:         altNameFields,
+	// 		Tags:             tagFields,
+	// 		FoundedYear:      foundedYearFields,
+	// 		ObjectOfWorships: objectOfWorshipFields,
+	// 		ShrineRanks:      shrineRankFields,
+	// 		HasGoshuin:       []model.Field{{Id: 1, Seq: "", Content1: shrr.HasGoshuin, Content2: "", Content3: ""}},
+	// 		WebsiteURL:       []model.Field{{Id: 1, Seq: "", Content1: shrr.WebsiteURL, Content2: "", Content3: ""}},
+	// 		WikipediaURL:     []model.Field{{Id: 1, Seq: "", Content1: shrr.WikipediaURL, Content2: "", Content3: ""}},
+	// 	}
+	// 	pshrqs = append(pshrqs, &shrq)
+	// }
 
-	fmt.Printf("pshrqs: %+v\n", pshrqs)
+	// fmt.Printf("pshrqs: %+v\n", pshrqs)
 
-	return pshrqs, nil
+	return shrrs, nil
 
 }
 
