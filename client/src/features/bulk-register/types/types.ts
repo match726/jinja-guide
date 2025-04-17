@@ -7,7 +7,7 @@ export interface RegisterShrineProps {
   tags: string[]
   foundedYear: string[]
   objectOfWorship: string[]
-  shrineRank: string[]
+  shrineRank: string[][]
   hasGoshuin: string
   websiteUrl: string
   wikipediaUrl: string
