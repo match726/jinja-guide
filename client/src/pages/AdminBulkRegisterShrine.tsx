@@ -53,6 +53,8 @@ const AdminBulkRegisterShrine = () => {
 
   };
 
+  console.log(shrines);
+
   return (
     <>
       <Header />
@@ -92,11 +94,36 @@ const AdminBulkRegisterShrine = () => {
                         <TableCell className="font-medium">{shrine.name}</TableCell>
                         <TableCell>{shrine.address}</TableCell>
                         <TableCell>{shrine.furigana}</TableCell>
-                        <TableCell>{shrine.altName.join(",")}</TableCell>
-                        <TableCell>{shrine.tags.join(",")}</TableCell>
-                        <TableCell>{shrine.foundedYear.join(",")}</TableCell>
-                        <TableCell>{shrine.objectOfWorship.join(",")}</TableCell>
-                        <TableCell>{shrine.shrineRank.join(",")}</TableCell>
+                        <TableCell>
+                          {typeof shrine.altName === 'undefined'
+                            ? null
+                            : shrine.altName.join(",")
+                          }
+                        </TableCell>
+                        <TableCell>
+                          {typeof shrine.tags === 'undefined'
+                            ? null
+                            : shrine.tags.join(",")
+                          }
+                        </TableCell>
+                        <TableCell>
+                          {typeof shrine.foundedYear === 'undefined'
+                            ? null
+                            : shrine.foundedYear.join(",")
+                          }
+                        </TableCell>
+                        <TableCell>
+                          {typeof shrine.objectOfWorship === 'undefined'
+                            ? null
+                            : shrine.objectOfWorship.join(",")
+                          }
+                        </TableCell>
+                        <TableCell>
+                          {typeof shrine.shrineRank === 'undefined'
+                            ? null
+                            : shrine.shrineRank.join(",")
+                          }
+                        </TableCell>
                         <TableCell>{shrine.hasGoshuin}</TableCell>
                         <TableCell>{shrine.websiteUrl}</TableCell>
                         <TableCell>{shrine.wikipediaUrl}</TableCell>
