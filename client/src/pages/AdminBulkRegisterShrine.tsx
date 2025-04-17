@@ -69,7 +69,7 @@ const AdminBulkRegisterShrine = () => {
                 <h3 className="text-xl font-bold text-center">神社一括登録テーブル</h3>
               </div>
               <div className="overflow-x-auto">
-                <Table className="w-full">
+                <Table className="">
                   <TableHeader>
                     <TableRow className="bg-gray-200 text-gray-800">
                       <TableHead className="text-left">名称</TableHead>
@@ -97,31 +97,31 @@ const AdminBulkRegisterShrine = () => {
                         <TableCell>
                           {typeof shrine.altName === 'undefined'
                             ? null
-                            : shrine.altName.join('<br>')
+                            : shrine.altName.join(', ')
                           }
                         </TableCell>
                         <TableCell>
                           {typeof shrine.tags === 'undefined'
                             ? null
-                            : shrine.tags.join('<br>')
+                            : shrine.tags.join(', ')
                           }
                         </TableCell>
                         <TableCell>
                           {typeof shrine.foundedYear === 'undefined'
                             ? null
-                            : shrine.foundedYear.join('<br>')
+                            : shrine.foundedYear.join(', ')
                           }
                         </TableCell>
                         <TableCell>
                           {typeof shrine.objectOfWorship === 'undefined'
                             ? null
-                            : shrine.objectOfWorship.join('<br>')
+                            : shrine.objectOfWorship.join(', ')
                           }
                         </TableCell>
                         <TableCell>
                           {typeof shrine.shrineRank === 'undefined'
                             ? null
-                            : shrine.shrineRank.join('<br>')
+                            : shrine.shrineRank.join(', ')
                           }
                         </TableCell>
                         <TableCell>{shrine.hasGoshuin}</TableCell>
