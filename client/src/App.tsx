@@ -8,7 +8,7 @@ import ShrineTagList from '@/components/model/ShrineTagList';
 import Admin from '@/pages/Admin';
 import AdminRegisterShrine from '@/pages/AdminRegisterShrine';
 import AdminRegisterShrineDetails from '@/pages/AdminRegisterShrineDetails';
-import AdminBulkRegisterShrine from '@/components/model/AdminBulkRegisterShrine';
+import AdminBulkRegisterShrine from '@/pages/AdminBulkRegisterShrine';
 import AdminStdAreaCode from '@/components/model/AdminStdAreaCode';
 
 import '@/styles/global.css';
