@@ -97,31 +97,31 @@ const AdminBulkRegisterShrine = () => {
                         <TableCell>
                           {typeof shrine.altName === 'undefined'
                             ? null
-                            : shrine.altName.join("\n")
+                            : shrine.altName.join('<br>')
                           }
                         </TableCell>
                         <TableCell>
                           {typeof shrine.tags === 'undefined'
                             ? null
-                            : shrine.tags.join("\n")
+                            : shrine.tags.join('<br>')
                           }
                         </TableCell>
                         <TableCell>
                           {typeof shrine.foundedYear === 'undefined'
                             ? null
-                            : shrine.foundedYear.join("\n")
+                            : shrine.foundedYear.join('<br>')
                           }
                         </TableCell>
                         <TableCell>
                           {typeof shrine.objectOfWorship === 'undefined'
                             ? null
-                            : shrine.objectOfWorship.join("\n")
+                            : shrine.objectOfWorship.join('<br>')
                           }
                         </TableCell>
                         <TableCell>
                           {typeof shrine.shrineRank === 'undefined'
                             ? null
-                            : shrine.shrineRank.join("\n")
+                            : shrine.shrineRank.join('<br>')
                           }
                         </TableCell>
                         <TableCell>{shrine.hasGoshuin}</TableCell>
