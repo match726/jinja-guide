@@ -16,7 +16,8 @@ import (
 )
 
 type ShrineRegisterHandler interface {
-	Handler(ctx context.Context, w http.ResponseWriter, r *http.Request)
+	GetHandler(ctx context.Context, w http.ResponseWriter, r *http.Request)
+	PutHandler(ctx context.Context, w http.ResponseWriter, r *http.Request)
 }
 
 type shrineRegisterHandler struct {
@@ -34,6 +35,8 @@ func ExportedHandler(w http.ResponseWriter, r *http.Request) {
 	case http.MethodOptions:
 		w.WriteHeader(http.StatusOK)
 		return
+	case http.MethodGet:
+		break
 	case http.MethodPost:
 		break
 	default:
@@ -70,11 +73,20 @@ func ExportedHandler(w http.ResponseWriter, r *http.Request) {
 	sru := usecase.NewShrineRegisterUsecase(sacp, sp, scp, srp)
 	srh := NewShrineRegisterHandler(sru)
 
-	srh.Handler(ctx, w, r)
+	// リクエストメソッドでの処理分岐
+	switch r.Method {
+	case http.MethodGet:
+		srh.GetHandler(ctx, w, r)
+	case http.MethodPut:
+		srh.PutHandler(ctx, w, r)
+	}
 
 }
 
-func (srh shrineRegisterHandler) Handler(ctx context.Context, w http.ResponseWriter, r *http.Request) {
+func (srh shrineRegisterHandler) GetHandler(ctx context.Context, w http.ResponseWriter, r *http.Request) {
+}
+
+func (srh shrineRegisterHandler) PutHandler(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 
 	// 神社一括登録テーブルを取得
 	var shrqs []*model.ShrineRegisterReq
