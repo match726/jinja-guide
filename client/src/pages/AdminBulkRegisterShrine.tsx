@@ -59,7 +59,7 @@ const AdminBulkRegisterShrine = () => {
     <>
       <Header />
       <div className="bg-gradient-to-b from-red-50 to-white flex items-top justify-center p-8">
-        <div className="w-full max-w-lg bg-white rounded-lg shadow-xl overflow-hidden">
+        <div className="w-full max-w-xl bg-white rounded-lg shadow-xl overflow-hidden">
           <div className="bg-red-900 p-4 flex items-center justify-center">
             <h2 className="text-2xl font-bold text-white ml-2 font-serif">神社一括登録</h2>
           </div>
